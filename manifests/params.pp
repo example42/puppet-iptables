@@ -111,6 +111,7 @@ class iptables::params  {
         ubuntu  => "/etc/iptables/rules",
         redhat  => "/etc/sysconfig/iptables",
         centos  => "/etc/sysconfig/iptables",
+        default => "/etc/sysconfig/iptables",
     }
 
     $configfile_mode = $operatingsystem ? {
