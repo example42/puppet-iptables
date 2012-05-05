@@ -54,8 +54,28 @@ define iptables::rule (
     }
 
     # We build the rule if not explicitely set
+    $true_protocol = $protocol ? {
+      ''      => '', 
+      default => "-p $protocol",
+    }
+
+    $true_port = $port ? {
+      ''      => '',
+      default => "--dport $port",
+    }
+
+    $true_source = $source ? {
+      ''      => '',
+      default => "-s $source",
+    }
+
+    $true_destination = $destination ? {
+      ''      => '',
+      default => "-d $destination",
+    }
+
     $true_rule = $rule ? {
-         ""      => "-p $protocol --dport $port -s $source -d $destination",
+         ""      => "$true_protocol $true_port $true_source $true_destination",
          default => $rule,
     }
 
