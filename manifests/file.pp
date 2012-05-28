@@ -8,17 +8,20 @@
 # 
 # It's used if $iptables_config = "file"
 #
-class iptables::file {
+class iptables::file inherits iptables {
 
-    include iptables::params 
+  file { 'iptables.conf':
+    ensure  => $iptables::manage_file,
+    path    => $iptables::config_file,
+    mode    => $iptables::config_file_mode,
+    owner   => $iptables::config_file_owner,
+    group   => $iptables::config_file_group,
+    require => Package['iptables'],
+    notify  => $iptables::manage_service_autorestart,
+    source  => $iptables::manage_file_source,
+    content => $iptables::manage_file_content,
+    replace => $iptables::manage_file_replace,
+    audit   => $iptables::manage_audit,
+  }
 
-    file { "iptables_rules":
-        path    => "${iptables::params::configfile}",
-        mode    => "${iptables::params::configfile_mode}",
-        owner   => "${iptables::params::configfile_owner}",
-        group   => "${iptables::params::configfile_group}",
-        ensure  => present,
-        require => Package["iptables"],
-        notify  => Service["iptables"],
-    }
 }

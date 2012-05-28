@@ -6,137 +6,89 @@
 class iptables::params  {
 
 ## DEFAULTS FOR VARIABLES USERS CAN SET
-# (Here are set the defaults, provide your custom variables externally)
-# (The default used is in the line with '')
 
 # Define how you want to manage iptables configuration:
 # "file" - To provide iptables rules as a normal file
 # "concat" - To build them up using different fragments
-#          - This option, set as default, permits the use of the iptables::rule define
-#          - and many other funny things
-    $config = $iptables_config ? {
-        "file"  => "file",
-        default => "concat",
-    }
+#      - This option, set as default, permits the use of the iptables::rule define
+#      - and many other funny things
+  $config = 'concat'
 
 # Define what to do with unknown packets
-    $block_policy = $iptables_block_policy ? {
-        "drop"    => "DROP",
-        "DROP"    => "DROP",
-        "reject"  => "REJECT --reject-with icmp-host-prohibited",
-        "REJECT"  => "REJECT --reject-with icmp-host-prohibited",
-        "accept"  => "ACCEPT",
-        "ACCEPT"  => "ACCEPT",
-        default   => "DROP",
-    }
+  $block_policy = 'DROP'
 
 # Define what to do with icmp packets (quick'n'dirty approach)
-    $icmp_policy = $iptables_icmp_policy ? {
-        "drop"    => "-j DROP",
-        "DROP"    => "-j DROP",
-        "safe"    => "-m icmp --icmp-type ! echo-request -j ACCEPT",
-        "accept"  => "-j ACCEPT",
-        "ACCEPT"  => "-j ACCEPT",
-        default   => "-j ACCEPT",
-    }
+  $icmp_policy = 'ACCEPT'
 
 # Define what to do with output packets 
-    $output_policy = $iptables_output_policy ? {
-        "drop"    => "drop",
-        "DROP"    => "drop",
-        default   => "accept",
-    }
+  $output_policy = 'ACCEPT'
 
 ## Define what packets to log
-    $log = $iptables_log ? {
-        "all"     => "all",
-        "dropped" => "drop",
-        "none"    => "no",
-        "no"      => "no",
-        default   => "drop",
-    }
+  $log = 'drop'
 
 # Define the Level of logging (numeric or see syslog.conf(5)) 
-    $log_level = $iptables_log_level ? {
-        ""      => "4",
-        default => $iptables_log_level,
-    }
+  $log_level = '4'
 
 # Define if you want to open SSH port by default
-    $safe_ssh = $iptables_safe_ssh ? {
-        "no"    => "no",
-        "false" => "no",
-        false   => "no",
-        default => "yes",
-    }
+  $safe_ssh = true
 
 # Define what to do with INPUT broadcast packets 
-    $broadcast_policy = $iptables_broadcast_policy ? {
-        "drop"    => "drop",
-        "DROP"    => "drop",
-        default   => "accept",
-    }
+  $broadcast_policy = 'accept'
 
 # Define what to do with INPUT multicast packets
-    $multicast_policy = $iptables_multicast_policy ? {
-        "drop"    => "drop",
-        "DROP"    => "drop",
-        default   => "accept",
-    }
-
-
-## EXTRA MODULE INTERNAL VARIABLES
-#(add here module specific internal variables)
-
+  $multicast_policy = 'accept'
 
 ## MODULE INTERNAL VARIABLES
 # (Modify to adapt to unsupported OSes)
 
-    $packagename = $operatingsystem ? {
-        default => "iptables",
-    }
+  $package = $::operatingsystem ? {
+    default => 'iptables',
+  }
 
-    $servicename = $operatingsystem ? {
-        debian  => "iptables-persistent",
-        ubuntu  => "iptables-persistent",
-        default => "iptables",
-    }
+  $service = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => 'iptables-persistent',
+    default                   => 'iptables',
+  }
 
-    $hasstatus = $operatingsystem ? {
-        default => true,
-    }
+  $service_status = true
 
-    $configfile = $operatingsystem ? {
-        debian  => "/etc/iptables/rules",
-        ubuntu  => "/etc/iptables/rules",
-        redhat  => "/etc/sysconfig/iptables",
-        centos  => "/etc/sysconfig/iptables",
-        default => "/etc/sysconfig/iptables",
-    }
+  $config_file = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/iptables/rules',
+    default                   => '/etc/sysconfig/iptables',
+  }
 
-    $configfile_mode = $operatingsystem ? {
-        default => "640",
-    }
+  $config_file_mode = $::operatingsystem ? {
+    default => '0640',
+  }
 
-    $configfile_owner = $operatingsystem ? {
-        default => "root",
-    }
+  $config_file_owner = $::operatingsystem ? {
+    default => 'root',
+  }
 
-    $configfile_group = $operatingsystem ? {
-        default => "root",
-    }
+  $config_file_group = $::operatingsystem ? {
+    default => 'root',
+  }
 
+  $my_class = ''
+  $source = ''
+  $template = ''
+  $service_autorestart = true
+  $absent = false
+  $disable = false
+  $disableboot = false
+  $debug = false
+  $audit_only = false
 
-    ## FILE SERVING SOURCE
-    case $base_source {
-        '': {
-            $general_base_source = $puppetversion ? {
-                /(^0.25)/ => "puppet:///modules",
-                /(^0.)/   => "puppet://$servername",
-                default   => "puppet:///modules",
-            }
-        }
-        default: { $general_base_source=$base_source }
+  ## FILE SERVING SOURCE
+  case $base_source {
+    '': {
+      $general_base_source = $puppetversion ? {
+        /(^0.25)/ => 'puppet:///modules',
+        /(^0.)/   => "puppet://$servername",
+        default   => 'puppet:///modules',
+      }
     }
+    default: { $general_base_source=$base_source }
+  }
 
 }
