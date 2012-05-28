@@ -36,7 +36,7 @@ define iptables::rule (
   $rule="",
   $enable="yes" ) {
 
-  include iptables::params
+  include iptables
   include concat::setup
 
   # If (concat) order is not defined we find out the right one
