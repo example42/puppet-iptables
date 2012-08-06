@@ -1,3 +1,4 @@
+-A FORWARD -p icmp <%= scope.lookupvar('iptables::real_icmp_policy') %>
 <% if scope.lookupvar('iptables::real_log') == "drop" -%>
 -A FORWARD -j LOG --log-level <%= scope.lookupvar('iptables::log_level') %> --log-prefix "FORWARD DROP: "
 <% end -%>
