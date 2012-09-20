@@ -30,22 +30,22 @@ The rules configuration can be made in two ways:
 
 == USAGE - Overrides and Customizations
 * Default usage (Concat mode). It follows these defaults:
-** Default policy is ACCEPT (to permit reachability in case of syntax errors)
-** Last rule of every chain is a DENY as defined by $iptables_block_policy
-** Intermediate rules are generally ACCEPTs
-** Localhost and established traffic is ALLOWED
+  * Default policy is ACCEPT (to permit reachability in case of syntax errors)
+  * Last rule of every chain is a DENY as defined by $iptables_block_policy
+  * Intermediate rules are generally ACCEPTs
+  * Localhost and established traffic is ALLOWED
 
 So a simple:
 
         class { 'iptables':
         }
 
-** Allows SSH access on port TCP 22
-** Allows ping and all ICMP packets
-** Allows localhost and established traffic
-** Allows outbound traffic
-** Allows multicast and broadcast traffic
-** Blocks everything else
+  * Allows SSH access on port TCP 22
+  * Allows ping and all ICMP packets
+  * Allows localhost and established traffic
+  * Allows outbound traffic
+  * Allows multicast and broadcast traffic
+  * Blocks everything else
 
 
 * Use custom sources for iptables file
@@ -145,8 +145,8 @@ You have also to set firewall_tool => 'iptables'.
 
 So, for example, you can enable site wide automatic firewalling with:
 
-$::firewall = true
-$::firewall_tool = 'iptables'
+        $::firewall = true
+        $::firewall_tool = 'iptables'
 
 and then whenever you add a NextGen Example42 module to a node, it's port is automatically openened (to every ip).
 
