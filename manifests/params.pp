@@ -58,24 +58,24 @@ class iptables::params  {
 
   case $::operatingsystem {
     /(?i:Debian)/: {
-      if (($osver_maj =~ /^\d+$/) and ($osver_maj >= 7)) {
-        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
-      } else {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 7)) {
         $config_file = '/etc/iptables/rules'
+      } else {
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
       }
     }
     /(?i:Ubuntu)/: {
-      if (($osver_maj =~ /^\d+$/) and ($osver_maj >= 12)) {
-        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
-      } else {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 12)) {
         $config_file = '/etc/iptables/rules'
+      } else {
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
       }
     }
     /(?i:Mint)/: {
-      if (($osver_maj =~ /^\d+$/) and ($osver_maj >= 13)) {
-        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Mint 13
-      } else {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 13)) {
         $config_file = '/etc/iptables/rules'
+      } else {
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Mint 13
       }
     }
     default: {
