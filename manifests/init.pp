@@ -18,6 +18,9 @@ class iptables (
   $broadcast_policy    = params_lookup( 'broadcast_policy' ),
   $multicast_policy    = params_lookup( 'multicast_policy' ),
   $log                 = params_lookup( 'log' ),
+  $log_input           = params_lookup( 'log_input' ),
+  $log_output          = params_lookup( 'log_output' ),
+  $log_forward         = params_lookup( 'log_forward' ),
   $log_level           = params_lookup( 'log_level' ),
   $safe_ssh            = params_lookup( 'safe_ssh' ),
   $package             = params_lookup( 'package' ),
@@ -68,6 +71,30 @@ class iptables (
   }
  
   $real_log = $log ? {
+    'all'     => 'all',
+    'dropped' => 'drop',
+    'none'    => 'no',
+    'no'      => 'no',
+    default   => 'drop',
+  }
+  $real_log_input = $log_input ? {
+    ''        => $real_log,
+    'all'     => 'all',
+    'dropped' => 'drop',
+    'none'    => 'no',
+    'no'      => 'no',
+    default   => 'drop',
+  }
+  $real_log_output = $log_output ? {
+    ''        => $real_log,
+    'all'     => 'all',
+    'dropped' => 'drop',
+    'none'    => 'no',
+    'no'      => 'no',
+    default   => 'drop',
+  }
+  $real_log_forward = $log_forward ? {
+    ''        => $real_log,
     'all'     => 'all',
     'dropped' => 'drop',
     'none'    => 'no',
