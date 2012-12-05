@@ -58,21 +58,21 @@ class iptables::params  {
 
   case $::operatingsystem {
     /(?i:Debian)/: {
-      if ($osver_maj >= 7) {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj >= 7)) {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
       } else {
         $config_file = '/etc/iptables/rules'
       }
     }
     /(?i:Ubuntu)/: {
-      if ($osver_maj >= 12) {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj >= 12)) {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
       } else {
         $config_file = '/etc/iptables/rules'
       }
     }
     /(?i:Mint)/: {
-      if ($osver_maj >= 13) {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj >= 13)) {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Mint 13
       } else {
         $config_file = '/etc/iptables/rules'
