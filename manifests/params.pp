@@ -5,6 +5,10 @@
 #
 class iptables::params  {
 
+  ### Definition of some variables used in the module
+  $osver = split($::operatingsystemrelease, '[.]')
+  $osver_maj = $osver[0]
+
 ## DEFAULTS FOR VARIABLES USERS CAN SET
 
 # Define how you want to manage iptables configuration:
@@ -52,9 +56,31 @@ class iptables::params  {
 
   $service_status = true
 
-  $config_file = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/iptables/rules',
-    default                   => '/etc/sysconfig/iptables',
+  case $::operatingsystem {
+    /(?i:Debian)/: {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 7)) {
+        $config_file = '/etc/iptables/rules'
+      } else {
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
+      }
+    }
+    /(?i:Ubuntu)/: {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 12)) {
+        $config_file = '/etc/iptables/rules'
+      } else {
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
+      }
+    }
+    /(?i:Mint)/: {
+      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 13)) {
+        $config_file = '/etc/iptables/rules'
+      } else {
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Mint 13
+      }
+    }
+    default: {
+      $config_file = '/etc/sysconfig/iptables'
+    }
   }
 
   $config_file_mode = $::operatingsystem ? {
