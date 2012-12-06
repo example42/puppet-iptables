@@ -29,6 +29,9 @@ class iptables::params  {
 
 ## Define what packets to log
   $log = 'drop'
+  $log_input = ''
+  $log_output = ''
+  $log_forward = ''
 
 # Define the Level of logging (numeric or see syslog.conf(5)) 
   $log_level = '4'
