@@ -54,22 +54,22 @@ class iptables (
     'ACCEPT'  => 'ACCEPT',
     default   => 'DROP',
   }
- 
+
   $real_icmp_policy = $icmp_policy ? {
     'drop'    => '-j DROP',
     'DROP'    => '-j DROP',
-    'safe'    => '-m icmp --icmp-type ! echo-request -j ACCEPT',
+    'safe'    => '-m icmp ! --icmp-type echo-request -j ACCEPT',
     'accept'  => '-j ACCEPT',
     'ACCEPT'  => '-j ACCEPT',
     default   => '-j ACCEPT',
   }
- 
+
   $real_output_policy = $output_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
     default   => 'accept',
   }
- 
+
   $real_log = $log ? {
     'all'     => 'all',
     'dropped' => 'drop',
@@ -101,9 +101,9 @@ class iptables (
     'no'      => 'no',
     default   => 'drop',
   }
- 
+
   $real_safe_ssh = any2bool($safe_ssh)
- 
+
   $real_broadcast_policy = $broadcast_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
