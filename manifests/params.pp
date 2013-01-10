@@ -1,7 +1,7 @@
 # Class: iptables::params
 #
 # Sets internal variables and defaults for iptables module
-# This class is loaded in all the classes that use the values set here 
+# This class is loaded in all the classes that use the values set here
 #
 class iptables::params  {
 
@@ -24,7 +24,7 @@ class iptables::params  {
 # Define what to do with icmp packets (quick'n'dirty approach)
   $icmp_policy = 'ACCEPT'
 
-# Define what to do with output packets 
+# Define what to do with output packets
   $output_policy = 'ACCEPT'
 
 ## Define what packets to log
@@ -33,13 +33,13 @@ class iptables::params  {
   $log_output = ''
   $log_forward = ''
 
-# Define the Level of logging (numeric or see syslog.conf(5)) 
+# Define the Level of logging (numeric or see syslog.conf(5))
   $log_level = '4'
 
 # Define if you want to open SSH port by default
   $safe_ssh = true
 
-# Define what to do with INPUT broadcast packets 
+# Define what to do with INPUT broadcast packets
   $broadcast_policy = 'accept'
 
 # Define what to do with INPUT multicast packets
@@ -109,15 +109,15 @@ class iptables::params  {
   $audit_only = false
 
   ## FILE SERVING SOURCE
-  case $base_source {
+  case $::base_source {
     '': {
-      $general_base_source = $puppetversion ? {
+      $general_base_source = $::puppetversion ? {
         /(^0.25)/ => 'puppet:///modules',
-        /(^0.)/   => "puppet://$servername",
+        /(^0.)/   => "puppet://${servername}",
         default   => 'puppet:///modules',
       }
     }
-    default: { $general_base_source=$base_source }
+    default: { $general_base_source = $::base_source }
   }
 
 }
