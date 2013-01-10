@@ -37,12 +37,12 @@ class iptables (
   $audit_only          = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
 
-  $bool_service_autorestart=any2bool($service_autorestart)
-  $bool_absent=any2bool($absent)
-  $bool_disable=any2bool($disable)
-  $bool_disableboot=any2bool($disableboot)
-  $bool_debug=any2bool($debug)
-  $bool_audit_only=any2bool($audit_only)
+  $bool_service_autorestart = any2bool($service_autorestart)
+  $bool_absent = any2bool($absent)
+  $bool_disable = any2bool($disable)
+  $bool_disableboot = any2bool($disableboot)
+  $bool_debug = any2bool($debug)
+  $bool_audit_only = any2bool($audit_only)
 
   ### Definitions of specific variables
   $real_block_policy = $block_policy ? {
@@ -192,13 +192,14 @@ class iptables (
     hasstatus  => $iptables::service_status,
     require    => Package['iptables'],
     hasrestart => false,
-    restart    => inline_template("iptables-restore < <%= scope.lookupvar('iptables::config_file') %>"),
+    restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
   }
 
   # How to manage iptables configuration
   case $iptables::config {
     'file': { include iptables::file }
     'concat': { include iptables::concat }
+    default: { }
   }
 
   ### Include custom class if $my_class is set
