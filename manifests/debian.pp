@@ -5,12 +5,12 @@ class iptables::debian {
 
   # We use iptables-persistent to keep coherency with the module layout
   package { 'iptables-persistent':
-    name   => 'iptables-persistent',
     ensure => present,
+    name   => 'iptables-persistent',
     before => Service['iptables'],
   }
 
-  file { '/etc/iptables': 
+  file { '/etc/iptables':
     ensure => directory,
   }
 
