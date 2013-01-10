@@ -79,13 +79,9 @@ define iptables::rule (
     default => $rule,
   }
 
-  $ensure = $enable ? {
-    false   => 'absent',
-    'false' => 'absent',
-    'no'    => 'absent',
-    true    => 'present',
-    'true'  => 'present',
-    'yes'   => 'present',
+  $ensure = any2bool($enable) ? {
+    false => 'absent',
+    true  => 'present',
   }
 
   concat::fragment{ "iptables_rule_${name}":
