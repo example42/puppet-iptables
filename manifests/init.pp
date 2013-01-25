@@ -24,6 +24,7 @@ class iptables (
   $log_level           = params_lookup( 'log_level' ),
   $safe_ssh            = params_lookup( 'safe_ssh' ),
   $package             = params_lookup( 'package' ),
+  $version             = params_lookup( 'version' ),
   $service             = params_lookup( 'service' ),
   $service_status      = params_lookup( 'service_status' ),
   $config_file         = params_lookup( 'config_file' ),
