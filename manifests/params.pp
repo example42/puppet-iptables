@@ -102,6 +102,7 @@ class iptables::params  {
   $source = ''
   $template = ''
   $service_autorestart = true
+  $version = 'present'
   $absent = false
   $disable = false
   $disableboot = false
