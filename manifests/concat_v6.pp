@@ -93,26 +93,6 @@ class iptables::concat_v6 {
     notify  => Service['iptables'],
   }
 
-
-
-  # The NAT table header with the default policies
-  concat::fragment{ 'iptables_nat_header_v6':
-    target  => $iptables::config_file_v6,
-    content => template('iptables/concat/nat_header'),
-    order   => 45,
-    notify  => Service['iptables'],
-  }
-
-  # The NAT table footer (COMMIT)
-  concat::fragment{ 'iptables_nat_footer_v6':
-    target  => $iptables::config_file_v6,
-    content => template('iptables/concat/nat_footer'),
-    order   => 60,
-    notify  => Service['iptables'],
-  }
-
-
-
   # The MANGLE table header with the default policies
   concat::fragment{ 'iptables_mangle_header_v6':
     target  => $iptables::config_file_v6,
@@ -128,6 +108,4 @@ class iptables::concat_v6 {
     order   => 80,
     notify  => Service['iptables'],
   }
-
-
 }
