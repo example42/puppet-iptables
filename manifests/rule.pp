@@ -107,7 +107,7 @@ define iptables::rule (
     notify  => Service['iptables'],
   }
   
-  if array_source.size <= 0 && array_destination <= 0 { 
+  if size(array_source) <= 0 and size(array_destination) <= 0 { 
     concat::fragment{ "iptables_rule_v6_$name":
       target  => $iptables::config_file_v6,
       content => template('iptables/concat/rule.erb'),
