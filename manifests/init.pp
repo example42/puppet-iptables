@@ -199,7 +199,10 @@ class iptables (
   # How to manage iptables configuration
   case $iptables::config {
     'file': { include iptables::file }
-    'concat': { include iptables::concat }
+    'concat': { 
+      include iptables::concat 
+      include iptables::concat_v6
+     }
     default: { }
   }
 

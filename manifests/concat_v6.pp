@@ -22,7 +22,7 @@ class iptables::concat_v6 {
 
 
   # The File Header. With Puppet comment
-  concat::fragment{ 'iptables_header':
+  concat::fragment{ 'iptables_header_v6':
     target  => $iptables::config_file_v6,
     content => "# File Managed by Puppet\n",
     order   => 01,
@@ -30,7 +30,7 @@ class iptables::concat_v6 {
   }
 
   # The FILTER table header with the default policies
-  concat::fragment{ 'iptables_filter_header':
+  concat::fragment{ 'iptables_filter_header_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_header'),
     order   => 05,
@@ -38,7 +38,7 @@ class iptables::concat_v6 {
   }
 
   # The input chain header with sane defaults
-  concat::fragment{ 'iptables_filter_input_header':
+  concat::fragment{ 'iptables_filter_input_header_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_input_header'),
     order   => 10,
@@ -46,7 +46,7 @@ class iptables::concat_v6 {
   }
 
   # The input chain footer with logging and block_policy
-  concat::fragment{ 'iptables_filter_input_footer':
+  concat::fragment{ 'iptables_filter_input_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_input_footer'),
     order   => 19,
@@ -54,7 +54,7 @@ class iptables::concat_v6 {
   }
 
   # The output chain header with sane defaults
-  concat::fragment{ 'iptables_filter_output_header':
+  concat::fragment{ 'iptables_filter_output_header_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_output_header'),
     order   => 20,
@@ -62,7 +62,7 @@ class iptables::concat_v6 {
   }
 
   # The output chain footer with logging and block_policy
-  concat::fragment{ 'iptables_filter_output_footer':
+  concat::fragment{ 'iptables_filter_output_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_output_footer'),
     order   => 29,
@@ -70,7 +70,7 @@ class iptables::concat_v6 {
   }
 
   # The forward chain header with sane defaults
-  concat::fragment{ 'iptables_filter_forward_header':
+  concat::fragment{ 'iptables_filter_forward_header_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_forward_header'),
     order   => 30,
@@ -78,7 +78,7 @@ class iptables::concat_v6 {
   }
 
   # The forward chain footer with logging and block_policy
-  concat::fragment{ 'iptables_filter_forward_footer':
+  concat::fragment{ 'iptables_filter_forward_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_forward_footer'),
     order   => 39,
@@ -86,7 +86,7 @@ class iptables::concat_v6 {
   }
 
   # The FILTER table footer (COMMIT)
-  concat::fragment{ 'iptables_filter_footer':
+  concat::fragment{ 'iptables_filter_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_footer'),
     order   => 40,
@@ -96,7 +96,7 @@ class iptables::concat_v6 {
 
 
   # The NAT table header with the default policies
-  concat::fragment{ 'iptables_nat_header':
+  concat::fragment{ 'iptables_nat_header_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/nat_header'),
     order   => 45,
@@ -104,7 +104,7 @@ class iptables::concat_v6 {
   }
 
   # The NAT table footer (COMMIT)
-  concat::fragment{ 'iptables_nat_footer':
+  concat::fragment{ 'iptables_nat_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/nat_footer'),
     order   => 60,
@@ -114,7 +114,7 @@ class iptables::concat_v6 {
 
 
   # The MANGLE table header with the default policies
-  concat::fragment{ 'iptables_mangle_header':
+  concat::fragment{ 'iptables_mangle_header_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/mangle_header'),
     order   => 65,
@@ -122,7 +122,7 @@ class iptables::concat_v6 {
   }
 
   # The MANGLE table footer (COMMIT)
-  concat::fragment{ 'iptables_mangle_footer':
+  concat::fragment{ 'iptables_mangle_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/mangle_footer'),
     order   => 80,
