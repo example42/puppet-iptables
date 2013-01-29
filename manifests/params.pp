@@ -72,6 +72,7 @@ class iptables::params  {
         $config_file = '/etc/iptables/rules'
       } else {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
+        $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
       }
     }
     /(?i:Mint)/: {
