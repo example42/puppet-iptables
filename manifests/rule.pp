@@ -107,7 +107,7 @@ define iptables::rule (
     notify  => Service['iptables'],
   }
   
-  concat::fragment{ "iptables_rule_$name_v6":
+  concat::fragment{ "iptables_rule_v6_$name":
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/rule.erb'),
 #    content => "${command} ${chain} ${true_rule} -j ${target}\n",
