@@ -29,7 +29,9 @@ define iptables::rule (
   $chain          = 'INPUT',
   $target         = 'ACCEPT',
   $source         = '0/0',
+  $v6source       = '',
   $destination    = '0/0',
+  $v6destination  = '',
   $protocol       = 'tcp',
   $port           = '',
   $order          = '',
@@ -97,6 +99,7 @@ define iptables::rule (
     default   => $destination,
   }
 
+  notify{"test1":}
 
   concat::fragment{ "iptables_rule_$name":
     target  => $iptables::config_file,
@@ -110,7 +113,7 @@ define iptables::rule (
   if size(array_source) <= 0 and size(array_destination) <= 0 { 
     concat::fragment{ "iptables_rule_v6_$name":
       target  => $iptables::config_file_v6,
-      content => template('iptables/concat/rule.erb'),
+      content => template('iptables/concat/rule_v6.erb'),
   #    content => "${command} ${chain} ${true_rule} -j ${target}\n",
       order   => $true_order,
       ensure  => $ensure,

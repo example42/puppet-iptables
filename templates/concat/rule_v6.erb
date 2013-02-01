@@ -1,0 +1,9 @@
+<% scope.lookupvar('array_source').each do |s| -%>
+<% if scope.lookupvar('array_destination').length > 0 -%>
+<% scope.lookupvar('array_destination').each do |d| -%>
+<%= @command %> <%= @chain %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -d <%= d %> -j <%= scope.lookupvar('target') %>
+<% end -%>
+<% else -%>
+<%= @command %> <%= @chain %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -j <%= scope.lookupvar('target') %>
+<% end -%>
+<% end -%>
