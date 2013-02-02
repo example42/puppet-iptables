@@ -4,16 +4,46 @@ describe 'iptables::rule' do
   let(:title) { 'iptable1' }
   let(:node) { 'iptable.example42.com' }
   let(:facts) { { :operatingsystem => 'ubuntu' } }
-  let(:params) {
-    { 'source'        => '0/0',
-      'v6source'      => '',
-      'destination'   => '0/0',
-      'v6destination' => '',
-      'protocol'      => 'tcp',
-      'port'          => '',
+
+  describe 'Test iptables::rule with ip as string' do
+    let(:params) {
+      { 'source'        => '1.2.3.4',
+        'source_v6'     => '',
+        'destination'   => '2.3.4.5',
+        'destination_v6'=> '',
+        'protocol'      => 'tcp',
+        'port'          => '1234',
+      }
     }
-  }
+    it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
+  end
+
+  describe 'Test iptables::rule for v4 only' do
+    let(:params) {
+      { 'source'        => ['1.2.3.4'],
+        'source_v6'     => '',
+        'destination'   => ['2.3.4.5'],
+        'destination_v6'=> '',
+        'protocol'      => 'tcp',
+        'port'          => '1234',
+      }
+    }
+    it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
+    it { should_not contain_concat__fragment( "iptables_rule_v6_iptable1" ) }
+  end
   
-  it { should contain_notify("test1") }
-  
+  describe 'Test iptables::rule for v4 and v6' do
+    let(:params) {
+      { 'source'        => ['1.2.3.4'],
+        'source_v6'     => ['fe80::a00:27ff:fea4:b70e'],
+        'destination'   => ['2.3.4.5'],
+        'destination_v6'=> ['fe80::a00:27ff:fea4:b70e'],
+        'protocol'      => 'tcp',
+        'port'          => '1234',
+        'enable_v6'     => true,
+      }
+    }
+    it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
+    it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ) }
+  end
 end

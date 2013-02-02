@@ -29,14 +29,15 @@ define iptables::rule (
   $chain          = 'INPUT',
   $target         = 'ACCEPT',
   $source         = '0/0',
-  $v6source       = '',
+  $source_v6      = '',
   $destination    = '0/0',
-  $v6destination  = '',
+  $destination_v6 = '',
   $protocol       = 'tcp',
   $port           = '',
   $order          = '',
   $rule           = '',
-  $enable         = true ) {
+  $enable         = true,
+  $enable_v6      = false ) {
 
   include iptables
   include concat::setup
@@ -86,7 +87,7 @@ define iptables::rule (
   $array_source = is_array($source) ? {
     false     => $source ? {
       ''      => [],
-      default => $source,
+      default => [$source],
     },
     default   => $source,
   }
@@ -94,27 +95,39 @@ define iptables::rule (
   $array_destination = is_array($destination) ? {
     false     => $destination ? {
       ''      => '',
-      default => $destination,
+      default => [$destination],
     },
     default   => $destination,
   }
+  
+  $array_source_v6 = is_array($source_v6) ? {
+    false     => $source_v6 ? {
+      ''      => [],
+      default => [$source_v6],
+    },
+    default   => $source_v6,
+  }
 
-  notify{"test1":}
+  $array_destination_v6 = is_array($destination_v6) ? {
+    false     => $destination_v6 ? {
+      ''      => '',
+      default => [$destination_v6],
+    },
+    default   => $destination_v6,
+  }
 
   concat::fragment{ "iptables_rule_$name":
     target  => $iptables::config_file,
     content => template('iptables/concat/rule.erb'),
-#    content => "${command} ${chain} ${true_rule} -j ${target}\n",
     order   => $true_order,
     ensure  => $ensure,
     notify  => Service['iptables'],
   }
   
-  if size(array_source) <= 0 and size(array_destination) <= 0 { 
+  if $enable_v6 {
     concat::fragment{ "iptables_rule_v6_$name":
       target  => $iptables::config_file_v6,
       content => template('iptables/concat/rule_v6.erb'),
-  #    content => "${command} ${chain} ${true_rule} -j ${target}\n",
       order   => $true_order,
       ensure  => $ensure,
       notify  => Service['iptables'],
