@@ -35,6 +35,7 @@ class iptables (
   $disable             = params_lookup( 'disable' ),
   $disableboot         = params_lookup( 'disableboot' ),
   $debug               = params_lookup( 'debug' , 'global' ),
+  $enable_v6           = params_lookup( 'enable_v6', global ),
   $audit_only          = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
 
@@ -200,9 +201,11 @@ class iptables (
   case $iptables::config {
     'file': { include iptables::file }
     'concat': { 
-      include iptables::concat 
-      include iptables::concat_v6
-     }
+      include iptables::concat
+      if $enable_v6 { 
+        include iptables::concat_v6
+      }
+    }
     default: { }
   }
 

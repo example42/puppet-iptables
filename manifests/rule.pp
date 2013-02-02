@@ -8,7 +8,9 @@
 #      coherently with iptables syntax
 # $target - The iptables target for the rule (default ACCEPT)
 # $source - The packets source address (in iptables -s supported syntax, default 0/0)
+# $source_v6 - The packets IPv6 source address
 # $destination - The packets destination (in iptables -d supported syntax, default 0/0)
+# $destination_v6 - The packets IPv6 destination
 # $protocol - The transport protocol (tcp/udp, default tcp)
 # $port - The DESTINATION port
 # $order - The CONCAT order where to place your rule. By default this is automatically calculated
@@ -22,6 +24,8 @@
 # Note that $true_rule is built in this way:
 # - If $rule is defined, $true_rule == $rule
 # - If not, $true_rule is "-p $protocol --dport $port -s $source -d $destination"
+# $enable - 
+# $enable_v6 - enables the IPv6 part. Default is false for compatibility reasons. 
 #
 define iptables::rule (
   $command        = '-A',
