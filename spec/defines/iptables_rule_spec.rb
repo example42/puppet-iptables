@@ -44,6 +44,25 @@ describe 'iptables::rule' do
       }
     }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
-    it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ) }
+    it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
+      'target'  => '/etc/iptables/rules.v6',
+    ) }
+  end
+  
+  describe 'Test iptables::rule with port and protocol only' do
+    let(:params) {
+      { 'protocol'      => 'tcp',
+        'port'          => '1234',
+        'enable_v6'     => true,
+      }
+    }
+    it { should contain_concat__fragment( "iptables_rule_iptable1" ).with(
+      'target'  => '/etc/iptables/rules.v4',
+      'content' => '-A INPUT -p tcp --dport 1234 -s 0/0 -d 0/0 -j ACCEPT\\n',
+    ) }
+    it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
+      'target'  => '/etc/iptables/rules.v6',
+      'content' => '-A INPUT -p tcp --dport 1234 -s 0/0 -d 0/0 -j ACCEPT\\n',
+    ) }
   end
 end
