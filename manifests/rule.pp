@@ -84,7 +84,7 @@ define iptables::rule (
   $array_source = is_array($source) ? {
     false     => $source ? {
       ''      => [],
-      default => $source,
+      default => [$source],
     },
     default   => $source,
   }
@@ -92,7 +92,7 @@ define iptables::rule (
   $array_destination = is_array($destination) ? {
     false     => $destination ? {
       ''      => '',
-      default => $destination,
+      default => [$destination],
     },
     default   => $destination,
   }
