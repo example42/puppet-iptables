@@ -93,16 +93,16 @@ describe 'iptables::rule' do
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'true_protocol'   => '-p tcp',
       'true_source'     => '',
-      'array_source_v6' => [''],
-      'array_source'    => [''],
+      'array_source_v6' => [],
+      'array_source'    => [],
     ) }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ).with(
       'target'  => '/etc/iptables/rules.v4',
-      'content' => '-A INPUT -p tcp --dport 80 -s  -j ACCEPT\\n',
+      #'content' => '-A INPUT -p tcp --dport 80 -j ACCEPT\\n',
     ) }
     it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
       'target'  => '/etc/iptables/rules.v6',
-      'content' => '-A INPUT -p tcp --dport 80 -s  -j ACCEPT\\n',
+      #'content' => '-A INPUT -p tcp --dport 80 -j ACCEPT\\n',
     ) } 
   end
 end

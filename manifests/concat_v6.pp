@@ -46,6 +46,7 @@ class iptables::concat_v6 {
   }
 
   # The input chain footer with logging and block_policy
+  $real_icmp_port = '-p icmpv6'
   concat::fragment{ 'iptables_filter_input_footer_v6':
     target  => $iptables::config_file_v6,
     content => template('iptables/concat/filter_input_footer'),
