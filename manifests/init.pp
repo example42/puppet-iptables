@@ -201,9 +201,15 @@ class iptables (
   case $iptables::config {
     'file': { include iptables::file }
     'concat': { 
-      include iptables::concat
+      iptables::concat_emitter { 'v4':
+        emitter_target  => $iptables::config_file,
+        real_icmp_port => '-p icmp',
+      }
       if $enable_v6 { 
-        include iptables::concat_v6
+        iptables::concat_emitter { 'v6':
+          emitter_target  => $iptables::config_file_v6,
+          real_icmp_port => '-p icmpv6',
+        }
       }
     }
     default: { }

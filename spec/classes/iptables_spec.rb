@@ -1,17 +1,18 @@
 require "#{File.join(File.dirname(__FILE__),'..','spec_helper.rb')}"
 
 describe 'iptables' do
-  let(:node) { 'iptables.example42.com' }
+  let(:node) { 'iptables1.example42.com' }
   let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12  } }
     
-  describe 'Test iptables without' do
-    it { should include_class('iptables::concat') }
-    it { should_not include_class('iptables::concat_v6') }
-  end
+  it { should contain_iptables__concat_emitter('v4') }
+  it { should_not contain_iptables__concat_emitter('v6') }
+end
+
+describe 'iptables' do
+  let(:node) { 'iptables2.example42.com' }
+  let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12  } }
+  let(:params) { { :enable_v6 => 'true' } }
   
-  describe 'Test iptables with v6 switched on' do
-    let(:params) { { :enable_v6 => 'true' } }
-    it { should include_class('iptables::concat') }
-    it { should include_class('iptables::concat_v6') }
-  end
+  it { should contain_iptables__concat_emitter('v4') }
+  it { should contain_iptables__concat_emitter('v6') }
 end
