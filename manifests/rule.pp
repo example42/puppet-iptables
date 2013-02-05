@@ -90,7 +90,7 @@ define iptables::rule (
 
   $array_source = is_array($source) ? {
     false     => $source ? {
-      ''      => [],
+      ''      => [''],
       default => [$source],
     },
     default   => $source,
@@ -98,7 +98,7 @@ define iptables::rule (
 
   $array_destination = is_array($destination) ? {
     false     => $destination ? {
-      ''      => '',
+      ''      => [],
       default => [$destination],
     },
     default   => $destination,
@@ -106,7 +106,7 @@ define iptables::rule (
   
   $array_source_v6 = is_array($source_v6) ? {
     false     => $source_v6 ? {
-      ''      => [],
+      ''      => [''],
       default => [$source_v6],
     },
     default   => $source_v6,
@@ -123,6 +123,7 @@ define iptables::rule (
   iptables::debug{ "debug params $name":
     true_port            => $true_port,
     true_protocol        => $true_protocol,
+    true_rule            => $true_rule,
     array_source_v6      => $array_source_v6,
     array_destination_v6 => $array_destination_v6, 
     array_source         => $array_source,
