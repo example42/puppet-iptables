@@ -45,6 +45,12 @@ define iptables::rule (
 
   include iptables
   include concat::setup
+  
+  # IPv6 enabled rules prerequisites IPv6 enabled iptables also
+  # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables 
+  #if ($enable_v6) and (!$iptables::enable_v6) {
+  #  fail('For IPv6 enabled rules, IPv6 for iptables has also to be enabled.')
+  #}
 
   # If (concat) order is not defined we find out the right one
   $true_order = $order ? {
@@ -79,11 +85,6 @@ define iptables::rule (
   $true_destination = $destination ? {
     ''    => '',
     default => "-d ${destination}",
-  }
-
-  $true_rule = $rule ? {
-     ''    => "${true_protocol} ${true_port} ${true_source} ${true_destination}",
-     default => $rule,
   }
 
   $ensure = bool2ensure($enable)
@@ -123,7 +124,6 @@ define iptables::rule (
   iptables::debug{ "debug params $name":
     true_port            => $true_port,
     true_protocol        => $true_protocol,
-    true_rule            => $true_rule,
     array_source_v6      => $array_source_v6,
     array_destination_v6 => $array_destination_v6, 
     array_source         => $array_source,
