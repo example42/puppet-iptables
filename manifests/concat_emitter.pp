@@ -10,11 +10,16 @@
 #
 define iptables::concat_emitter(
   $emitter_target,
-  $real_icmp_port = '-p icmp'
+  $is_ipv6 = false
 ) {
 
   include iptables
   include concat::setup
+  
+  $real_icmp_port = $is_ipv6 ? {
+    true    => '-p icmpv6',
+    default => '-p icmp',
+  }
 
   concat { $emitter_target:
     mode    => $iptables::config_file_mode,
@@ -96,22 +101,22 @@ define iptables::concat_emitter(
     notify  => Service['iptables'],
   }
 
-
-
-  # The NAT table header with the default policies
-  concat::fragment{ "iptables_nat_header_$name":
-    target  => $emitter_target,
-    content => template('iptables/concat/nat_header'),
-    order   => 45,
-    notify  => Service['iptables'],
-  }
-
-  # The NAT table footer (COMMIT)
-  concat::fragment{ "iptables_nat_footer_$name":
-    target  => $emitter_target,
-    content => template('iptables/concat/nat_footer'),
-    order   => 60,
-    notify  => Service['iptables'],
+  if !$is_ipv6 {
+    # The NAT table header with the default policies
+    concat::fragment{ "iptables_nat_header_$name":
+      target  => $emitter_target,
+      content => template('iptables/concat/nat_header'),
+      order   => 45,
+      notify  => Service['iptables'],
+    }
+  
+    # The NAT table footer (COMMIT)
+    concat::fragment{ "iptables_nat_footer_$name":
+      target  => $emitter_target,
+      content => template('iptables/concat/nat_footer'),
+      order   => 60,
+      notify  => Service['iptables'],
+    }
   }
 
 

@@ -203,12 +203,12 @@ class iptables (
     'concat': { 
       iptables::concat_emitter { 'v4':
         emitter_target  => $iptables::config_file,
-        real_icmp_port => '-p icmp',
+        is_ipv6         => false,
       }
       if $enable_v6 { 
         iptables::concat_emitter { 'v6':
           emitter_target  => $iptables::config_file_v6,
-          real_icmp_port => '-p icmpv6',
+          is_ipv6         => true,
         }
       }
     }
