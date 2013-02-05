@@ -6,7 +6,7 @@ describe 'iptables::concat_emitter' do
   let(:title) { 'v6' }
   let(:params) {
       { 'emitter_target'  => 'anfile',
-        'real_icmp_port'  => '-p icmpv6',
+        'is_ipv6'         => true,
       }
     }
     
