@@ -13,6 +13,7 @@ describe 'iptables::rule' do
         'destination_v6'=> '',
         'protocol'      => 'tcp',
         'port'          => '1234',
+        'debug'         => true,
       }
     }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
@@ -30,6 +31,7 @@ describe 'iptables::rule' do
         'destination_v6'=> '',
         'protocol'      => 'tcp',
         'port'          => '1234',
+        'debug'         => true,
       }
     }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
@@ -62,6 +64,7 @@ describe 'iptables::rule' do
         'protocol'      => 'tcp',
         'port'          => '1234',
         'enable_v6'     => true,
+        'debug'         => true,
       }
     }
     
@@ -87,6 +90,7 @@ describe 'iptables::rule' do
         'protocol'        => 'tcp',
         'port'            => '80',
         'enable_v6'       => true,
+        'debug'         => true,
       }
     }
     

@@ -41,7 +41,8 @@ define iptables::rule (
   $order          = '',
   $rule           = '',
   $enable         = true,
-  $enable_v6      = false ) {
+  $enable_v6      = false,
+  $debug          = false ) {
 
   include iptables
   include concat::setup
@@ -121,13 +122,15 @@ define iptables::rule (
     default   => $destination_v6,
   }
   
-  iptables::debug{ "debug params $name":
-    true_port            => $true_port,
-    true_protocol        => $true_protocol,
-    array_source_v6      => $array_source_v6,
-    array_destination_v6 => $array_destination_v6, 
-    array_source         => $array_source,
-    array_destination    => $array_destination, 
+  if $debug {
+    iptables::debug{ "debug params $name":
+      true_port            => $true_port,
+      true_protocol        => $true_protocol,
+      array_source_v6      => $array_source_v6,
+      array_destination_v6 => $array_destination_v6, 
+      array_source         => $array_source,
+      array_destination    => $array_destination, 
+    }
   }
 
   concat::fragment{ "iptables_rule_$name":
