@@ -133,6 +133,30 @@ So for example for a stricter setup, compared to default:
           output_policy    => 'drop',
         }
 
+=== IPv6 specific configuration
+In order to enable IPv6 there have to be configured two parts:
+- iptables should be IPv6 enabled:
+          class{ 'iptables' :
+            enable_v6 => true,
+          }
+- then iptables::rules can be IPv6 enabled also:
+        iptables::rule { 'http': 
+          port       => '80',
+          protocol   => 'tcp',
+          enable_v6  => true,
+        }
+        
+If specific source / destination adresses should be used, a definition will look like: 
+        iptables::rule { 'http':
+          source          => '10.42.0.0/24',
+          source_v6       => '2001:0db8:3c4d:0015:0000:0000:abcd:ef12',
+          destination     => '$ipaddress_eth0',
+          destination_v6  => '2001:470:27:37e::2/64', 
+          port            => '80',
+          protocol        => 'tcp',
+          enable_v6       => true,
+        }
+
 === Usage of iptables module with Example42 automatic firewalling 
 
 The concat mode of this module is particularly useful when used with Example42's
