@@ -33,9 +33,9 @@ define iptables::rule (
   $chain          = 'INPUT',
   $target         = 'ACCEPT',
   $source         = '0/0',
-  $source_v6      = '',
+  $source_v6      = '0/0',
   $destination    = '0/0',
-  $destination_v6 = '',
+  $destination_v6 = '0/0',
   $protocol       = 'tcp',
   $port           = '',
   $order          = '',
@@ -118,6 +118,15 @@ define iptables::rule (
       default => [$destination_v6],
     },
     default   => $destination_v6,
+  }
+  
+  iptables::debug{ "debug params":
+    true_port            => $true_port,
+    true_protocol        => $true_protocol,
+    array_source_v6      => $array_source_v6,
+    array_destination_v6 => $array_destination_v6, 
+    array_source         => $array_source,
+    array_destination    => $array_destination, 
   }
 
   concat::fragment{ "iptables_rule_$name":

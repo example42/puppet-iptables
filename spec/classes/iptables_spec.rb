@@ -2,7 +2,7 @@ require "#{File.join(File.dirname(__FILE__),'..','spec_helper.rb')}"
 
 describe 'iptables' do
   let(:node) { 'iptables.example42.com' }
-  let(:facts) { { :operatingsystem => 'ubuntu' } }
+  let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12  } }
     
   describe 'Test iptables without' do
     it { should include_class('iptables::concat') }
