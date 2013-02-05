@@ -43,7 +43,8 @@ describe 'iptables::rule' do
         'enable_v6'     => true,
       }
     }
-    it { should contain_iptables__debug( "debug params" ).with(
+    
+    it { should contain_iptables__debug( "debug params iptable1" ).with(
       'true_protocol'   => '-p tcp',
       'array_source_v6' => ['fe80::a00:27ff:fea4:b70e'],
       'array_source'    => ['1.2.3.4'],
@@ -61,6 +62,12 @@ describe 'iptables::rule' do
         'enable_v6'     => true,
       }
     }
+    
+    it { should contain_iptables__debug( "debug params iptable1" ).with(
+      'true_protocol'   => '-p tcp',
+      'array_source_v6' => ["0/0"],
+      'array_source'    => ["0/0"],
+    ) }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ).with(
       'target'  => '/etc/iptables/rules.v4',
       'content' => '-A INPUT -p tcp --dport 1234 -s 0/0 -d 0/0 -j ACCEPT\\n',
@@ -68,11 +75,6 @@ describe 'iptables::rule' do
     it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
       'target'  => '/etc/iptables/rules.v6',
       'content' => '-A INPUT -p tcp --dport 1234 -s 0/0 -d 0/0 -j ACCEPT\\n',
-    ) }
-   it { should contain_iptables__debug( "debug params" ).with(
-      'true_protocol'   => '-p tcp',
-      'array_source_v6' => ["0/0"],
-      'array_source'    => ["0/0"],
     ) } 
   end
 end

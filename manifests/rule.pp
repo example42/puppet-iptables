@@ -120,7 +120,7 @@ define iptables::rule (
     default   => $destination_v6,
   }
   
-  iptables::debug{ "debug params":
+  iptables::debug{ "debug params $name":
     true_port            => $true_port,
     true_protocol        => $true_protocol,
     array_source_v6      => $array_source_v6,
