@@ -139,7 +139,7 @@ class iptables (
     true    => 'stopped',
     default =>  $iptables::bool_absent ? {
       true    => 'stopped',
-      default => 'running',
+      default => undef,
     },
   }
 
