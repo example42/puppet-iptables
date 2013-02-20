@@ -57,7 +57,10 @@ class iptables::params  {
     default                   => 'iptables',
   }
 
-  $service_status = true
+  $service_status = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => false,
+    default                   => true,
+  }
 
   case $::operatingsystem {
     /(?i:Debian)/: {

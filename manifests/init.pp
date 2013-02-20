@@ -191,6 +191,7 @@ class iptables (
     name       => $iptables::service,
     enable     => $iptables::manage_service_enable,
     hasstatus  => $iptables::service_status,
+    status     => '/bin/status',
     require    => Package['iptables'],
     hasrestart => false,
     restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
