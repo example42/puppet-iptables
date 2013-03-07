@@ -1,4 +1,4 @@
-= Puppet module: iptables
+# Puppet module: iptables
 
 
 This is a Puppet module for iptables based on the second generation layout ("NextGen") of Example42 Puppet Modules.
@@ -13,7 +13,7 @@ Released under the terms of Apache 2 License.
 
 This module requires functions provided by the Example42 Puppi module (you need it even if you don't use and install Puppi)
 
-== DESCRIPTION:
+## DESCRIPTION:
 This module manages iptables.
 In order to have functionality and flexibility some design decisions have been enforced:
 
@@ -28,7 +28,7 @@ The rules configuration can be made in two ways:
 * Concat Mode: Buildind up rules files with concat (this is the default choice and allows
   dynamic automatic firewalling rules with Example42 firewall extension)
 
-== USAGE - Overrides and Customizations
+## USAGE - Overrides and Customizations
 * Default usage (Concat mode). It follows these defaults:
   * Default policy is ACCEPT (to permit reachability in case of syntax errors)
   * Last rule of every chain is a DENY as defined by $iptables_block_policy
@@ -70,7 +70,7 @@ So a simple:
         }
 
 
-=== CONCAT MODE SPECIFIC USER VARIABLES:
+##= CONCAT MODE SPECIFIC USER VARIABLES:
 
 In concat mode some parameters define the general behaviour:
 
@@ -133,7 +133,7 @@ So for example for a stricter setup, compared to default:
           output_policy    => 'drop',
         }
 
-=== Usage of iptables module with Example42 automatic firewalling 
+##= Usage of iptables module with Example42 automatic firewalling 
 
 The concat mode of this module is particularly useful when used with Example42's
 automatic firewalling features.
@@ -159,7 +159,7 @@ For example the following accepts connections on MySql port only form 10.42.42.4
         }
 
 
-===  Module specific defines
+##=  Module specific defines
 
 All the single rules in Concat mode are managed by the iptables::rule define.
 You can use it to automatically allow access from all your nodes when you don't know their address upstream (for example in the cloud)
