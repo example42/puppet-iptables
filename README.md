@@ -70,7 +70,7 @@ So a simple:
         }
 
 
-##= CONCAT MODE SPECIFIC USER VARIABLES:
+### CONCAT MODE SPECIFIC USER VARIABLES:
 
 In concat mode some parameters define the general behaviour:
 
@@ -133,7 +133,31 @@ So for example for a stricter setup, compared to default:
           output_policy    => 'drop',
         }
 
-##= Usage of iptables module with Example42 automatic firewalling 
+### IPv6 specific configuration
+In order to enable IPv6 there have to be configured two parts:
+- iptables should be IPv6 enabled:
+          class{ 'iptables' :
+            enable_v6 => true,
+          }
+- then iptables::rules can be IPv6 enabled also:
+        iptables::rule { 'http': 
+          port       => '80',
+          protocol   => 'tcp',
+          enable_v6  => true,
+        }
+        
+If specific source / destination adresses should be used, a definition will look like: 
+        iptables::rule { 'http':
+          source          => '10.42.0.0/24',
+          source_v6       => '2001:0db8:3c4d:0015:0000:0000:abcd:ef12',
+          destination     => '$ipaddress_eth0',
+          destination_v6  => '2001:470:27:37e::2/64', 
+          port            => '80',
+          protocol        => 'tcp',
+          enable_v6       => true,
+        }
+
+### Usage of iptables module with Example42 automatic firewalling 
 
 The concat mode of this module is particularly useful when used with Example42's
 automatic firewalling features.
@@ -159,7 +183,7 @@ For example the following accepts connections on MySql port only form 10.42.42.4
         }
 
 
-##=  Module specific defines
+###  Module specific defines
 
 All the single rules in Concat mode are managed by the iptables::rule define.
 You can use it to automatically allow access from all your nodes when you don't know their address upstream (for example in the cloud)

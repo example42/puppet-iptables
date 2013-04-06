@@ -35,6 +35,7 @@ class iptables (
   $disable             = params_lookup( 'disable' ),
   $disableboot         = params_lookup( 'disableboot' ),
   $debug               = params_lookup( 'debug' , 'global' ),
+  $enable_v6           = params_lookup( 'enable_v6', global ),
   $audit_only          = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
 
@@ -200,7 +201,18 @@ class iptables (
   # How to manage iptables configuration
   case $iptables::config {
     'file': { include iptables::file }
-    'concat': { include iptables::concat }
+    'concat': { 
+      iptables::concat_emitter { 'v4':
+        emitter_target  => $iptables::config_file,
+        is_ipv6         => false,
+      }
+      if $enable_v6 { 
+        iptables::concat_emitter { 'v6':
+          emitter_target  => $iptables::config_file_v6,
+          is_ipv6         => true,
+        }
+      }
+    }
     default: { }
   }
 

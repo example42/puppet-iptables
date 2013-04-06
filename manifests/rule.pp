@@ -8,7 +8,9 @@
 #      coherently with iptables syntax
 # $target - The iptables target for the rule (default ACCEPT)
 # $source - The packets source address (in iptables -s supported syntax, default 0/0)
+# $source_v6 - The packets IPv6 source address
 # $destination - The packets destination (in iptables -d supported syntax, default 0/0)
+# $destination_v6 - The packets IPv6 destination
 # $protocol - The transport protocol (tcp/udp, default tcp)
 # $port - The DESTINATION port
 # $order - The CONCAT order where to place your rule. By default this is automatically calculated
@@ -22,6 +24,8 @@
 # Note that $true_rule is built in this way:
 # - If $rule is defined, $true_rule == $rule
 # - If not, $true_rule is "-p $protocol --dport $port -s $source -d $destination"
+# $enable - 
+# $enable_v6 - enables the IPv6 part. Default is false for compatibility reasons. 
 #
 define iptables::rule (
   $command        = '-A',
@@ -29,15 +33,25 @@ define iptables::rule (
   $chain          = 'INPUT',
   $target         = 'ACCEPT',
   $source         = '0/0',
+  $source_v6      = '0/0',
   $destination    = '0/0',
+  $destination_v6 = '0/0',
   $protocol       = 'tcp',
   $port           = '',
   $order          = '',
   $rule           = '',
-  $enable         = true ) {
+  $enable         = true,
+  $enable_v6      = false,
+  $debug          = false ) {
 
   include iptables
   include concat::setup
+  
+  # IPv6 enabled rules prerequisites IPv6 enabled iptables also
+  # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables 
+  #if ($enable_v6) and (!$iptables::enable_v6) {
+  #  fail('For IPv6 enabled rules, IPv6 for iptables has also to be enabled.')
+  #}
 
   # If (concat) order is not defined we find out the right one
   $true_order = $order ? {
@@ -74,11 +88,6 @@ define iptables::rule (
     default => "-d ${destination}",
   }
 
-  $true_rule = $rule ? {
-     ''    => "${true_protocol} ${true_port} ${true_source} ${true_destination}",
-     default => $rule,
-  }
-
   $ensure = bool2ensure($enable)
 
   $array_source = is_array($source) ? {
@@ -91,20 +100,54 @@ define iptables::rule (
 
   $array_destination = is_array($destination) ? {
     false     => $destination ? {
-      ''      => '',
+      ''      => [],
       default => [$destination],
     },
     default   => $destination,
   }
+  
+  $array_source_v6 = is_array($source_v6) ? {
+    false     => $source_v6 ? {
+      ''      => [],
+      default => [$source_v6],
+    },
+    default   => $source_v6,
+  }
 
+  $array_destination_v6 = is_array($destination_v6) ? {
+    false     => $destination_v6 ? {
+      ''      => '',
+      default => [$destination_v6],
+    },
+    default   => $destination_v6,
+  }
+  
+  if $debug {
+    iptables::debug{ "debug params $name":
+      true_port            => $true_port,
+      true_protocol        => $true_protocol,
+      array_source_v6      => $array_source_v6,
+      array_destination_v6 => $array_destination_v6, 
+      array_source         => $array_source,
+      array_destination    => $array_destination, 
+    }
+  }
 
   concat::fragment{ "iptables_rule_$name":
     target  => $iptables::config_file,
     content => template('iptables/concat/rule.erb'),
-#    content => "${command} ${chain} ${true_rule} -j ${target}\n",
     order   => $true_order,
     ensure  => $ensure,
     notify  => Service['iptables'],
   }
-
+  
+  if $enable_v6 {
+    concat::fragment{ "iptables_rule_v6_$name":
+      target  => $iptables::config_file_v6,
+      content => template('iptables/concat/rule_v6.erb'),
+      order   => $true_order,
+      ensure  => $ensure,
+      notify  => Service['iptables'],
+    }
+  }
 }

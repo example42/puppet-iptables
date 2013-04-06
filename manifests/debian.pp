@@ -13,5 +13,4 @@ class iptables::debian {
   file { '/etc/iptables':
     ensure => directory,
   }
-
 }
