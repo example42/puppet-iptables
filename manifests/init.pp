@@ -35,7 +35,7 @@ class iptables (
   $disable             = params_lookup( 'disable' ),
   $disableboot         = params_lookup( 'disableboot' ),
   $debug               = params_lookup( 'debug' , 'global' ),
-  $enable_v6           = params_lookup( 'enable_v6', global ),
+  $enable_v6           = params_lookup( 'enable_v6', 'global' ),
   $audit_only          = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
 

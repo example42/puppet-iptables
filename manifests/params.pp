@@ -9,6 +9,8 @@ class iptables::params  {
   $osver = split($::operatingsystemrelease, '[.]')
   $osver_maj = $osver[0]
 
+  $enable_v6 = false
+
 ## DEFAULTS FOR VARIABLES USERS CAN SET
 
 # Define how you want to manage iptables configuration:
