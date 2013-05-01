@@ -1,3 +1,6 @@
+<% if scope.lookupvar('rule') -%>
+  <%= @command %> <%= @chain %>  -j <%= scope.lookupvar('target') %> <%= scope.lookupvar('rule') %>
+<% else -%>
 <% if scope.lookupvar('array_source_v6').length > 0 -%>
 <% scope.lookupvar('array_source_v6').each do |s| -%>
 <% if scope.lookupvar('array_destination_v6').length > 0 -%>
@@ -10,4 +13,5 @@
 <% end -%>
 <% else -%>
 <%= @command %> <%= @chain %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -j <%= scope.lookupvar('target') %>
+<% end -%>
 <% end -%>
