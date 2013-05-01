@@ -24,8 +24,8 @@
 # Note that $true_rule is built in this way:
 # - If $rule is defined, $true_rule == $rule
 # - If not, $true_rule is "-p $protocol --dport $port -s $source -d $destination"
-# $enable - 
-# $enable_v6 - enables the IPv6 part. Default is false for compatibility reasons. 
+# $enable -
+# $enable_v6 - enables the IPv6 part. Default is false for compatibility reasons.
 #
 define iptables::rule (
   $command        = '-A',
@@ -46,9 +46,9 @@ define iptables::rule (
 
   include iptables
   include concat::setup
-  
+
   # IPv6 enabled rules prerequisites IPv6 enabled iptables also
-  # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables 
+  # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables
   #if ($enable_v6) and (!$iptables::enable_v6) {
   #  fail('For IPv6 enabled rules, IPv6 for iptables has also to be enabled.')
   #}
@@ -105,7 +105,7 @@ define iptables::rule (
     },
     default   => $destination,
   }
-  
+
   $array_source_v6 = is_array($source_v6) ? {
     false     => $source_v6 ? {
       ''      => [],
@@ -121,15 +121,15 @@ define iptables::rule (
     },
     default   => $destination_v6,
   }
-  
+
   if $debug {
     iptables::debug{ "debug params $name":
       true_port            => $true_port,
       true_protocol        => $true_protocol,
       array_source_v6      => $array_source_v6,
-      array_destination_v6 => $array_destination_v6, 
+      array_destination_v6 => $array_destination_v6,
       array_source         => $array_source,
-      array_destination    => $array_destination, 
+      array_destination    => $array_destination,
     }
   }
 
@@ -140,7 +140,7 @@ define iptables::rule (
     ensure  => $ensure,
     notify  => Service['iptables'],
   }
-  
+
   if $enable_v6 {
     concat::fragment{ "iptables_rule_v6_$name":
       target  => $iptables::config_file_v6,
