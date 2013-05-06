@@ -1,4 +1,4 @@
-<% if scope.lookupvar('rule') -%>
+<% if scope.lookupvar('rule') != '' -%>
 <%= @command %> <%= @chain %>  -j <%= scope.lookupvar('target') %> <%= scope.lookupvar('rule') %>
 <% else -%>
 <% if scope.lookupvar('array_source').length > 0 -%>
