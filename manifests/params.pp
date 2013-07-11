@@ -64,6 +64,11 @@ class iptables::params  {
     default                   => true,
   }
 
+  $service_status_cmd = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => '/bin/true',
+    default                   => undef,
+  }
+
   case $::operatingsystem {
     /(?i:Debian)/: {
       if (($osver_maj =~ /^\d+$/) and ($osver_maj < 7)) {
