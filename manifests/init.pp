@@ -64,6 +64,8 @@ class iptables (
     'safe'    => '-m icmp ! --icmp-type echo-request -j ACCEPT',
     'accept'  => '-j ACCEPT',
     'ACCEPT'  => '-j ACCEPT',
+    'limit'   => '-j ICMP_LIMITS',
+    'LIMIT'   => '-j ICMP_LIMITS',
     default   => '-j ACCEPT',
   }
 

@@ -89,6 +89,7 @@ Define what to to with ICMP packets
 * `drop` - DROP them all
 * `safe` - ALLOW all ICMP types except echo & reply (Ping) 
 * `accept` (Default) - ACCEPT them all
+* `limit` - set a strict burst limit on all icmp types
 
 #### $output_policy
 

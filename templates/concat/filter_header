@@ -2,3 +2,16 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
+<% if @icmp_policy.downcase == 'limit' -%>
+:ICMP_LIMITS - [0:0]
+:RELATED_ICMP - [0:0]
+-A ICMP_LIMITS -p icmp -f -j DROP
+-A ICMP_LIMITS -p icmp -m state --state ESTABLISHED -m limit --limit 5/sec --limit-burst 10 -j ACCEPT
+-A ICMP_LIMITS -p icmp -m state --state RELATED -m limit --limit 5/sec --limit-burst 10 -j RELATED_ICMP
+-A ICMP_LIMITS -p icmp -m icmp --icmp-type 8 -m limit --limit 5/sec --limit-burst 10 -j ACCEPT
+-A ICMP_LIMITS -j DROP
+-A RELATED_ICMP -p icmp -m icmp --icmp-type 3 -j ACCEPT
+-A RELATED_ICMP -p icmp -m icmp --icmp-type 11 -j ACCEPT
+-A RELATED_ICMP -p icmp -m icmp --icmp-type 12 -j ACCEPT
+-A RELATED_ICMP -j DROP
+<% end -%>
