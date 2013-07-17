@@ -47,6 +47,9 @@ class iptables::params  {
 # Define what to do with INPUT multicast packets
   $multicast_policy = 'accept'
 
+# Define whether to filter invalid packages
+  $filter_invalid = true
+
 ## MODULE INTERNAL VARIABLES
 # (Modify to adapt to unsupported OSes)
 

@@ -17,6 +17,7 @@ class iptables (
   $output_policy       = params_lookup( 'output_policy' ),
   $broadcast_policy    = params_lookup( 'broadcast_policy' ),
   $multicast_policy    = params_lookup( 'multicast_policy' ),
+  $filter_invalid      = params_lookup( 'filter_invalid' ),
   $log                 = params_lookup( 'log' ),
   $log_input           = params_lookup( 'log_input' ),
   $log_output          = params_lookup( 'log_output' ),

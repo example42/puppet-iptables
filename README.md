@@ -122,6 +122,13 @@ Define what to do with INPUT multicast
 * "drop" - Treat them with the $iptables_block_policy
 * "accept" (Default) - Expressely ACCEPT them
 
+* $filter_invalid *
+
+Define what to do with invalid packages
+
+* true (Default) - drop invalid packages and packages with strange flag combinations
+* false - do not process invalid packages specially
+
 So for example for a stricter setup, compared to default:
 
         class { 'iptables':
