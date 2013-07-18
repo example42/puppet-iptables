@@ -19,7 +19,7 @@ describe 'iptables::rule' do
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'array_source'      => ['1.2.3.4'],
-      'array_destination' => ['2.3.4.5'],
+      'array_destination' => ['2.3.4.5']
     ) }
   end
   
@@ -31,13 +31,13 @@ describe 'iptables::rule' do
         'destination_v6'=> '',
         'protocol'      => 'tcp',
         'port'          => '1234',
-        'debug'         => true,
+        'debug'         => true
       }
     }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'array_source'      => ['1.2.3.4'],
-      'array_destination' => ['2.3.4.5'],
+      'array_destination' => ['2.3.4.5']
     ) }
   end
 
@@ -48,7 +48,7 @@ describe 'iptables::rule' do
         'destination'   => ['2.3.4.5'],
         'destination_v6'=> '',
         'protocol'      => 'tcp',
-        'port'          => '1234',
+        'port'          => '1234'
       }
     }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
@@ -64,20 +64,20 @@ describe 'iptables::rule' do
         'protocol'      => 'tcp',
         'port'          => '1234',
         'enable_v6'     => true,
-        'debug'         => true,
+        'debug'         => true
       }
     }
     
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'true_protocol'   => '-p tcp',
       'array_source_v6' => ['fe80::a00:27ff:fea4:b70e'],
-      'array_source'    => ['1.2.3.4'],
+      'array_source'    => ['1.2.3.4']
     ) }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ).with(
-      'target'  => '/etc/iptables/rules.v4',
+      'target'  => '/etc/iptables/rules.v4'
     ) }
     it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
-      'target'  => '/etc/iptables/rules.v6',
+      'target'  => '/etc/iptables/rules.v6'
     ) }
   end
   
@@ -90,7 +90,7 @@ describe 'iptables::rule' do
         'protocol'        => 'tcp',
         'port'            => '80',
         'enable_v6'       => true,
-        'debug'         => true,
+        'debug'         => true
       }
     }
     
@@ -98,14 +98,14 @@ describe 'iptables::rule' do
       'true_protocol'   => '-p tcp',
       'true_source'     => '',
       'array_source_v6' => [],
-      'array_source'    => [],
+      'array_source'    => []
     ) }
     it { should contain_concat__fragment( "iptables_rule_iptable1" ).with(
-      'target'  => '/etc/iptables/rules.v4',
+      'target'  => '/etc/iptables/rules.v4'
       #'content' => '-A INPUT -p tcp --dport 80 -j ACCEPT\\n',
     ) }
     it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
-      'target'  => '/etc/iptables/rules.v6',
+      'target'  => '/etc/iptables/rules.v6'
       #'content' => '-A INPUT -p tcp --dport 80 -j ACCEPT\\n',
     ) } 
   end
