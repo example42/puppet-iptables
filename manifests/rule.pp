@@ -2,22 +2,29 @@
 #
 # Adds a custom iptables rule
 # Supported arguments:
-# $command - The iptables command to issue (default -A)
-# $table - The iptables table to work on (default filter)
-# $chain - The iptables chain to work on (default INPUT). Write it UPPERCASE
-#      coherently with iptables syntax
-# $target - The iptables target for the rule (default ACCEPT)
-# $source - The packets source address (in iptables -s supported syntax, default 0/0)
-# $source_v6 - The packets IPv6 source address
-# $destination - The packets destination (in iptables -d supported syntax, default 0/0)
+# $command        - The iptables command to issue (default -A)
+# $table          - The iptables table to work on (default filter)
+# $chain          - The iptables chain to work on (default INPUT).
+#                   Write it UPPERCASE coherently with iptables syntax
+# $in_interface   - The inbound interface for the rule
+# $out_interface  - The outbound interface for the rule
+# $target         - The iptables target for the rule (default ACCEPT)
+# $source         - The packets source address (in iptables -s supported
+#                   syntax, default 0/0)
+# $source_v6      - The packets IPv6 source address
+# $destination    - The packets destination (in iptables -d supported
+#                   syntax, default 0/0)
 # $destination_v6 - The packets IPv6 destination
-# $protocol - The transport protocol (tcp/udp, default tcp)
-# $port - The DESTINATION port
-# $order - The CONCAT order where to place your rule. By default this is automatically calculated
-#      if you want to set it be sure of what you're doing and check iptables::concat to see
-#      current order numbers in order to avoid building a wrong iptables rule file
-# $rule - A custom iptables rule (in whatever iptables supported format). Use this as an alternative to
-#     the use of the above $protocol, $port, $source and $destination parameters.
+# $protocol       - The transport protocol (tcp/udp, default tcp)
+# $port           - The DESTINATION port
+# $order          - The CONCAT order where to place your rule.
+#                   By default this is automatically calculated if you want to
+#                   set it be sure of what you're doing and check
+#                   iptables::concat to see current order numbers in order to
+#                   avoid building a wrong iptables rule file 
+# $rule           - A custom iptables rule (in whatever iptables supported
+#                   format). Use this as an alternative to the use of the
+#                   above $protocol, $port, $source and $destination parameters.
 #
 # Note that s single call to iptables::rule creates a rule with the following content:
 # $command $chain $true_rule -j $target     in the $table you define.
@@ -32,6 +39,8 @@ define iptables::rule (
   $table          = 'filter',
   $chain          = 'INPUT',
   $target         = 'ACCEPT',
+  $in_interface   = '',
+  $out_interface  = '',
   $source         = '0/0',
   $source_v6      = '0/0',
   $destination    = '0/0',
@@ -76,6 +85,16 @@ define iptables::rule (
   $true_port = $port ? {
     ''    => '',
     default => "--dport ${port}",
+  }
+
+  $true_in_interface = $in_interface ? {
+    ''    => '',
+    default => "-i ${in_interface}",
+  }
+
+  $true_out_interface = $out_interface ? {
+    ''    => '',
+    default => "-o ${out_interface}",
   }
 
   $true_source = $source ? {
