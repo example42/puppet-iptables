@@ -71,7 +71,7 @@ define iptables::rule (
          'FORWARD' => '35',
       },
       'nat'    => '50',
-      'mangle' => '60',
+      'mangle' => '70',
     },
     default => $order,
   }
