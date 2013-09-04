@@ -1,5 +1,5 @@
 <% if scope.lookupvar('rule') != '' -%>
-  <%= @command %> <%= @chain %>  -j <%= scope.lookupvar('target') %> <%= scope.lookupvar('rule') %>
+<%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %> -j <%= scope.lookupvar('target') %> 
 <% else -%>
 <% if scope.lookupvar('array_source_v6').length > 0 -%>
 <% scope.lookupvar('array_source_v6').each do |s| -%>
