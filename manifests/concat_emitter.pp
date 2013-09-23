@@ -51,6 +51,7 @@ define iptables::concat_emitter(
     mode    => $iptables::config_file_mode,
     owner   => $iptables::config_file_owner,
     group   => $iptables::config_file_group,
+    order   => 'natural',
     notify  => Service['iptables'],
   }
 

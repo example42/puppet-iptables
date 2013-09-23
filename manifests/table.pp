@@ -15,6 +15,7 @@ define iptables::table (
     mode    => $iptables::config_file_mode,
     owner   => $iptables::config_file_owner,
     group   => $iptables::config_file_group,
+    order   => 'natural',
     force   => true,
   }
 
