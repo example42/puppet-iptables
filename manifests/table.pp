@@ -15,7 +15,6 @@ define iptables::table (
     mode    => $iptables::config_file_mode,
     owner   => $iptables::config_file_owner,
     group   => $iptables::config_file_group,
-    notify  => Service['iptables'],
   }
 
   concat::fragment { "iptables_table_${ip_version}_${real_name}":
