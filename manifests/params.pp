@@ -117,6 +117,7 @@ class iptables::params  {
   }
   
   $default_order = ''
+  $use_legacy_ordering = true
 
   $my_class = ''
   $source = ''

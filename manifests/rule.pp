@@ -47,7 +47,8 @@ define iptables::rule (
   $destination_v6 = '0/0',
   $protocol       = $iptables::default_protocol,
   $port           = '',
-  $order          = $iptables::default_order,
+  $order          = '',
+  $use_legacy_ordering = $iptables::use_legacy_ordering,
   $rule           = '',
   $enable         = true,
   $enable_v6      = false,
@@ -63,20 +64,26 @@ define iptables::rule (
   #}
 
   # If (concat) order is not defined we find out the right one
-  $true_order = $order ? {
-    ''    => $table ? {
-      'filter' => $chain ? {
-         'INPUT'   => '15',
-         'OUTPUT'  => '25',
-         'FORWARD' => '35',
+  if $use_legacy_ordering {
+    $true_order = $order ? {
+      ''    => $table ? {
+        'filter' => $chain ? {
+           'INPUT'   => '15',
+           'OUTPUT'  => '25',
+           'FORWARD' => '35',
+        },
+        'nat'    => '50',
+        'mangle' => '70',
       },
-      'nat'    => '50',
-      'mangle' => '70',
-    },
-    default => $order,
+      default => $order,
+    }
+  } else {
+    $true_order = $order ? {
+      ''      => $iptables::default_order,
+      default => $order,
   }
 
-  # We build the rule if not explicitely set
+  # We build the rule if not explicitly set
   $true_protocol = $protocol ? {
     ''    => '',
     default => "-p ${protocol}",

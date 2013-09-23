@@ -25,6 +25,7 @@ class iptables (
   $log_level           = params_lookup( 'log_level' ),
   $safe_ssh            = params_lookup( 'safe_ssh' ),
   $default_order       = params_lookup( 'default_order' ),
+  $use_legacy_ordering = params_lookup( 'use_legacy_ordering' ),
   $allow_established   = params_lookup( 'allow_established' ),
   $package             = params_lookup( 'package' ),
   $version             = params_lookup( 'version' ),
