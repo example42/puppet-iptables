@@ -81,6 +81,7 @@ define iptables::rule (
     $true_order = $order ? {
       ''      => $iptables::default_order,
       default => $order,
+    }
   }
 
   # We build the rule if not explicitly set
