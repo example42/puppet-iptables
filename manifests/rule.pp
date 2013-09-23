@@ -153,20 +153,40 @@ define iptables::rule (
   }
 
   concat::fragment{ "iptables_rule_$name":
-    target  => $iptables::config_file,
+    target  => "/var/lib/puppet/iptables/tables/v4_${table}",
     content => template('iptables/concat/rule.erb'),
     order   => $true_order,
     ensure  => $ensure,
     notify  => Service['iptables'],
+    before  => Concat["/var/lib/puppet/iptables/tables/v4_${table}"]
   }
 
   if $enable_v6 {
     concat::fragment{ "iptables_rule_v6_$name":
-      target  => $iptables::config_file_v6,
+      target  => "/var/lib/puppet/iptables/tables/v6_${table}",
       content => template('iptables/concat/rule_v6.erb'),
       order   => $true_order,
       ensure  => $ensure,
       notify  => Service['iptables'],
+      before  => Concat["/var/lib/puppet/iptables/tables/v6_${table}"]
     }
   }
+
+#  concat::fragment{ "iptables_rule_$name":
+#    target  => $iptables::config_file,
+#    content => template('iptables/concat/rule.erb'),
+#    order   => $true_order,
+#    ensure  => $ensure,
+#    notify  => Service['iptables'],
+#  }
+#
+#  if $enable_v6 {
+#    concat::fragment{ "iptables_rule_v6_$name":
+#      target  => $iptables::config_file_v6,
+#      content => template('iptables/concat/rule_v6.erb'),
+#      order   => $true_order,
+#      ensure  => $ensure,
+#      notify  => Service['iptables'],
+#    }
+#  }
 }

@@ -157,6 +157,11 @@ class iptables (
     true    => 'absent',
     default => 'present',
   }
+  
+  $manage_directory = $iptables::bool_absent ? {
+    true    => 'directory',
+    default => 'present',
+  }
 
   $manage_audit = $iptables::bool_audit_only ? {
     true  => 'all',
@@ -200,6 +205,12 @@ class iptables (
     require    => Package['iptables'],
     hasrestart => false,
     restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
+  }
+
+  file { [ '/var/lib/puppet/iptables',
+           '/var/lib/puppet/iptables/tables/' ]:
+    ensure => $iptables::manage_directory,
+    audit  => $iptables::manage_audit,
   }
 
   # How to manage iptables configuration

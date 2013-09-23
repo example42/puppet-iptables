@@ -20,6 +20,32 @@ define iptables::concat_emitter(
     true    => '-p icmpv6',
     default => '-p icmp',
   }
+  
+  $ip_version = $is_ipv6 ? {
+    true  => 6,
+    false => 4
+  }
+  
+  iptables::table { "v${ip_version}_filter":
+    emitter_target => $emitter_target,
+    order          => 5,
+    table_name     => 'filter',
+    ip_version     => $ip_version
+  }
+
+  iptables::table { "v${ip_version}_nat":
+    emitter_target => $emitter_target,
+    order          => 45,
+    table_name     => 'nat',
+    ip_version     => $ip_version
+  }
+
+  iptables::table { "v${ip_version}_mangle":
+    emitter_target => $emitter_target,
+    order          => 65,
+    table_name     => 'mangle',
+    ip_version     => $ip_version
+  }
 
   concat { $emitter_target:
     mode    => $iptables::config_file_mode,
@@ -27,7 +53,6 @@ define iptables::concat_emitter(
     group   => $iptables::config_file_group,
     notify  => Service['iptables'],
   }
-
 
   # The File Header. With Puppet comment
   concat::fragment{ "iptables_header_$name":
