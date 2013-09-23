@@ -23,7 +23,7 @@ define iptables::table (
     source  => "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}",
     order   => $order,
     notify  => Service['iptables'],
-    require => Concat::Fragment[ "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}" ]
+    require => Concat[ "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}" ]
   }
 
 }
