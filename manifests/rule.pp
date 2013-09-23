@@ -160,22 +160,50 @@ define iptables::rule (
     }
   }
 
-  concat::fragment{ "iptables_rule_$name":
-    target  => "/var/lib/puppet/iptables/tables/v4_${table}",
-    content => template('iptables/concat/rule.erb'),
-    order   => $true_order,
-    ensure  => $ensure,
-    notify  => Service['iptables'],
-  }
-
-  if $enable_v6 {
-    concat::fragment{ "iptables_rule_v6_$name":
-      target  => "/var/lib/puppet/iptables/tables/v6_${table}",
-      content => template('iptables/concat/rule_v6.erb'),
+  if any2bool($use_legacy_ordering) {
+    # In the past, all rules were directly concatenated in the total ruleset.
+    
+    concat::fragment{ "iptables_rule_$name":
+      target  => $iptables::config_file,
+      content => template('iptables/concat/rule.erb'),
       order   => $true_order,
       ensure  => $ensure,
       notify  => Service['iptables'],
     }
+  
+    if $enable_v6 {
+      concat::fragment{ "iptables_rule_v6_$name":
+        target  => $iptables::config_file_v6,
+        content => template('iptables/concat/rule_v6.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
+    }
+  } else {
+    # The organization of the iptables module was later changed by introducing
+    # a concept of tables. By using the new structure, all rules are added to
+    # their respective tables first, then tables are concatenated into their
+    # ruleset.
+    
+    concat::fragment{ "iptables_rule_$name":
+      target  => "/var/lib/puppet/iptables/tables/v4_${table}",
+      content => template('iptables/concat/rule.erb'),
+      order   => $true_order,
+      ensure  => $ensure,
+      notify  => Service['iptables'],
+    }
+  
+    if $enable_v6 {
+      concat::fragment{ "iptables_rule_v6_$name":
+        target  => "/var/lib/puppet/iptables/tables/v6_${table}",
+        content => template('iptables/concat/rule_v6.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
+    }
+    
   }
 
 }
