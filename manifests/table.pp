@@ -18,7 +18,7 @@ define iptables::table (
     notify  => Service['iptables'],
   }
 
-  concat::fragment { "iptables_table_${ip_version}_${name}":
+  concat::fragment { "iptables_table_${ip_version}_${real_name}":
     target  => $emitter_target,
     source  => "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}",
     order   => $order,
