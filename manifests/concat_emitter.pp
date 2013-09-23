@@ -15,17 +15,17 @@ define iptables::concat_emitter(
 
   include iptables
   include concat::setup
-  
+
   $real_icmp_port = $is_ipv6 ? {
     true    => '-p icmpv6',
     default => '-p icmp',
   }
-  
+
   $ip_version = $is_ipv6 ? {
     true  => 6,
     false => 4
   }
-  
+
   iptables::table { "v${ip_version}_filter":
     emitter_target => $emitter_target,
     order          => 5,

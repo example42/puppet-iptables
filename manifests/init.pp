@@ -159,8 +159,8 @@ class iptables (
   }
   
   $manage_directory = $iptables::bool_absent ? {
-    true    => 'directory',
-    default => 'present',
+    true    => 'absent',
+    default => 'directory',
   }
 
   $manage_audit = $iptables::bool_audit_only ? {
