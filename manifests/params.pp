@@ -10,7 +10,7 @@ class iptables::params  {
   $osver_maj = $osver[0]
 
   $enable_v6 = false
-
+  
 ## DEFAULTS FOR VARIABLES USERS CAN SET
 
 # Define how you want to manage iptables configuration:
@@ -40,6 +40,13 @@ class iptables::params  {
 
 # Define if you want to open SSH port by default
   $safe_ssh = true
+  
+# Default protocol to define when configuring a rule. E.g. 'all', 'tcp', 'udp', 'icmp', etc. 
+# Consider using 'all'. TCP is used here for BC reasons.
+  $default_protocol = 'tcp'  
+
+# Define whether to allow all RELATED,ESTABLISHED traffic by default
+  $allow_established = true
 
 # Define what to do with INPUT broadcast packets
   $broadcast_policy = 'accept'

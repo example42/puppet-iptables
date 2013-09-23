@@ -4,9 +4,11 @@
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+<% if scope.lookupvar('iptables::allow_established') -%>
 -A PREROUTING -m state --state RELATED,ESTABLISHED -j ACCEPT 
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
 -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 
 -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
 -A POSTROUTING -m state --state RELATED,ESTABLISHED -j ACCEPT 
+<% end -%>
 

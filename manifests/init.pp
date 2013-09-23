@@ -8,6 +8,7 @@
 #
 class iptables (
   $my_class            = params_lookup( 'my_class' ),
+  $default_protocol    = params_lookup( 'default_protocol' ),
   $config              = params_lookup( 'config' ),
   $source              = params_lookup( 'source' ),
   $template            = params_lookup( 'template' ),
@@ -23,6 +24,7 @@ class iptables (
   $log_forward         = params_lookup( 'log_forward' ),
   $log_level           = params_lookup( 'log_level' ),
   $safe_ssh            = params_lookup( 'safe_ssh' ),
+  $allow_established   = params_lookup( 'allow_established' ),
   $package             = params_lookup( 'package' ),
   $version             = params_lookup( 'version' ),
   $service             = params_lookup( 'service' ),

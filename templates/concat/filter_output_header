@@ -4,7 +4,9 @@
 <% if scope.lookupvar('iptables::real_output_policy') == "accept" -%>
 -A OUTPUT -j ACCEPT 
 <% else -%>
+<% if scope.lookupvar('iptables::allow_established') -%>
 -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
+<% end -%>
 -A OUTPUT -o lo -j ACCEPT 
 -A OUTPUT -p icmp -j ACCEPT 
 <% end -%>
