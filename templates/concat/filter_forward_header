@@ -1,4 +1,0 @@
-<% if scope.lookupvar('iptables::real_log_forward') == "all" -%>
--A FORWARD -j LOG --log-level <%= scope.lookupvar('iptables::log_level') %> --log-prefix "FORWARD PACKETS: "
-<% end -%>
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 

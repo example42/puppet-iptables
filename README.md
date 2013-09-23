@@ -198,4 +198,16 @@ If you have a single node from where you want to ensure access you can also do s
 
         firewall { 'alfa': source => '42.42.42.42', }
 
+## Changelog
 
+###Version 3.0 - TBD (Oct. 2013?)
+
+
+    
+###Version 2.1 - May 2013
+
+###Version 2.0 - January 2013    
+
+###Version 1.0 - Dec 27 2012
+    The first version of this module was released
+)
