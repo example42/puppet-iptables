@@ -3,4 +3,6 @@
 <% end -%>
 <% if scope.lookupvar('iptables::allow_established') -%>
 -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 
+<% else -%>
+# filter_forward_header
 <% end -%>
