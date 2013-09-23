@@ -64,7 +64,7 @@ define iptables::rule (
   #}
 
   # If (concat) order is not defined we find out the right one
-  if $use_legacy_ordering {
+  if any2bool($use_legacy_ordering) {
     $true_order = $order ? {
       ''    => $table ? {
         'filter' => $chain ? {
