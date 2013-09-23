@@ -115,6 +115,8 @@ class iptables::params  {
   $config_file_group = $::operatingsystem ? {
     default => 'root',
   }
+  
+  $default_order = ''
 
   $my_class = ''
   $source = ''

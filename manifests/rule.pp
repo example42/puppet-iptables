@@ -47,7 +47,7 @@ define iptables::rule (
   $destination_v6 = '0/0',
   $protocol       = $iptables::default_protocol,
   $port           = '',
-  $order          = '',
+  $order          = $iptables::default_order,
   $rule           = '',
   $enable         = true,
   $enable_v6      = false,
