@@ -32,6 +32,7 @@ class iptables (
   $package             = params_lookup( 'package' ),
   $version             = params_lookup( 'version' ),
   $service             = params_lookup( 'service' ),
+  $service_override_restart = params_lookup( 'service_override_restart' ),
   $service_status      = params_lookup( 'service_status' ),
   $service_status_cmd  = params_lookup( 'service_status_cmd' ),
   $config_file         = params_lookup( 'config_file' ),
@@ -43,6 +44,7 @@ class iptables (
   $disable             = params_lookup( 'disable' ),
   $disableboot         = params_lookup( 'disableboot' ),
   $debug               = params_lookup( 'debug' , 'global' ),
+  $enable_v4           = params_lookup( 'enable_v4', 'global' ),
   $enable_v6           = params_lookup( 'enable_v6', 'global' ),
   $audit_only          = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
@@ -54,6 +56,9 @@ class iptables (
   $bool_debug = any2bool($debug)
   $bool_audit_only = any2bool($audit_only)
   $bool_manage_icmp = any2bool($manage_icmp)
+  $bool_enable_v4 = any2bool($enable_v4)
+  $bool_enable_v6 = any2bool($enable_v6)
+  $bool_service_override_restart = any2bool($service_override_restart)
 
   ### Definitions of specific variables
   $real_block_policy = $block_policy ? {
@@ -206,15 +211,39 @@ class iptables (
     name   => $iptables::package,
   }
 
-  service { 'iptables':
-    ensure     => $iptables::manage_service_ensure,
-    name       => $iptables::service,
-    enable     => $iptables::manage_service_enable,
-    hasstatus  => $iptables::service_status,
-    status     => $iptables::service_status_cmd,
-    require    => Package['iptables'],
-    hasrestart => false,
-    restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
+  if ! $bool_service_override_restart {
+    service { 'iptables':
+      ensure     => $iptables::manage_service_ensure,
+      name       => $iptables::service,
+      enable     => $iptables::manage_service_enable,
+      hasstatus  => $iptables::service_status,
+      status     => $iptables::service_status_cmd,
+      require    => Package['iptables']
+   }
+ } else {
+    
+    $cmd_restart_v4 = inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>')
+    $cmd_restart_v6 = inline_template('ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>')
+
+    if $bool_enable_v4 and $bool_enable_v6 {
+      $cmd_restart = "${cmd_restart_v4} && ${cmd_restart_v6}"
+    } elsif $bool_enable_v4 {
+      $cmd_restart = $cmd_restart_v4
+    } else {
+      $cmd_restart = $cmd_restart_v6
+    }
+    
+    service { 'iptables':
+      ensure     => $iptables::manage_service_ensure,
+      name       => $iptables::service,
+      enable     => $iptables::manage_service_enable,
+      hasstatus  => $iptables::service_status,
+      status     => $iptables::service_status_cmd,
+      require    => Package['iptables'],
+      hasrestart => false,
+      restart    => $cmd_restart
+    }
+
   }
 
   file { [ '/var/lib/puppet/iptables',
@@ -227,11 +256,13 @@ class iptables (
   case $iptables::config {
     'file': { include iptables::file }
     'concat': { 
-      iptables::concat_emitter { 'v4':
-        emitter_target  => $iptables::config_file,
-        is_ipv6         => false,
+      if $bool_enable_v4 {
+        iptables::concat_emitter { 'v4':
+          emitter_target  => $iptables::config_file,
+          is_ipv6         => false,
+        }
       }
-      if $enable_v6 { 
+      if $bool_enable_v6 { 
         iptables::concat_emitter { 'v6':
           emitter_target  => $iptables::config_file_v6,
           is_ipv6         => true,

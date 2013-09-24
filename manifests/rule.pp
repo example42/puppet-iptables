@@ -51,11 +51,15 @@ define iptables::rule (
   $use_legacy_ordering = $iptables::use_legacy_ordering,
   $rule           = '',
   $enable         = true,
-  $enable_v6      = false,
+  $enable_v4      = $iptables::bool_enable_v4,
+  $enable_v6      = $iptables::bool_enable_v6,
   $debug          = false ) {
 
   include iptables
   include concat::setup
+  
+  $bool_enable_v4 = any2bool($enable_v4)
+  $bool_enable_v6 = any2bool($enable_v6)
 
   # IPv6 enabled rules prerequisites IPv6 enabled iptables also
   # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables
@@ -163,15 +167,17 @@ define iptables::rule (
   if any2bool($use_legacy_ordering) {
     # In the past, all rules were directly concatenated in the total ruleset.
     
-    concat::fragment{ "iptables_rule_$name":
-      target  => $iptables::config_file,
-      content => template('iptables/concat/rule.erb'),
-      order   => $true_order,
-      ensure  => $ensure,
-      notify  => Service['iptables'],
+    if $bool_enable_v4 {
+      concat::fragment{ "iptables_rule_$name":
+        target  => $iptables::config_file,
+        content => template('iptables/concat/rule.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
     }
   
-    if $enable_v6 {
+    if $bool_enable_v6 {
       concat::fragment{ "iptables_rule_v6_$name":
         target  => $iptables::config_file_v6,
         content => template('iptables/concat/rule_v6.erb'),
@@ -186,15 +192,17 @@ define iptables::rule (
     # their respective tables first, then tables are concatenated into their
     # ruleset.
     
-    concat::fragment{ "iptables_rule_$name":
-      target  => "/var/lib/puppet/iptables/tables/v4_${table}",
-      content => template('iptables/concat/rule.erb'),
-      order   => $true_order,
-      ensure  => $ensure,
-      notify  => Service['iptables'],
+    if $bool_enable_v4 {
+      concat::fragment{ "iptables_rule_$name":
+        target  => "/var/lib/puppet/iptables/tables/v4_${table}",
+        content => template('iptables/concat/rule.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
     }
   
-    if $enable_v6 {
+    if $bool_enable_v6 {
       concat::fragment{ "iptables_rule_v6_$name":
         target  => "/var/lib/puppet/iptables/tables/v6_${table}",
         content => template('iptables/concat/rule_v6.erb'),

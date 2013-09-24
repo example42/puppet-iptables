@@ -9,6 +9,10 @@ class iptables::params  {
   $osver = split($::operatingsystemrelease, '[.]')
   $osver_maj = $osver[0]
 
+# Enable support for IPv4
+  $enable_v4 = true
+
+# Enable support for IPv6
   $enable_v6 = false
   
 ## DEFAULTS FOR VARIABLES USERS CAN SET
@@ -84,6 +88,12 @@ class iptables::params  {
   $service = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'iptables-persistent',
     default                   => 'iptables',
+  }
+  
+  # use "$service restart" to load new firewall rules?
+  $service_override_restart = $::operatingsystem ? {
+    /(?i:Ubuntu)/ => 'false', # Don't know about other distro's. Who does?
+    default       => 'true',
   }
 
   $service_status = $::operatingsystem ? {

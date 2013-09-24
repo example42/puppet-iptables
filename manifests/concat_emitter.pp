@@ -212,6 +212,8 @@ define iptables::concat_emitter(
     if !$is_ipv6 {
       # Linux did not use to support NAT on IPv6. You'll have to declare thse
       # items yourself explicitly if your kernel and Netfilter does support this.
+      # Feel free to write (and contribute back!) a mechanism that actually 
+      # does support this. Thank you! ;-)
 
       iptables::table { "v${ip_version}_nat":
         emitter_target => $emitter_target,
