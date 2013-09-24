@@ -48,13 +48,18 @@ define iptables::rule (
   $protocol       = $iptables::default_protocol,
   $port           = '',
   $order          = '',
+  $use_legacy_ordering = $iptables::use_legacy_ordering,
   $rule           = '',
   $enable         = true,
-  $enable_v6      = false,
+  $enable_v4      = $iptables::bool_enable_v4,
+  $enable_v6      = $iptables::bool_enable_v6,
   $debug          = false ) {
 
   include iptables
   include concat::setup
+  
+  $bool_enable_v4 = any2bool($enable_v4)
+  $bool_enable_v6 = any2bool($enable_v6)
 
   # IPv6 enabled rules prerequisites IPv6 enabled iptables also
   # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables
@@ -63,20 +68,27 @@ define iptables::rule (
   #}
 
   # If (concat) order is not defined we find out the right one
-  $true_order = $order ? {
-    ''    => $table ? {
-      'filter' => $chain ? {
-         'INPUT'   => '15',
-         'OUTPUT'  => '25',
-         'FORWARD' => '35',
+  if any2bool($use_legacy_ordering) {
+    $true_order = $order ? {
+      ''    => $table ? {
+        'filter' => $chain ? {
+           'INPUT'   => '15',
+           'OUTPUT'  => '25',
+           'FORWARD' => '35',
+        },
+        'nat'    => '50',
+        'mangle' => '70',
       },
-      'nat'    => '50',
-      'mangle' => '70',
-    },
-    default => $order,
+      default => $order,
+    }
+  } else {
+    $true_order = $order ? {
+      ''      => $iptables::default_order,
+      default => $order,
+    }
   }
 
-  # We build the rule if not explicitely set
+  # We build the rule if not explicitly set
   $true_protocol = $protocol ? {
     ''    => '',
     default => "-p ${protocol}",
@@ -152,22 +164,54 @@ define iptables::rule (
     }
   }
 
-  concat::fragment{ "iptables_rule_$name":
-    target  => "/var/lib/puppet/iptables/tables/v4_${table}",
-    content => template('iptables/concat/rule.erb'),
-    order   => $true_order,
-    ensure  => $ensure,
-    notify  => Service['iptables'],
-  }
-
-  if $enable_v6 {
-    concat::fragment{ "iptables_rule_v6_$name":
-      target  => "/var/lib/puppet/iptables/tables/v6_${table}",
-      content => template('iptables/concat/rule_v6.erb'),
-      order   => $true_order,
-      ensure  => $ensure,
-      notify  => Service['iptables'],
+  if any2bool($use_legacy_ordering) {
+    # In the past, all rules were directly concatenated in the total ruleset.
+    
+    if $bool_enable_v4 {
+      concat::fragment{ "iptables_rule_$name":
+        target  => $iptables::config_file,
+        content => template('iptables/concat/rule.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
     }
+  
+    if $bool_enable_v6 {
+      concat::fragment{ "iptables_rule_v6_$name":
+        target  => $iptables::config_file_v6,
+        content => template('iptables/concat/rule_v6.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
+    }
+  } else {
+    # The organization of the iptables module was later changed by introducing
+    # a concept of tables. By using the new structure, all rules are added to
+    # their respective tables first, then tables are concatenated into their
+    # ruleset.
+    
+    if $bool_enable_v4 {
+      concat::fragment{ "iptables_rule_$name":
+        target  => "/var/lib/puppet/iptables/tables/v4_${table}",
+        content => template('iptables/concat/rule.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
+    }
+  
+    if $bool_enable_v6 {
+      concat::fragment{ "iptables_rule_v6_$name":
+        target  => "/var/lib/puppet/iptables/tables/v6_${table}",
+        content => template('iptables/concat/rule_v6.erb'),
+        order   => $true_order,
+        ensure  => $ensure,
+        notify  => Service['iptables'],
+      }
+    }
+    
   }
 
 }

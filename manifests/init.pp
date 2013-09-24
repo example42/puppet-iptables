@@ -15,19 +15,24 @@ class iptables (
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
   $block_policy        = params_lookup( 'block_policy' ),
   $icmp_policy         = params_lookup( 'icmp_policy' ),
+  $manage_icmp         = params_lookup( 'manage_icmp' ),
   $output_policy       = params_lookup( 'output_policy' ),
   $broadcast_policy    = params_lookup( 'broadcast_policy' ),
   $multicast_policy    = params_lookup( 'multicast_policy' ),
   $log                 = params_lookup( 'log' ),
+  $log_prefix_prefix   = params_lookup( 'log_prefix_prefix' ),
   $log_input           = params_lookup( 'log_input' ),
   $log_output          = params_lookup( 'log_output' ),
   $log_forward         = params_lookup( 'log_forward' ),
   $log_level           = params_lookup( 'log_level' ),
   $safe_ssh            = params_lookup( 'safe_ssh' ),
+  $default_order       = params_lookup( 'default_order' ),
+  $use_legacy_ordering = params_lookup( 'use_legacy_ordering' ),
   $allow_established   = params_lookup( 'allow_established' ),
   $package             = params_lookup( 'package' ),
   $version             = params_lookup( 'version' ),
   $service             = params_lookup( 'service' ),
+  $service_override_restart = params_lookup( 'service_override_restart' ),
   $service_status      = params_lookup( 'service_status' ),
   $service_status_cmd  = params_lookup( 'service_status_cmd' ),
   $config_file         = params_lookup( 'config_file' ),
@@ -39,6 +44,7 @@ class iptables (
   $disable             = params_lookup( 'disable' ),
   $disableboot         = params_lookup( 'disableboot' ),
   $debug               = params_lookup( 'debug' , 'global' ),
+  $enable_v4           = params_lookup( 'enable_v4', 'global' ),
   $enable_v6           = params_lookup( 'enable_v6', 'global' ),
   $audit_only          = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
@@ -49,6 +55,10 @@ class iptables (
   $bool_disableboot = any2bool($disableboot)
   $bool_debug = any2bool($debug)
   $bool_audit_only = any2bool($audit_only)
+  $bool_manage_icmp = any2bool($manage_icmp)
+  $bool_enable_v4 = any2bool($enable_v4)
+  $bool_enable_v6 = any2bool($enable_v6)
+  $bool_service_override_restart = any2bool($service_override_restart)
 
   ### Definitions of specific variables
   $real_block_policy = $block_policy ? {
@@ -58,7 +68,7 @@ class iptables (
     'REJECT'  => 'REJECT --reject-with icmp-host-prohibited',
     'accept'  => 'ACCEPT',
     'ACCEPT'  => 'ACCEPT',
-    default   => 'DROP',
+    default   => fail("Improper 'block_policy' value given to iptables: ${block_policy}")
   }
 
   $real_icmp_policy = $icmp_policy ? {
@@ -67,15 +77,17 @@ class iptables (
     'safe'    => '-m icmp ! --icmp-type echo-request -j ACCEPT',
     'accept'  => '-j ACCEPT',
     'ACCEPT'  => '-j ACCEPT',
-    default   => '-j ACCEPT',
+    default   => fail("Improper 'icmp_policy' value given to iptables: ${icmp_policy}")
   }
 
   $real_output_policy = $output_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
-    default   => 'accept',
+    'accept'  => 'accept',
+    'ACCEPT'  => 'accept',
+    default   => fail("Improper 'output_policy' value given to iptables: ${output_policy}")
   }
-
+  
   $real_log = $log ? {
     'all'     => 'all',
     'dropped' => 'drop',
@@ -113,15 +125,18 @@ class iptables (
   $real_broadcast_policy = $broadcast_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
-    default   => 'accept',
+    'accept'  => 'accept',
+    'ACCEPT'  => 'ACCEPT',
+     default   => fail("Improper 'broadcast_policy' value given to iptables: ${broadcast_policy}")
   }
 
   $real_multicast_policy = $multicast_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
-    default   => 'accept',
+    'accept'  => 'accept',
+    'ACCEPT'  => 'accept',
+    default   => fail("Improper 'multicast_policy' value given to iptables: ${multicast_policy}")
   }
-
 
   ### Definition of some variables used in the module
   $manage_package = $iptables::bool_absent ? {
@@ -196,15 +211,39 @@ class iptables (
     name   => $iptables::package,
   }
 
-  service { 'iptables':
-    ensure     => $iptables::manage_service_ensure,
-    name       => $iptables::service,
-    enable     => $iptables::manage_service_enable,
-    hasstatus  => $iptables::service_status,
-    status     => $iptables::service_status_cmd,
-    require    => Package['iptables'],
-    hasrestart => false,
-    restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
+  if ! $bool_service_override_restart {
+    service { 'iptables':
+      ensure     => $iptables::manage_service_ensure,
+      name       => $iptables::service,
+      enable     => $iptables::manage_service_enable,
+      hasstatus  => $iptables::service_status,
+      status     => $iptables::service_status_cmd,
+      require    => Package['iptables']
+   }
+ } else {
+    
+    $cmd_restart_v4 = inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>')
+    $cmd_restart_v6 = inline_template('ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>')
+
+    if $bool_enable_v4 and $bool_enable_v6 {
+      $cmd_restart = "${cmd_restart_v4} && ${cmd_restart_v6}"
+    } elsif $bool_enable_v4 {
+      $cmd_restart = $cmd_restart_v4
+    } else {
+      $cmd_restart = $cmd_restart_v6
+    }
+    
+    service { 'iptables':
+      ensure     => $iptables::manage_service_ensure,
+      name       => $iptables::service,
+      enable     => $iptables::manage_service_enable,
+      hasstatus  => $iptables::service_status,
+      status     => $iptables::service_status_cmd,
+      require    => Package['iptables'],
+      hasrestart => false,
+      restart    => $cmd_restart
+    }
+
   }
 
   file { [ '/var/lib/puppet/iptables',
@@ -217,11 +256,13 @@ class iptables (
   case $iptables::config {
     'file': { include iptables::file }
     'concat': { 
-      iptables::concat_emitter { 'v4':
-        emitter_target  => $iptables::config_file,
-        is_ipv6         => false,
+      if $bool_enable_v4 {
+        iptables::concat_emitter { 'v4':
+          emitter_target  => $iptables::config_file,
+          is_ipv6         => false,
+        }
       }
-      if $enable_v6 { 
+      if $bool_enable_v6 { 
         iptables::concat_emitter { 'v6':
           emitter_target  => $iptables::config_file_v6,
           is_ipv6         => true,
