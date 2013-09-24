@@ -1,4 +1,6 @@
+<% if scope.lookupvar('iptables::bool_manage_icmp') -%>
 -A INPUT <%= scope.lookupvar('real_icmp_port') %> <%= scope.lookupvar('iptables::real_icmp_policy') %>
+<% end -%>
 <% if scope.lookupvar('iptables::real_broadcast_policy') == "accept" -%>
 -A INPUT -m pkttype --pkt-type broadcast -j ACCEPT
 <% end -%>

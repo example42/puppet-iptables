@@ -26,27 +26,6 @@ define iptables::concat_emitter(
     false => 4
   }
 
-  iptables::table { "v${ip_version}_filter":
-    emitter_target => $emitter_target,
-    order          => 5,
-    table_name     => 'filter',
-    ip_version     => $ip_version
-  }
-
-  iptables::table { "v${ip_version}_nat":
-    emitter_target => $emitter_target,
-    order          => 45,
-    table_name     => 'nat',
-    ip_version     => $ip_version
-  }
-
-  iptables::table { "v${ip_version}_mangle":
-    emitter_target => $emitter_target,
-    order          => 65,
-    table_name     => 'mangle',
-    ip_version     => $ip_version
-  }
-
   concat { $emitter_target:
     mode    => $iptables::config_file_mode,
     owner   => $iptables::config_file_owner,
@@ -174,12 +153,12 @@ define iptables::concat_emitter(
     # their respective tables first, then tables are concatenated into their
     # ruleset.
     
-    # The FILTER table header with the default policies
-    concat::fragment{ "iptables_filter_header_$name":
-      target  => "/var/lib/puppet/iptables/tables/v${ip_version}_filter",
-      content => template('iptables/concat/filter_header'),
-      order   => 01,
-      notify  => Service['iptables'],
+    iptables::table { "v${ip_version}_filter":
+      emitter_target => $emitter_target,
+      order          => 5,
+      table_name     => 'filter',
+      ip_version     => $ip_version,
+      chains         => [ 'INPUT', 'FORWARD', 'OUTPUT' ]
     }
   
     # The input chain header with sane defaults
@@ -197,7 +176,7 @@ define iptables::concat_emitter(
       order   => 8000,
       notify  => Service['iptables'],
     }
-  
+    
     # The output chain header with sane defaults
     concat::fragment{ "iptables_filter_output_header_$name":
       target  => "/var/lib/puppet/iptables/tables/v${ip_version}_filter",
@@ -230,17 +209,17 @@ define iptables::concat_emitter(
       notify  => Service['iptables'],
     }
 
-    # The FILTER table footer (COMMIT)
-    concat::fragment{ "iptables_filter_footer_$name":
-      target  => "/var/lib/puppet/iptables/tables/v${ip_version}_filter",
-      content => template('iptables/concat/filter_footer'),
-      order   => 9999,
-      notify  => Service['iptables'],
-    }
-
     if !$is_ipv6 {
       # Linux did not use to support NAT on IPv6. You'll have to declare thse
       # items yourself explicitly if your kernel and Netfilter does support this.
+
+      iptables::table { "v${ip_version}_nat":
+        emitter_target => $emitter_target,
+        order          => 45,
+        table_name     => 'nat',
+        ip_version     => $ip_version,
+        chains         => [ 'PREROUTING', 'INPUT', 'OUTPUT', 'POSTROUTING' ]
+      }
 
       # The NAT table header with the default policies
       concat::fragment{ "iptables_nat_header_$name":
@@ -250,28 +229,21 @@ define iptables::concat_emitter(
         notify  => Service['iptables'],
       }
 
-      # The NAT table footer (COMMIT)
-      concat::fragment{ "iptables_nat_footer_$name":
-        target  => "/var/lib/puppet/iptables/tables/v${ip_version}_nat",
-        content => template('iptables/concat/nat_footer'),
-        order   => 9999,
-        notify  => Service['iptables'],
-      }
     }
-
+    
+    iptables::table { "v${ip_version}_mangle":
+      emitter_target => $emitter_target,
+      order          => 65,
+      table_name     => 'mangle',
+      ip_version     => $ip_version,
+      chains         => [ 'PREROUTING', 'INPUT', 'FORWARD', 'OUTPUT', 'POSTROUTING' ]
+    }
+      
     # The MANGLE table header with the default policies
     concat::fragment{ "iptables_mangle_header_$name":
       target  => "/var/lib/puppet/iptables/tables/v${ip_version}_mangle",
       content => template('iptables/concat/mangle_header'),
       order   => 50,
-      notify  => Service['iptables'],
-    }
-
-    # The MANGLE table footer (COMMIT)
-    concat::fragment{ "iptables_mangle_footer_$name":
-      target  => "/var/lib/puppet/iptables/tables/v${ip_version}_mangle",
-      content => template('iptables/concat/mangle_footer'),
-      order   => 9999,
       notify  => Service['iptables'],
     }
     

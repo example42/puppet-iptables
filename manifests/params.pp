@@ -25,6 +25,10 @@ class iptables::params  {
 
 # Define what to do with icmp packets (quick'n'dirty approach)
   $icmp_policy = 'ACCEPT'
+  
+# Determine if we should actually do anything with ICMP rules
+# (if false, you can always add icmp-rules manually using iptables::rule)
+  $manage_icmp = true
 
 # Define what to do with output packets
   $output_policy = 'ACCEPT'
@@ -53,6 +57,18 @@ class iptables::params  {
 
 # Define what to do with INPUT multicast packets
   $multicast_policy = 'accept'
+  
+# Define what default $order value to use when declaring an instance of a iptables::rule
+# (in conjunction with $use_legacy_ordering = false)
+  $default_order = ''
+  
+# Define to use legacy ordering. If this is a new setup, consider setting this variable to false(!).
+# In the past, all rules were directly concatenated in the total ruleset. The organization
+# of the iptables module was later changed by introducing a concept of tables. By using the
+# new structure, all rules are added to their respective tables first, then tables are concatenated
+# into the ruleset.
+  $use_legacy_ordering = true
+
 
 ## MODULE INTERNAL VARIABLES
 # (Modify to adapt to unsupported OSes)
@@ -116,9 +132,6 @@ class iptables::params  {
     default => 'root',
   }
   
-  $default_order = ''
-  $use_legacy_ordering = true
-
   $my_class = ''
   $source = ''
   $template = ''

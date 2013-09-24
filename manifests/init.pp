@@ -15,6 +15,7 @@ class iptables (
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
   $block_policy        = params_lookup( 'block_policy' ),
   $icmp_policy         = params_lookup( 'icmp_policy' ),
+  $manage_icmp         = params_lookup( 'manage_icmp' ),
   $output_policy       = params_lookup( 'output_policy' ),
   $broadcast_policy    = params_lookup( 'broadcast_policy' ),
   $multicast_policy    = params_lookup( 'multicast_policy' ),
@@ -51,6 +52,7 @@ class iptables (
   $bool_disableboot = any2bool($disableboot)
   $bool_debug = any2bool($debug)
   $bool_audit_only = any2bool($audit_only)
+  $bool_manage_icmp = any2bool($manage_icmp)
 
   ### Definitions of specific variables
   $real_block_policy = $block_policy ? {
@@ -60,7 +62,7 @@ class iptables (
     'REJECT'  => 'REJECT --reject-with icmp-host-prohibited',
     'accept'  => 'ACCEPT',
     'ACCEPT'  => 'ACCEPT',
-    default   => 'DROP',
+    default   => fail("Improper 'block_policy' value given to iptables: ${block_policy}")
   }
 
   $real_icmp_policy = $icmp_policy ? {
@@ -69,15 +71,17 @@ class iptables (
     'safe'    => '-m icmp ! --icmp-type echo-request -j ACCEPT',
     'accept'  => '-j ACCEPT',
     'ACCEPT'  => '-j ACCEPT',
-    default   => '-j ACCEPT',
+    default   => fail("Improper 'icmp_policy' value given to iptables: ${icmp_policy}")
   }
 
   $real_output_policy = $output_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
-    default   => 'accept',
+    'accept'  => 'accept',
+    'ACCEPT'  => 'accept',
+    default   => fail("Improper 'output_policy' value given to iptables: ${output_policy}")
   }
-
+  
   $real_log = $log ? {
     'all'     => 'all',
     'dropped' => 'drop',
@@ -115,15 +119,18 @@ class iptables (
   $real_broadcast_policy = $broadcast_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
-    default   => 'accept',
+    'accept'  => 'accept',
+    'ACCEPT'  => 'ACCEPT',
+     default   => fail("Improper 'broadcast_policy' value given to iptables: ${broadcast_policy}")
   }
 
   $real_multicast_policy = $multicast_policy ? {
     'drop'    => 'drop',
     'DROP'    => 'drop',
-    default   => 'accept',
+    'accept'  => 'accept',
+    'ACCEPT'  => 'accept',
+    default   => fail("Improper 'multicast_policy' value given to iptables: ${multicast_policy}")
   }
-
 
   ### Definition of some variables used in the module
   $manage_package = $iptables::bool_absent ? {
