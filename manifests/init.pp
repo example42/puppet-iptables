@@ -20,6 +20,7 @@ class iptables (
   $broadcast_policy    = params_lookup( 'broadcast_policy' ),
   $multicast_policy    = params_lookup( 'multicast_policy' ),
   $log                 = params_lookup( 'log' ),
+  $log_prefix_prefix   = params_lookup( 'log_prefix_prefix' ),
   $log_input           = params_lookup( 'log_input' ),
   $log_output          = params_lookup( 'log_output' ),
   $log_forward         = params_lookup( 'log_forward' ),

@@ -8,6 +8,6 @@
 -A INPUT -m pkttype --pkt-type multicast -j ACCEPT
 <% end -%>
 <% if scope.lookupvar('iptables::real_log_input') == "drop" -%>
--A INPUT -j LOG --log-level <%= scope.lookupvar('iptables::log_level') %> --log-prefix "INPUT DROP: "
+-A INPUT -j LOG --log-level <%= scope.lookupvar('iptables::log_level') %> --log-prefix "<%= scope.lookupvar('iptables::log_prefix_prefix') %>INPUT DROP: "
 <% end -%>
 -A INPUT -j <%= scope.lookupvar('iptables::real_block_policy') %>

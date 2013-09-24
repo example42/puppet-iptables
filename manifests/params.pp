@@ -68,6 +68,10 @@ class iptables::params  {
 # new structure, all rules are added to their respective tables first, then tables are concatenated
 # into the ruleset.
   $use_legacy_ordering = true
+  
+# If a packet is dropped and logged, you can specify a prefix here that is applied. Consider using
+# 'iptables '.
+  $log_prefix_prefix = ''
 
 
 ## MODULE INTERNAL VARIABLES
