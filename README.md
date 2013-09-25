@@ -74,7 +74,7 @@ So a simple:
 
 In concat mode some parameters define the general behaviour:
 
-* $block_policy *
+#### $block_policy
 
 Define what to do with packets not expressively accepted:
 
@@ -82,45 +82,53 @@ Define what to do with packets not expressively accepted:
 * `reject` - REJECT them with ICMP unreachable
 * `accept` - ACCEPT them (Beware, if you do this you have no firewall :-)
 
-* $icmp_policy *
+#### $icmp_policy
 
 Define what to to with ICMP packets
 
 * `drop` - DROP them all
 * `safe` - ALLOW all ICMP types except echo & reply (Ping) 
 * `accept` (Default) - ACCEPT them all
+* `limit` - set a strict burst limit on all icmp types
 
-* $output_policy *
+#### $output_policy
 
 Define what to to with outbound packets
 * `drop` - DROP them (except for established and localhost 
 * `accept` (Default) - ACCEPT them 
 
-* $log *
+#### $log
 
 Define what you what to log (`all` | `dropped` | `none`)
 
-* $log_level *
+#### $log_level
 
 Define the level of logging (numeric or see `syslog.conf(5)`)
 
-* $safe_ssh *
+#### $safe_ssh
 
 Define if you want to force the precence of a rule that allows access to SSH port (tcp/22).
 
-* $broadcast_policy *
+#### $broadcast_policy
 
 Define what to do with INPUT broadcast packets
 
 * `drop` - Treat them with the $iptables_block_policy 
 * `accept` (Default) - Expressely ACCEPT them
 
-* $multicast_policy * 
+#### $multicast_policy
 
 Define what to do with INPUT multicast
 
 * "drop" - Treat them with the $iptables_block_policy
 * "accept" (Default) - Expressely ACCEPT them
+
+#### $filter_invalid
+
+Define what to do with invalid packages
+
+* true (Default) - drop invalid packages and packages with strange flag combinations
+* false - do not process invalid packages specially
 
 So for example for a stricter setup, compared to default:
 
@@ -136,10 +144,13 @@ So for example for a stricter setup, compared to default:
 ### IPv6 specific configuration
 In order to enable IPv6 there have to be configured two parts:
 - iptables should be IPv6 enabled:
+
           class{ 'iptables' :
             enable_v6 => true,
           }
+
 - then iptables::rules can be IPv6 enabled also:
+
         iptables::rule { 'http': 
           port       => '80',
           protocol   => 'tcp',
@@ -147,6 +158,7 @@ In order to enable IPv6 there have to be configured two parts:
         }
         
 If specific source / destination adresses should be used, a definition will look like: 
+
         iptables::rule { 'http':
           source          => '10.42.0.0/24',
           source_v6       => '2001:0db8:3c4d:0015:0000:0000:abcd:ef12',
