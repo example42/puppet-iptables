@@ -35,25 +35,30 @@
 # $enable_v6 - enables the IPv6 part. Default is false for compatibility reasons.
 #
 define iptables::rule (
-  $command        = '-A',
-  $table          = 'filter',
-  $chain          = 'INPUT',
-  $target         = $iptables::default_target,
-  $in_interface   = '',
-  $out_interface  = '',
-  $source         = '0/0',
-  $source_v6      = '0/0',
-  $destination    = '0/0',
-  $destination_v6 = '0/0',
-  $protocol       = 'ALL',
-  $port           = '',
-  $order          = '',
-  $rule           = '',
-  $options        = {},
-  $enable         = true,
-  $enable_v4      = $iptables::bool_enable_v4,
-  $enable_v6      = $iptables::bool_enable_v6,
-  $debug          = false
+  $command         = '-A',
+  $table           = 'filter',
+  $chain           = 'INPUT',
+  $target          = $iptables::default_target,
+  $in_interface    = '',
+  $out_interface   = '',
+  $source          = '0/0',
+  $source_v6       = '0/0',
+  $destination     = '0/0',
+  $destination_v6  = '0/0',
+  $protocol        = 'ALL',
+  $port            = '',
+  $order           = '',
+  $rule            = '',
+  $options         = {},
+  $log             = false,
+  $log_prefix      = $iptables::log_prefix,
+  $log_limit_burst = $iptables::log_limit_burst,
+  $log_limit       = $iptables::log_limit,
+  $log_level       = $iptables::log_level,
+  $enable          = true,
+  $enable_v4       = $iptables::bool_enable_v4,
+  $enable_v6       = $iptables::bool_enable_v6,
+  $debug           = false
 ) {
 
   include iptables
@@ -139,6 +144,12 @@ define iptables::rule (
     default   => $destination_v6,
   }
   
+  if $true_protocol == '-p icmp' {
+    $true_protocol_v6 = '-p icmpv6'
+  } else {
+    $true_protocol_v6 = $true_protocol
+  }
+  
   $options_string = inline_template("<%=@options.map{|k, v| \"--#{k} \\\"#{v}\\\"\"}.join(' ') %>")
 
   if $debug {
@@ -152,8 +163,35 @@ define iptables::rule (
     }
   }
 
+  if $log {
+    iptables::rule { "${name}-10":
+      command        => $command,
+      table          => $table,
+      chain          => $chain,
+      target         => 'LOG',
+      in_interface   => $in_interface,
+      out_interface  => $out_interface,
+      source         => $source,
+      source_v6      => $source_v6,
+      destination    => $destination,
+      destination_v6 => $destination_v6,
+      protocol       => $protocol,
+      port           => $port,
+      order          => $order,
+      rule           => $rule,
+      log            => false,
+      options        => { 'log-prefix' => $log_prefix,
+                          'limit-burst' => $log_limit_burst,
+                          'log-level'   => $log_level },
+      enable         => $enable,
+      enable_v4      => $enable_v4,
+      enable_v6      => $enable_v6,
+      debug          => $debug
+    }
+  }
+
   if $bool_enable_v4 {
-    concat::fragment{ "iptables_rule_$name":
+    concat::fragment{ "iptables_rule_${name}-20":
       target  => "/var/lib/puppet/iptables/tables/v4_${table}",
       content => template('iptables/concat/rule.erb'),
       order   => $true_order,
@@ -162,14 +200,8 @@ define iptables::rule (
     }
   }
 
-  if $true_protocol == '-p icmp' {
-    $true_protocol_v6 = '-p icmpv6'
-  } else {
-    $true_protocol_v6 = $true_protocol
-  }
-
   if $bool_enable_v6 {
-    concat::fragment{ "iptables_rule_v6_$name":
+    concat::fragment{ "iptables_rule_v6_$name-20":
       target  => "/var/lib/puppet/iptables/tables/v6_${table}",
       content => template('iptables/concat/rule_v6.erb'),
       order   => $true_order,
@@ -177,5 +209,5 @@ define iptables::rule (
       notify  => Service['iptables'],
     }
   }
-  
+
 }

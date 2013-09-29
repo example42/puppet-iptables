@@ -38,6 +38,7 @@ class iptables::params  {
 # (if false, you can always add icmp-rules manually using iptables::rule)
   $manage_icmp = true
 
+
 # Define what to do with output packets
   $output_policy = 'ACCEPT'
 
@@ -48,7 +49,10 @@ class iptables::params  {
   $log_forward = ''
 
 # Define the Level of logging (numeric or see syslog.conf(5))
-  $log_level = '4'
+  $log_level       = '4'
+  $log_limit       = '30/m'
+  $log_limit_burst = 10
+  $log_prefix      = 'iptables'
 
 # Define if you want to open SSH port by default
   $safe_ssh = true
@@ -76,10 +80,6 @@ class iptables::params  {
 # new structure, all rules are added to their respective tables first, then tables are concatenated
 # into the ruleset.
   $use_legacy_ordering = true
-  
-# If a packet is dropped and logged, you can specify a prefix here that is applied. Consider using
-# 'iptables '.
-  $log_prefix_prefix = ''
   
   $configure_ipv6_nat = false
 
