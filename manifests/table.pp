@@ -19,13 +19,13 @@ define iptables::table (
     order   => 'natural',
     force   => true,
   }
-    
+
   concat::fragment{ "iptables_table_${name}_header":
     target  => "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}",
     content => "*${real_name}\n",
-    order   => 1,
+    order   => '0001',
   }
-  
+
   concat::fragment{ "iptables_table_${name}_footer":
     target  => "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}",
     content => "COMMIT\n",
@@ -38,7 +38,7 @@ define iptables::table (
     order   => $order,
     require => Concat[ "/var/lib/puppet/iptables/tables/v${ip_version}_${real_name}" ]
   }
-  
+
   iptables::chain { $name:
     table      => $real_name,
     chain_name => $chains,

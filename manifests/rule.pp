@@ -47,7 +47,7 @@ define iptables::rule (
   $destination_v6  = '0/0',
   $protocol        = 'ALL',
   $port            = '',
-  $order           = '',
+  $order           = $iptables::default_order,
   $rule            = '',
   $options         = {},
   $log             = false,
@@ -72,13 +72,14 @@ define iptables::rule (
   #if ($enable_v6) and (!$iptables::enable_v6) {
   #  fail('For IPv6 enabled rules, IPv6 for iptables has also to be enabled.')
   #}
-
-  # If (concat) order is not defined we find out the right one
+  
+  # The concat module may not support natural sorting,
+  # so we make sure it's all at least 4 digits
   $true_order = $order ? {
-    ''      => $iptables::default_order,
-    default => $order,
+    ''      => inline_template("<%= scope.lookupvar('iptables::default_order').to_s.rjust(4, '0') %>"),
+    default => inline_template("<%= @order.to_s.rjust(4, '0') %>")
   }
-
+  
   # We build the rule if not explicitly set
   $true_protocol = $protocol ? {
     ''    => '',
@@ -177,7 +178,7 @@ define iptables::rule (
       destination_v6 => $destination_v6,
       protocol       => $protocol,
       port           => $port,
-      order          => $order,
+      order          => $true_order,
       rule           => $rule,
       log            => false,
       options        => { 'log-prefix' => $log_prefix,

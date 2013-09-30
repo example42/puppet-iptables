@@ -15,7 +15,7 @@ class iptables::params  {
   $my_class = ''
   $service_autorestart = true
 
-  $log = 'drop'
+  $log             = 'drop'
   $log_prefix      = 'iptables'
   $log_limit_burst = 10
   $log_limit       = '30/m'
