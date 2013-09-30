@@ -1,27 +1,157 @@
+# = Class: iptables
 #
-# Class: iptables
+# Manages Iptables.
 #
-# Manages iptables.
+#
+# == Parameters
+#
+# Module specific parameters
+#
+# [*my_class*]
+#   Inlcude your own class when this class is invoked
+#
+# [*service_autorestart*]
+#   Restart the iptables service when the configuration has changed.
+#   Defaults to true
+#
+# [*log*]
+#   Define what packets to log. Can be 'all', 'drop' or 'none'. Defaults to 'drop'
+#
+# [*log_prefix*]
+#   The prefix to use for logged lines. Defaults to 'iptables'
+#
+# [*log_limit_burst*]
+#   The iptables log limit-burst directive. Defaults to 10
+#
+# [*log_limit*]
+#   The iptables log limit. Defaults to '30/m'
+#
+# [*log_level*]
+#   The desired default iptables log level. Defaults to 4
+#   numeric or see syslog.conf(5)
+#
+# [*enableICMPHostProhibited*]
+#   Reject using --reject-with icmp-host-prohibited. Defaults to true
+#
+# [*default_target*]
+#   Default target to use when adding a rule. Defaults to 'ACCEPT'
+#
+# [*default_order*]
+#   Default order parameter to use when adding a new route. Defaults to 5000.
+#
+# [*configure_ipv6_nat*]
+#   Configure NAT chain with IPv6. False by default.
+#   Rationale for this setting and default is that many older versions
+#   of linux and netfilter/iptables don't support the NAT table with
+#   IPv6
+#
+# [*enable_v4*]
+#   Use this module with IPv4. Defaults to true.
+#
+# [*enable_v6*]
+#   Use this module with IPv6. Defaults to false.
+#
+# [*template*]
+#   The template file to use when config=file
+#
+# [*mode*]
+#   Define how you want to manage iptables configuration:
+#   "file" - To provide iptables rules as a normal file
+#   "concat" - To build them up using different fragments
+#      - This option, set as default, permits the use of the iptables::rule define
+#      - and many other funny things
+#
+# Default class params - As defined in iptables::params.
+# Note that these variables are mostly defined and used in the module itself,
+# overriding the default values might not affected all the involved components.
+# Set and override them only if you know what you're doing.
+# Note also that you can't override/set them via top scope variables.
+#
+# [*package*]
+#   The package of the Iptables software.
+#
+# [*version*]
+#   The package version, used in the ensure parameter of package type.
+#   Default: present. Can be 'latest' or a specific version number.
+#   Note that if the argument absent (see below) is set to true, the
+#   package is removed, whatever the value of version parameter.
+#
+# [*service*]
+#   The name of the Iptables service
+#
+# [*service_override_restart*]
+#   To use the distro's built-in service to reload iptables
+#
+# [*service_status*]
+#   If the standard42 service init script supports status argument
+#
+# [*service_status_cmd*]
+#   Command to check if the iptables service is running
+#
+# [*config_file*]
+#   The IPv4 config file
+#
+# [*config_file_v6*]
+#   The IPv6 config file
+#
+# [*config_file_mode*]
+#   Main configuration file path mode
+#
+# [*config_file_owner*]
+#   Main configuration file path owner
+#
+# [*config_file_group*]
+#   Main configuration file path group
+#
+# [*absent*]
+#   Set to 'true' to remove package(s) installed by module
+#   Can be defined also by the (top scope) variable $standard42_absent
+#
+# [*disable*]
+#   Set to 'true' to disable service(s) managed by module
+#
+# [*disableboot*]
+#   Set to 'true' to disable service(s) at boot, without checks if it's running
+#   Use this when the service is managed by a tool like a cluster software
+#
+# [*debug*]
+#   Set to 'true' to enable modules debugging
+#
+# [*audit_only*]
+#   Set to 'true' if you don't intend to override existing configuration files
+#   and want to audit the difference between existing files and the ones
+#   managed by Puppet.
+#
+# == Examples
+#
+# Include it to install and manage Iptables
+# It defines package, service, tables, chains, policies and rules.
 #
 # Usage:
-# include iptables
+#
+# See README for details.
+#
+#
+# == Author
+#   Alessandro Franceschi <al@lab42.it/>
+#   Dolf Schimmel - Freeaqingme <dolf@dolfschimmel.nl/>
 #
 class iptables (
   $my_class                 = params_lookup( 'my_class' ),
-  $config                   = params_lookup( 'config' ),
-  $source                   = params_lookup( 'source' ),
-  $template                 = params_lookup( 'template' ),
   $service_autorestart      = params_lookup( 'service_autorestart' , 'global' ),
   $log                      = params_lookup( 'log' ),
   $log_prefix               = params_lookup( 'log_prefix' ),
   $log_limit_burst          = params_lookup( 'log_limit_burst' ),
   $log_limit                = params_lookup( 'log_limit' ),
   $log_level                = params_lookup( 'log_level' ),
-  $safe_ssh                 = params_lookup( 'safe_ssh' ),
   $enableICMPHostProhibited = params_lookup( 'enableICMPHostProhibited' ),
   $default_target           = params_lookup( 'default_target' ),
-  $configure_ipv6_nat       = params_lookup( 'configure_ipv6_nat' ),
   $default_order            = params_lookup( 'default_order' ),
+  $configure_ipv6_nat       = params_lookup( 'configure_ipv6_nat' ),
+  $enable_v4                = params_lookup( 'enable_v4', 'global' ),
+  $enable_v6                = params_lookup( 'enable_v6', 'global' ),
+  $template                 = params_lookup( 'template' ),
+  $mode                     = params_lookup( 'mode' ),
   $package                  = params_lookup( 'package' ),
   $version                  = params_lookup( 'version' ),
   $service                  = params_lookup( 'service' ),
@@ -29,7 +159,7 @@ class iptables (
   $service_status           = params_lookup( 'service_status' ),
   $service_status_cmd       = params_lookup( 'service_status_cmd' ),
   $config_file              = params_lookup( 'config_file' ),
-  $config_file_v6           = params_lookup ('config_file_v6'),
+  $config_file_v6           = params_lookup( 'config_file_v6'),
   $config_file_mode         = params_lookup( 'config_file_mode' ),
   $config_file_owner        = params_lookup( 'config_file_owner' ),
   $config_file_group        = params_lookup( 'config_file_group' ),
@@ -37,8 +167,6 @@ class iptables (
   $disable                  = params_lookup( 'disable' ),
   $disableboot              = params_lookup( 'disableboot' ),
   $debug                    = params_lookup( 'debug' , 'global' ),
-  $enable_v4                = params_lookup( 'enable_v4', 'global' ),
-  $enable_v6                = params_lookup( 'enable_v6', 'global' ),
   $audit_only               = params_lookup( 'audit_only' , 'global' )
   ) inherits iptables::params {
 
@@ -133,6 +261,7 @@ class iptables (
   }
 
   include iptables::rules::default_action
+  include iptables::rules::general
 
   # Todo: For now this always evaluates to false, no service is getting restarted
   if false and ! $bool_service_override_restart {
@@ -179,7 +308,7 @@ class iptables (
   }
 
   # How to manage iptables configuration
-  case $iptables::config {
+  case $iptables::mode {
     'file': { include iptables::file }
     'concat': { 
       if $bool_enable_v4 {

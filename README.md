@@ -3,7 +3,7 @@
 
 This is a Puppet module for iptables based on the second generation layout ("NextGen") of Example42 Puppet Modules.
 
-Made by Alessandro Franceschi / Lab42
+Made by Alessandro Franceschi / Lab42 and Dolf Schimmel - Freeaqingme
 
 Official site: http://www.example42.com
 
@@ -31,37 +31,35 @@ The rules configuration can be made in two ways:
 ## USAGE - Overrides and Customizations
 * Default usage (Concat mode). It follows these defaults:
   * Default policy is ACCEPT (to permit reachability in case of syntax errors)
-  * Last rule of every chain is a DENY as defined by $iptables_block_policy
   * Intermediate rules are generally ACCEPTs
-  * Localhost and established traffic is ALLOWED
+  * Localhost is ALLOWED
 
 So a simple:
 
         class { 'iptables':
         }
 
-  * Allows SSH access on port TCP 22
-  * Allows ping and all ICMP packets
   * Allows localhost and established traffic
   * Allows outbound traffic
-  * Allows multicast and broadcast traffic
-  * Blocks everything else
+  * Reject everything else
+  * Logs all Rejected traffic
 
-
-* Use custom sources for iptables file
-
-        class { 'iptables':
-          config => 'file', # This is needed to activate file mode
-          source => [ "puppet:///modules/lab42/iptables/iptables-${hostname}" , "puppet:///modules/lab42/iptables/iptables" ], 
-        }
-
-
-* Use custom template for iptables file. Note that template and source arguments are alternative. 
+* Sane defaults:
+  The situation where only the iptables class is defined provides a minimal
+  skeleton. When using the Iptables class, consider using the following classes:
 
         class { 'iptables':
-          config => 'file', # This is needed to activate file mode
-          template => 'example42/iptables/iptables.conf.erb',
         }
+
+        include iptables::rules::related_established
+        include iptables::rules::ping
+        include iptables::rules::broadcast
+        include iptables::rules::multicast
+        include iptables::rules::invalid
+
+  In the subsections below you can find what these do and
+  how to modify their behavior.
+
 
 * Automatically include a custom subclass
 
@@ -69,69 +67,257 @@ So a simple:
           my_class => 'iptables::example42',
         }
 
+### Commonly used rules
+
+There is a set of rules provided with the Iptables package that are commonly
+used. They can be found in ./manifests/rules.
+
+#### Broadcast
+
+
+        class { 'iptables':
+        }
+
+        include iptables::rules::broadcast
+
+Beyond all actions described above, this will also allow all incoming broadcast
+traffic (assuming $default_target = 'ACCEPT').
+
+You can also allow it for multiple chains, by providing explicit parameters:
+
+        class { 'iptables':
+        }
+
+        class { 'iptables::rules::broadcast':
+          chains => [ 'INPUT', 'FORWARD' ]
+        }
+
+Options are:
+* $chains The chains to configure this rule in the filter table. 
+  Default: [ 'INPUT' ]
+* $target To accept or deny broadcast traffic.
+  Allowed: ACCEPT, DROP or BLOCK
+  Default: $iptables::default_target (default: ACCEPT)
+* order: The order used to sort rules within the same table/chain with.
+  Default: 7500
+
+#### Default Action
+
+The default_action ruleset is included by default, as it defines the policies
+with each default chain in the Filter Table.
+
+You can override its behavior by explicitly defining the class. E.g. if you'd
+want to drop all outgoing traffic by default you could do:
+
+        class { 'iptables':
+        }
+
+        class { 'iptables::rules::default_action':
+          output_policy => 'drop'
+        }
+
+Options are:
+* $output_policy: Policy to apply in the output chain.
+  Allowed: accept, drop, reject
+  Default: accept
+* $input_policy: Policy to apply in the input chain.
+  Allowed: accept, drop, reject
+  Default: reject
+* $forward_policy: Policy to apply in the forward chain.
+  Allowed: accept, drop, reject
+  Default: reject
+* $log_type: What packets to log.
+  Allowed: dropped, all, none
+  Default: drop
+* $log_input: What packets to log on the input chain.
+  If '' is given, the value of $log_type is used.
+  Allowed: dropped, all, none, ''
+  Default: dropped
+* $log_output: What packets to log on the output chain
+  If '' is given, the value of $log_type is used.
+  Allowed: dropped, all, none
+  Default: dropped
+* $log_forward: What packets to log on the forward chain
+  If '' is given, the value of $log_type is used.
+  Allowed: dropped, all, none
+  Default: dropped
+* $log_prefix: The prefix to use in log messages.
+  Default: $iptables::log_prefix (default: 'iptables')
+* $log_limit_burst: Limit-burst log directive to use.
+  Default: $iptables::log_limit_burst
+* $log_limit: Limit- log directive to use.
+  Default: $iptables::log_limit
+* $log_level: Level log directive to use.
+  Default: $iptables::log_level
+
+#### General
+
+This ruleset is included by default. It allows INPUT and OUTPUT traffic
+on the loopback interface.
+
+#### ICMP
+
+This ruleset allows you to accept or deny ICMP packets. 
+
+        class { 'iptables':
+        }
+
+        include iptables::rules::icmp
+
+Beyond all default actions described above, this will also allow all ICMP
+traffic.
+
+When explicitly defining this class, you can use the following options:
+* $chains The chains to configure this rule in the filter table. 
+  Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
+* $target To accept or deny ICMP traffic.
+  Allowed: ACCEPT, DROP or BLOCK
+  Default: $iptables::default_target (default: ACCEPT)
+* order: The order used to sort rules within the same table/chain with.
+  Default: 7600
+  
+#### Invalid
+
+
+        class { 'iptables':
+        }
+
+        include iptables::rules::invalid
+
+Beyond all actions described above, this will also drop all packets
+that iptables has classified as INVALID
+
+Options are:
+* $chains The chains to configure this rule in the filter table. 
+  Default: [ 'INPUT', 'FORWARD', 'OUTPUT' ]
+* $target To accept or deny broadcast traffic.
+  Allowed: ACCEPT, DROP or BLOCK
+  Default: DROP
+* order: The order used to sort rules within the same table/chain with.
+  Default: 100
+  
+#### PING
+
+This ruleset allows you to accept or deny ICMP packets. 
+
+        class { 'iptables':
+        }
+
+        include iptables::rules::ping
+
+Beyond all default actions described above, this will also allow all Ping
+(icmp type 8) traffic.
+
+When explicitly defining this class, you can use the following options:
+* $chains The chains to configure this rule in the filter table. 
+  Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
+* $target To accept or deny ping traffic.
+  Allowed: ACCEPT, DROP or BLOCK
+  Default: $iptables::default_target (default: ACCEPT)
+* order: The order used to sort rules within the same table/chain with.
+  Default: 7500
+  
+#### Multicast
+
+
+        class { 'iptables':
+        }
+
+        include iptables::rules::multicast
+
+Beyond all actions described above, this will also allow all incoming multicast
+traffic (assuming $default_target = 'ACCEPT').
+
+You can also allow it for multiple chains, by providing explicit parameters:
+
+        class { 'iptables':
+        }
+
+        class { 'iptables::rules::multicast':
+          chains => [ 'INPUT', 'FORWARD' ]
+        }
+
+Options are:
+* $chains The chains to configure this rule in the filter table. 
+  Default: [ 'INPUT' ]
+* $target To accept or deny multicast traffic.
+  Allowed: ACCEPT, DROP or BLOCK
+  Default: $iptables::default_target (default: ACCEPT)
+* order: The order used to sort rules within the same table/chain with.
+  Default: 7500
+  
+#### Related, Established
+
+
+        class { 'iptables':
+        }
+
+        include iptables::rules::related_established
+
+Beyond all actions described above, this will also allow all traffic
+that is RELATED or has been ESTABLISHED (basically all sessions that
+have been approved of when initiating).
+
+Options are:
+* $chains The chains to configure this rule in the filter table. 
+  Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
+* $target To accept or deny related,established traffic.
+  Allowed: ACCEPT, DROP or BLOCK
+  Default: $iptables::default_target (default: ACCEPT)
+* protocol: The protocol to apply this ruleset to.
+  Default: ALL
+* order: The order used to sort rules within the same table/chain with.
+  Default: 7500
+
+
+### FILE BASED CONFIG:
+
+If you're considering to use this mode, make sure to thoroughly review the possibilities
+of the concat mode first. 
+
+* Use custom sources for iptables file
+
+        class { 'iptables':
+          mode => 'file', # This is needed to activate file mode
+          source => [ "puppet:///modules/lab42/iptables/iptables-${hostname}" , "puppet:///modules/lab42/iptables/iptables" ], 
+        }
+
+
+* Use custom template for iptables file. Note that template and source arguments are alternative. 
+
+        class { 'iptables':
+          mode => 'file', # This is needed to activate file mode
+          template => 'example42/iptables/iptables.conf.erb',
+        }
 
 ### CONCAT MODE SPECIFIC USER VARIABLES:
 
-In concat mode some parameters define the general behaviour:
+* $enableICMPHostProhibited *
 
-* $block_policy *
+When a packet is rejected, an ICMP host prohibited packet will be returned if
+set to true.
 
-Define what to do with packets not expressively accepted:
 
-* `drop` (Default) - DROP them silently
-* `reject` - REJECT them with ICMP unreachable
-* `accept` - ACCEPT them (Beware, if you do this you have no firewall :-)
-
-* $icmp_policy *
-
-Define what to to with ICMP packets
-
-* `drop` - DROP them all
-* `safe` - ALLOW all ICMP types except echo & reply (Ping) 
-* `accept` (Default) - ACCEPT them all
-
-* $output_policy *
-
-Define what to to with outbound packets
-* `drop` - DROP them (except for established and localhost 
-* `accept` (Default) - ACCEPT them 
-
+#### Logging
 * $log *
 
 Define what you what to log (`all` | `dropped` | `none`)
 
+* $log_prefix *
+
+The prefix to use for logged lines. Defaults to 'iptables'
+
+* $log_limit_burst *
+
+The iptables log limit-burst directive. Defaults to 10
+
+* $log_limit*
+
+The iptables log limit. Defaults to '30/m'
+
 * $log_level *
 
 Define the level of logging (numeric or see `syslog.conf(5)`)
-
-* $safe_ssh *
-
-Define if you want to force the precence of a rule that allows access to SSH port (tcp/22).
-
-* $broadcast_policy *
-
-Define what to do with INPUT broadcast packets
-
-* `drop` - Treat them with the $iptables_block_policy 
-* `accept` (Default) - Expressely ACCEPT them
-
-* $multicast_policy * 
-
-Define what to do with INPUT multicast
-
-* "drop" - Treat them with the $iptables_block_policy
-* "accept" (Default) - Expressely ACCEPT them
-
-So for example for a stricter setup, compared to default:
-
-        class { 'iptables':
-          config           => 'concat', # This enforces concat mode (Default value)
-          safe_ssh         => false,
-          broadcast_policy => 'drop',
-          multicast_policy => 'drop',
-          icmp_policy      => 'drop',
-          output_policy    => 'drop',
-        }
 
 ### IPv6 specific configuration
 In order to enable IPv6 there have to be configured two parts:
@@ -198,16 +384,56 @@ If you have a single node from where you want to ensure access you can also do s
 
         firewall { 'alfa': source => '42.42.42.42', }
 
-## Changelog
 
-###Version 3.0 - TBD (Oct. 2013?)
+### A note on ordering of firewall rules
 
+In the world of firewalling, the order of rules matters, and is the case with
+Iptables. Whenever a packet matches within a chain, further processing of that
+chain is aborted (except for some notable exceptions like the LOG target). 
 
-    
-###Version 2.1 - May 2013
+Therefore, it's a common- and best-practice to put the most specific rules on
+top of your firewall configuration, and the least specific ones on the bottom.
 
-###Version 2.0 - January 2013    
+To accomodate this, within the Iptables module each rule has an $order
+parameter that should be between 1 and 10000. The order indexes don't have to
+be used as unique, however. Say you want to allow all traffic to your SSH and
+Webserver, you could use two rules that have the same order index:
+        5000        -A INPUT -p tcp --dport 22 -J ACCEPT
+        5000        -A INPUT -p tcp --dport 80 -j ACCEPT 
+     
+If you want to later add a blaclist, you would have to use different (lower)
+order indexes:
 
-###Version 1.0 - Dec 27 2012
-    The first version of this module was released
-)
+        2000        -A INPUT -p tcp --dport 80 -s 192.168.1.206 -J DROP
+        2000        -A INPUT -p tcp --dport 80 -s 10.0.0.123    -J DROP
+        5000        -A INPUT -p tcp --dport 22 -J ACCEPT
+        5000        -A INPUT -p tcp --dport 80 -j ACCEPT 
+
+It's important to make sure to spread out related rules with plenty of space.
+In the future, you may want to add additional related rules that should go
+between the ones you already have. Spreading them will ensure you don't
+have to reorder your existing rules.
+
+#### Default rules and their order
+
+All rules created by the Iptables module have a default order index that can
+often be overriden if desired. The following scheme has been adhered and
+suggested:
+
+1 - 500 Used for 'initialization' of chains and logging
+          1.  Table definition
+          10. Chain definition
+1000 - 6000 Specific rules
+7000 - 9500 Generic rules
+9500 - 9999 Related to closing the Chain, like default action and COMMIT.
+
+What you consider 'specific' and 'generic' is up to you. A definition could be
+that all rules containing a source address are specific, whereas the others are
+generic.
+
+##### Optimization
+
+Please be aware that you should not order rules with the sole intention of
+optimizing your firewall configuration. Iptables is very fast, and chances
+are very slim that you'll notice any difference in performance by reordering
+rules.
