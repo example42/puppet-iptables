@@ -98,8 +98,18 @@ Options are:
 * $target To accept or deny broadcast traffic.
   Allowed: ACCEPT, DROP or BLOCK
   Default: $iptables::default_target (default: ACCEPT)
-* order: The order used to sort rules within the same table/chain with.
+* $order: The order used to sort rules within the same table/chain with.
   Default: 7500
+* $log: To log packets that match this ruleset.
+  Default: false
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* log_limit_level: The log limit-level iptables directive.
+  Default: $iptables::log_limit_level
 
 #### Default Action
 
@@ -150,10 +160,23 @@ Options are:
 * $log_level: Level log directive to use.
   Default: $iptables::log_level
 
-#### General
+#### Loopback
 
 This ruleset is included by default. It allows INPUT and OUTPUT traffic
 on the loopback interface.
+
+Options:
+* $log: To log packets that match this ruleset.
+  Default: false
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* log_limit_level: The log limit-level iptables directive.
+  Default: $iptables::log_limit_level
+
 
 #### ICMP
 
@@ -174,7 +197,17 @@ When explicitly defining this class, you can use the following options:
   Allowed: ACCEPT, DROP or BLOCK
   Default: $iptables::default_target (default: ACCEPT)
 * order: The order used to sort rules within the same table/chain with.
-  Default: 7600
+  Default: 8500
+* $log: To log packets that match this ruleset.
+  Default: false
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* log_limit_level: The log limit-level iptables directive.
+  Default: $iptables::log_limit_level
   
 #### Invalid
 
@@ -195,6 +228,17 @@ Options are:
   Default: DROP
 * order: The order used to sort rules within the same table/chain with.
   Default: 100
+* $log: To log packets that match this ruleset.
+  Default: true
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* log_limit_level: The log limit-level iptables directive.
+  Default: $iptables::log_limit_level
+
   
 #### PING
 
@@ -215,7 +259,18 @@ When explicitly defining this class, you can use the following options:
   Allowed: ACCEPT, DROP or BLOCK
   Default: $iptables::default_target (default: ACCEPT)
 * order: The order used to sort rules within the same table/chain with.
-  Default: 7500
+  Default: 8250
+* $log: To log packets that match this ruleset.
+  Default: false
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* log_limit_level: The log limit-level iptables directive.
+  Default: $iptables::log_limit_level
+
   
 #### Multicast
 
@@ -245,6 +300,17 @@ Options are:
   Default: $iptables::default_target (default: ACCEPT)
 * order: The order used to sort rules within the same table/chain with.
   Default: 7500
+* $log: To log packets that match this ruleset.
+  Default: false
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* log_limit_level: The log limit-level iptables directive.
+  Default: $iptables::log_limit_level
+
   
 #### Related, Established
 
