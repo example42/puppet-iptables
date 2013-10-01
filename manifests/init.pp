@@ -137,37 +137,38 @@
 #   Dolf Schimmel - Freeaqingme <dolf@dolfschimmel.nl/>
 #
 class iptables (
-  $my_class                 = params_lookup( 'my_class' ),
-  $service_autorestart      = params_lookup( 'service_autorestart' , 'global' ),
-  $log                      = params_lookup( 'log' ),
-  $log_prefix               = params_lookup( 'log_prefix' ),
-  $log_limit_burst          = params_lookup( 'log_limit_burst' ),
-  $log_limit                = params_lookup( 'log_limit' ),
-  $log_level                = params_lookup( 'log_level' ),
-  $rejectWithICMPProhibited = params_lookup( 'rejectWithICMPProhibited' ),
-  $default_target           = params_lookup( 'default_target' ),
-  $default_order            = params_lookup( 'default_order' ),
-  $configure_ipv6_nat       = params_lookup( 'configure_ipv6_nat' ),
-  $enable_v4                = params_lookup( 'enable_v4', 'global' ),
-  $enable_v6                = params_lookup( 'enable_v6', 'global' ),
-  $template                 = params_lookup( 'template' ),
-  $mode                     = params_lookup( 'mode' ),
-  $package                  = params_lookup( 'package' ),
-  $version                  = params_lookup( 'version' ),
-  $service                  = params_lookup( 'service' ),
-  $service_override_restart = params_lookup( 'service_override_restart' ),
-  $service_status           = params_lookup( 'service_status' ),
-  $service_status_cmd       = params_lookup( 'service_status_cmd' ),
-  $config_file              = params_lookup( 'config_file' ),
-  $config_file_v6           = params_lookup( 'config_file_v6'),
-  $config_file_mode         = params_lookup( 'config_file_mode' ),
-  $config_file_owner        = params_lookup( 'config_file_owner' ),
-  $config_file_group        = params_lookup( 'config_file_group' ),
-  $absent                   = params_lookup( 'absent' ),
-  $disable                  = params_lookup( 'disable' ),
-  $disableboot              = params_lookup( 'disableboot' ),
-  $debug                    = params_lookup( 'debug' , 'global' ),
-  $audit_only               = params_lookup( 'audit_only' , 'global' )
+  $my_class                 = '',
+  $service_autorestart      = true,
+  $log                      = 'drop',
+  $log_prefix               = 'iptables',
+  $log_limit_burst          = 10,
+  $log_limit                = '30/m',
+  $log_level                = 4,
+  $rejectWithICMPProhibited = true,
+  $default_target           = 'ACCEPT',
+  $default_order            = 5000,
+  $enable_v4                = true,
+  $enable_v6                = true,
+  $template                 = '',
+  $mode                     = 'concat',
+  $version                  = 'present',
+  $package                  = $iptables::params::package,
+  $configure_ipv6_nat       = $iptables::params::configure_ipv6_nat,
+  $service                  = $iptables::params::service,
+  $service_override_restart = $iptables::params::service_override_restart,
+  $service_status           = $iptables::params::service_status,
+  $service_status_cmd       = $iptables::params::service_status_cmd,
+  $config_file              = $iptables::params::config_file,
+  $config_file_v6           = $iptables::params::config_file_v6,
+  $config_file_mode         = '0640',
+  $config_file_owner        = 'root',
+  $config_file_group        = 'root',
+  $source                   = '',
+  $absent                   = false,
+  $disable                  = false,
+  $disableboot              = false,
+  $debug                    = false,
+  $audit_only               = false
   ) inherits iptables::params {
 
   $bool_service_autorestart = any2bool($service_autorestart)
@@ -210,7 +211,7 @@ class iptables (
     true    => 'REJECT --reject-with icmp-host-prohibited',
     false   => 'REJECT'
   }
-  
+
   $reject_string_v6 = any2bool($rejectWithICMPProhibited) ? {
     true    => 'REJECT --reject-with icmp6-adm-prohibited',
     false   => 'REJECT'

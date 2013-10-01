@@ -17,7 +17,7 @@ Construct the Explicit Matches hash map for the Iptables module
     explicit_matches_str = ""
 
     explicit_matches.each do |m, params|
-    
+
       if m[-3, 3] == "_v#{unactive_version}" or ! explicit_matches["#{m}_v#{active_version}"].nil? or m[-3, 3] == "_v#{unactive_version}"
         next
       elsif m[-3, 3] == "_v#{active_version}"

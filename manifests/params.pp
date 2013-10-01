@@ -9,32 +9,8 @@ class iptables::params  {
   $osver = split($::operatingsystemrelease, '[.]')
   $osver_maj = $osver[0]
 
-## DEFAULTS FOR VARIABLES USERS CAN SET
-
-
-  $my_class = ''
-  $service_autorestart = true
-
-  $log             = 'drop'
-  $log_prefix      = 'iptables'
-  $log_limit_burst = 10
-  $log_limit       = '30/m'
-  $log_level       = '4'
-
-  $rejectWithICMPProhibited = true
-  $default_target = 'ACCEPT'
-  $default_order = '5000'
+  # This should be dependent on the kernel, netfilter version and capabilities
   $configure_ipv6_nat = false
-
-  $enable_v4 = true
-  $enable_v6 = true
-
-  $template = ''
-  $mode = 'concat'
-
-
-## MODULE INTERNAL VARIABLES
-# (Modify to adapt to unsupported OSes)
 
   $package = $::operatingsystem ? {
     default => 'iptables',
@@ -100,14 +76,6 @@ class iptables::params  {
   $config_file_group = $::operatingsystem ? {
     default => 'root',
   }
-
-  $source = ''
-  $version = 'present'
-  $absent = false
-  $disable = false
-  $disableboot = false
-  $debug = false
-  $audit_only = false
 
   ## FILE SERVING SOURCE
   case $::base_source {
