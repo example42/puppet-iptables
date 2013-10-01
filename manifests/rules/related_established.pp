@@ -22,7 +22,7 @@ class iptables::rules::related_established (
       log_prefix      => $log_prefix,
       log_limit_burst => $log_limit_burst,
       log_limit       => $log_limit,
-      log_level       => $log_level      
+      log_level       => $log_level
     }
   }
 

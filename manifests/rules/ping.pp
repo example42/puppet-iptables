@@ -21,7 +21,7 @@ class iptables::rules::ping (
       log_prefix       => $log_prefix,
       log_limit_burst  => $log_limit_burst,
       log_limit        => $log_limit,
-      log_level        => $log_level      
+      log_level        => $log_level
     }
   }
 

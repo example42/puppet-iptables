@@ -21,7 +21,7 @@
 #                   By default this is automatically calculated if you want to
 #                   set it be sure of what you're doing and check
 #                   iptables::concat to see current order numbers in order to
-#                   avoid building a wrong iptables rule file 
+#                   avoid building a wrong iptables rule file
 # $rule           - A custom iptables rule (in whatever iptables supported
 #                   format). Use this as an alternative to the use of the
 #                   above $protocol, $port, $source and $destination parameters.
@@ -65,7 +65,7 @@ define iptables::rule (
 
   include iptables
   include concat::setup
-  
+
   $bool_enable_v4 = any2bool($enable_v4)
   $bool_enable_v6 = any2bool($enable_v6)
   $ensure         = bool2ensure($enable)
@@ -76,19 +76,19 @@ define iptables::rule (
     ''      => inline_template("<%= scope.lookupvar('iptables::default_order').to_s.rjust(4, '0') %>"),
     default => inline_template("<%= @order.to_s.rjust(4, '0') %>")
   }
-  
+
   if $in_interface != '' {
     $discard_1= inline_template('<% @implicit_matches["in-interface"] = @in_interface %>')
   }
- 
+
   if $out_interface != '' {
     $discard_2 = inline_template('<% @implicit_matches["out-interface"] = @out_interface %>')
   }
-  
+
   if $protocol != '' {
     $discard_3 = inline_template('<% @implicit_matches["protocol"] = @protocol %>')
   }
-  
+
   if $port != '' {
     $discard_4 = inline_template('<% @implicit_matches["destination-port"] = @port %>')
   }
@@ -105,7 +105,7 @@ define iptables::rule (
   }
 
   if $log {
-    
+
     $log_explicit_matches = $explicit_matches + {'limit' => {'limit-burst' => $log_limit_burst } }
 
     iptables::rule { "${name}-10":
@@ -134,7 +134,7 @@ define iptables::rule (
     $source_x_destination_v4 = iptables_cartesian_product($source, $destination)
 
     $source_x_destination_v4.each |$src_dst| {
-      
+
       $implicit_matches_rule = $implicit_matches
 
       if $src_dst[0] != '' {
@@ -159,12 +159,12 @@ define iptables::rule (
     }
 
   }
-  
+
   if $bool_enable_v6 {
     $source_x_destination_v6 = iptables_cartesian_product($source_v6, $destination_v6)
-    
+
     $source_x_destination_v6.each |$src_dst| {
-      
+
       $implicit_matches_rule = $implicit_matches
 
       if $src_dst[0] != '' {
@@ -187,7 +187,7 @@ define iptables::rule (
         notify  => Service['iptables'],
       }
     }
-          
+
   }
 
 }

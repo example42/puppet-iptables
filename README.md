@@ -17,10 +17,10 @@ This module requires functions provided by the Example42 Puppi module (you need 
 This module manages iptables.
 In order to have functionality and flexibility some design decisions have been enforced:
 
-* Rules are based on a iptables-save format file. 
+* Rules are based on a iptables-save format file.
 * On RedHat/Centos systems it has been followed the standard iptables service approach
 * On Debian/Ubuntu the same approach is achived via the iptables-persistent package
-* Custom firewall solutions and builders are ignored or disabled (Shorewall, Ufw...) 
+* Custom firewall solutions and builders are ignored or disabled (Shorewall, Ufw...)
 
 The rules configuration can be made in two ways:
 
@@ -47,16 +47,16 @@ So a simple:
 * Sane defaults:
   The situation where only the iptables class is defined provides a minimal
   skeleton. When using the Iptables class, consider using the following classes:
-        
+
         class { 'iptables':
         }
-        
+
         include iptables::rules::related_established
         include iptables::rules::ping
         include iptables::rules::broadcast
         include iptables::rules::multicast
         include iptables::rules::invalid
-        
+
   In the subsections below you can find what these do and
   how to modify their behavior.
 
@@ -93,7 +93,7 @@ You can also allow it for multiple chains, by providing explicit parameters:
         }
 
 Options are:
-* $chains The chains to configure this rule in the filter table. 
+* $chains The chains to configure this rule in the filter table.
   Default: [ 'INPUT' ]
 * $target To accept or deny broadcast traffic.
   Allowed: ACCEPT, DROP or BLOCK
@@ -180,7 +180,7 @@ Options:
 
 #### ICMP
 
-This ruleset allows you to accept or deny ICMP packets. 
+This ruleset allows you to accept or deny ICMP packets.
 
         class { 'iptables':
         }
@@ -191,7 +191,7 @@ Beyond all default actions described above, this will also allow all ICMP
 traffic.
 
 When explicitly defining this class, you can use the following options:
-* $chains The chains to configure this rule in the filter table. 
+* $chains The chains to configure this rule in the filter table.
   Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
 * $target To accept or deny ICMP traffic.
   Allowed: ACCEPT, DROP or BLOCK
@@ -208,7 +208,7 @@ When explicitly defining this class, you can use the following options:
   Default: $iptables::log_limit
 * $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
-  
+
 #### Invalid
 
 
@@ -221,7 +221,7 @@ Beyond all actions described above, this will also drop all packets
 that iptables has classified as INVALID
 
 Options are:
-* $chains The chains to configure this rule in the filter table. 
+* $chains The chains to configure this rule in the filter table.
   Default: [ 'INPUT', 'FORWARD', 'OUTPUT' ]
 * $target To accept or deny broadcast traffic.
   Allowed: ACCEPT, DROP or BLOCK
@@ -239,10 +239,10 @@ Options are:
 * $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
-  
+
 #### PING
 
-This ruleset allows you to accept or deny ICMP packets. 
+This ruleset allows you to accept or deny ICMP packets.
 
         class { 'iptables':
         }
@@ -253,7 +253,7 @@ Beyond all default actions described above, this will also allow all Ping
 (icmp type 8) traffic.
 
 When explicitly defining this class, you can use the following options:
-* $chains The chains to configure this rule in the filter table. 
+* $chains The chains to configure this rule in the filter table.
   Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
 * $target To accept or deny ping traffic.
   Allowed: ACCEPT, DROP or BLOCK
@@ -271,7 +271,7 @@ When explicitly defining this class, you can use the following options:
 * $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
-  
+
 #### Multicast
 
 
@@ -293,7 +293,7 @@ You can also allow it for multiple chains, by providing explicit parameters:
         }
 
 Options are:
-* $chains The chains to configure this rule in the filter table. 
+* $chains The chains to configure this rule in the filter table.
   Default: [ 'INPUT' ]
 * $target To accept or deny multicast traffic.
   Allowed: ACCEPT, DROP or BLOCK
@@ -311,7 +311,7 @@ Options are:
 * $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
-  
+
 #### Related, Established
 
 
@@ -325,7 +325,7 @@ that is RELATED or has been ESTABLISHED (basically all sessions that
 have been approved of when initiating).
 
 Options are:
-* $chains The chains to configure this rule in the filter table. 
+* $chains The chains to configure this rule in the filter table.
   Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
 * $target To accept or deny related,established traffic.
   Allowed: ACCEPT, DROP or BLOCK
@@ -339,17 +339,17 @@ Options are:
 ### FILE BASED CONFIG:
 
 If you're considering to use this mode, make sure to thoroughly review the possibilities
-of the concat mode first. 
+of the concat mode first.
 
 * Use custom sources for iptables file
 
         class { 'iptables':
           mode => 'file', # This is needed to activate file mode
-          source => [ "puppet:///modules/lab42/iptables/iptables-${hostname}" , "puppet:///modules/lab42/iptables/iptables" ], 
+          source => [ "puppet:///modules/lab42/iptables/iptables-${hostname}" , "puppet:///modules/lab42/iptables/iptables" ],
         }
 
 
-* Use custom template for iptables file. Note that template and source arguments are alternative. 
+* Use custom template for iptables file. Note that template and source arguments are alternative.
 
         class { 'iptables':
           mode => 'file', # This is needed to activate file mode
@@ -392,24 +392,24 @@ In order to enable IPv6 there have to be configured two parts:
             enable_v6 => true,
           }
 - then iptables::rules can be IPv6 enabled also:
-        iptables::rule { 'http': 
+        iptables::rule { 'http':
           port       => '80',
           protocol   => 'tcp',
           enable_v6  => true,
         }
-        
-If specific source / destination adresses should be used, a definition will look like: 
+
+If specific source / destination adresses should be used, a definition will look like:
         iptables::rule { 'http':
           source          => '10.42.0.0/24',
           source_v6       => '2001:0db8:3c4d:0015:0000:0000:abcd:ef12',
           destination     => '$ipaddress_eth0',
-          destination_v6  => '2001:470:27:37e::2/64', 
+          destination_v6  => '2001:470:27:37e::2/64',
           port            => '80',
           protocol        => 'tcp',
           enable_v6       => true,
         }
 
-### Usage of iptables module with Example42 automatic firewalling 
+### Usage of iptables module with Example42 automatic firewalling
 
 The concat mode of this module is particularly useful when used with Example42's
 automatic firewalling features.
@@ -455,7 +455,7 @@ If you have a single node from where you want to ensure access you can also do s
 
 In the world of firewalling, the order of rules matters, and is the case with
 Iptables. Whenever a packet matches within a chain, further processing of that
-chain is aborted (except for some notable exceptions like the LOG target). 
+chain is aborted (except for some notable exceptions like the LOG target).
 
 Therefore, it's a common- and best-practice to put the most specific rules on
 top of your firewall configuration, and the least specific ones on the bottom.
@@ -465,15 +465,15 @@ parameter that should be between 1 and 10000. The order indexes don't have to
 be used as unique, however. Say you want to allow all traffic to your SSH and
 Webserver, you could use two rules that have the same order index:
         5000        -A INPUT -p tcp --dport 22 -J ACCEPT
-        5000        -A INPUT -p tcp --dport 80 -j ACCEPT 
-     
+        5000        -A INPUT -p tcp --dport 80 -j ACCEPT
+
 If you want to later add a blaclist, you would have to use different (lower)
 order indexes:
 
         2000        -A INPUT -p tcp --dport 80 -s 192.168.1.206 -J DROP
         2000        -A INPUT -p tcp --dport 80 -s 10.0.0.123    -J DROP
         5000        -A INPUT -p tcp --dport 22 -J ACCEPT
-        5000        -A INPUT -p tcp --dport 80 -j ACCEPT 
+        5000        -A INPUT -p tcp --dport 80 -j ACCEPT
 
 It's important to make sure to spread out related rules with plenty of space.
 In the future, you may want to add additional related rules that should go

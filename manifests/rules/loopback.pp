@@ -17,7 +17,7 @@ class iptables::rules::loopback(
       log_prefix      => $log_prefix,
       log_limit_burst => $log_limit_burst,
       log_limit       => $log_limit,
-      log_level       => $log_level      
+      log_level       => $log_level
     }
 
     iptables::rule { "example42-general-filter-output-loopback":
@@ -30,7 +30,7 @@ class iptables::rules::loopback(
       log_prefix      => $log_prefix,
       log_limit_burst => $log_limit_burst,
       log_limit       => $log_limit,
-      log_level       => $log_level      
+      log_level       => $log_level
     }
   }
 

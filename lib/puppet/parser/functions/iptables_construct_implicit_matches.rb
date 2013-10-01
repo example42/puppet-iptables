@@ -11,11 +11,11 @@ Construct the Implicit Matches hash map for the Iptables module
     # Todo: Check the type of input arg
     implicit_matches = arguments[0]
     is_ipv6 = arguments[1]
-    
+
     active_version   = is_ipv6 ? '6' : '4'
     unactive_version = is_ipv6 ? '4' : '6'
     implicit_matches_str = ""
-    
+
     implicit_matches.each do |k, v|
       if k == 'invert' or k[-3, 3] == "_v#{unactive_version}" or ! implicit_matches["#{k}_v#{active_version}"].nil? or k[-3, 3] == '_v#{unactive_version}'
         next
@@ -34,7 +34,7 @@ Construct the Implicit Matches hash map for the Iptables module
         implicit_matches_str << "--#{k} #{invert} #{v} "
       end
     end
-   
+
     return implicit_matches_str
   end
 end

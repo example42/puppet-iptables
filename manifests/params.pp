@@ -8,10 +8,10 @@ class iptables::params  {
   ### Definition of some variables used in the module
   $osver = split($::operatingsystemrelease, '[.]')
   $osver_maj = $osver[0]
-  
+
 ## DEFAULTS FOR VARIABLES USERS CAN SET
 
-  
+
   $my_class = ''
   $service_autorestart = true
 
@@ -28,10 +28,10 @@ class iptables::params  {
 
   $enable_v4 = true
   $enable_v6 = false
-  
+
   $template = ''
   $mode = 'concat'
-  
+
 
 ## MODULE INTERNAL VARIABLES
 # (Modify to adapt to unsupported OSes)
@@ -44,7 +44,7 @@ class iptables::params  {
     /(?i:Debian|Ubuntu|Mint)/ => 'iptables-persistent',
     default                   => 'iptables',
   }
-  
+
   # use "$service restart" to load new firewall rules?
   $service_override_restart = $::operatingsystem ? {
     /(?i:Ubuntu)/ => 'false', # Don't know about other distro's. Who does?
@@ -100,7 +100,7 @@ class iptables::params  {
   $config_file_group = $::operatingsystem ? {
     default => 'root',
   }
-  
+
   $source = ''
   $version = 'present'
   $absent = false

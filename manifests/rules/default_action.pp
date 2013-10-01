@@ -42,7 +42,7 @@ class iptables::rules::default_action (
     'REJECT'  => $iptables::reject_string,
     default   => fail("Improper 'forward_policy' value given to iptables: ${forward_policy}")
   }
-  
+
   $real_log_type = $log_type ? {
     'dropped' => 'drop',
     'drop'    => 'drop',
@@ -92,7 +92,7 @@ class iptables::rules::default_action (
       default  => true
     }
   }
-    
+
   $bool_log_input = $real_log_input ? {
     'no'    => false,
     default => $real_input_policy ? {
@@ -100,7 +100,7 @@ class iptables::rules::default_action (
       default  => true
     }
   }
-  
+
   $bool_log_forward = $real_log_forward ? {
     'no'    => false,
     default => $real_forward_policy ? {
@@ -144,7 +144,7 @@ class iptables::rules::default_action (
     log_limit       => $log_limit,
     log_level       => $log_level,
   }
-  
+
   if $log_output == 'all' {
     iptables::rule { "example42-rules-default_action-output-log":
       table           => 'filter',
@@ -157,7 +157,7 @@ class iptables::rules::default_action (
       log_level       => $log_level,
     }
   }
-  
+
   if $log_input == 'all' {
     iptables::rule { "example42-rules-default_action-input-log":
       table           => 'filter',
@@ -170,7 +170,7 @@ class iptables::rules::default_action (
       log_level       => $log_level,
     }
   }
-  
+
   if $log_forward == 'all' {
     iptables::rule { "example42-rules-default_action-forward-log":
       table           => 'filter',

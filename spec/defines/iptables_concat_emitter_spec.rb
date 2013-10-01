@@ -9,6 +9,6 @@ describe 'iptables::concat_emitter' do
         'is_ipv6'         => true,
       }
     }
-    
+
   it { should contain_concat__fragment('iptables_filter_input_footer_v6').with_content("-A INPUT -p icmpv6 -j ACCEPT\n-A INPUT -m pkttype --pkt-type broadcast -j ACCEPT\n-A INPUT -m pkttype --pkt-type multicast -j ACCEPT\n-A INPUT -j LOG --log-level 4 --log-prefix \"INPUT DROP: \"\n-A INPUT -j DROP\n") }
 end

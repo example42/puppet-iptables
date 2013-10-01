@@ -205,12 +205,12 @@ class iptables (
       default => 'running',
     },
   }
-  
+
   $reject_string = any2bool($enableICMPHostProhibited) ? {
     true    => 'REJECT --reject-with icmp-host-prohibited',
     false   => 'REJECT'
   }
-  
+
   $manage_service_autorestart = $iptables::bool_service_autorestart ? {
     true    => Service[iptables],
     false   => undef,
@@ -220,7 +220,7 @@ class iptables (
     true    => 'absent',
     default => 'present',
   }
-  
+
   $manage_directory = $iptables::bool_absent ? {
     true    => 'absent',
     default => 'directory',
@@ -245,9 +245,9 @@ class iptables (
     ''        => undef,
     default   => template($iptables::template),
   }
-  
+
   $real_safe_ssh = any2bool($safe_ssh)
-  
+
   case $::operatingsystem {
     debian: { require iptables::debian }
     ubuntu: { require iptables::debian }
@@ -274,7 +274,7 @@ class iptables (
       require    => Package['iptables']
    }
  } else {
-    
+
 #    $cmd_restart_v4 = inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>')
 #    $cmd_restart_v6 = inline_template('ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>')
 #
@@ -287,7 +287,7 @@ class iptables (
 #    }
 
     $cmd_restart = '/bin/true'
-    
+
     service { 'iptables':
       ensure     => $iptables::manage_service_ensure,
       name       => $iptables::service,
@@ -310,14 +310,14 @@ class iptables (
   # How to manage iptables configuration
   case $iptables::mode {
     'file': { include iptables::file }
-    'concat': { 
+    'concat': {
       if $bool_enable_v4 {
         iptables::concat_emitter { 'v4':
           emitter_target  => $iptables::config_file,
           is_ipv6         => false,
         }
       }
-      if $bool_enable_v6 { 
+      if $bool_enable_v6 {
         iptables::concat_emitter { 'v6':
           emitter_target  => $iptables::config_file_v6,
           is_ipv6         => true,

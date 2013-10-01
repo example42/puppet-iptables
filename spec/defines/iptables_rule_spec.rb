@@ -22,7 +22,7 @@ describe 'iptables::rule' do
       'array_destination' => ['2.3.4.5']
     ) }
   end
-  
+
    describe 'Test iptables::rule with ip as array' do
     let(:params) {
       { 'source'        => ['1.2.3.4'],
@@ -54,7 +54,7 @@ describe 'iptables::rule' do
     it { should contain_concat__fragment( "iptables_rule_iptable1" ) }
     it { should_not contain_concat__fragment( "iptables_rule_v6_iptable1" ) }
   end
-  
+
   describe 'Test iptables::rule for v4 and v6' do
     let(:params) {
       { 'source'        => ['1.2.3.4'],
@@ -67,7 +67,7 @@ describe 'iptables::rule' do
         'debug'         => true
       }
     }
-    
+
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'true_protocol'   => '-p tcp',
       'array_source_v6' => ['fe80::a00:27ff:fea4:b70e'],
@@ -80,7 +80,7 @@ describe 'iptables::rule' do
       'target'  => '/etc/iptables/rules.v6'
     ) }
   end
-  
+
   describe 'Test iptables::rule with port and protocol only' do
     let(:params) {
       { 'source'          => '',
@@ -93,7 +93,7 @@ describe 'iptables::rule' do
         'debug'         => true
       }
     }
-    
+
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'true_protocol'   => '-p tcp',
       'true_source'     => '',
@@ -107,6 +107,6 @@ describe 'iptables::rule' do
     it { should contain_concat__fragment( "iptables_rule_v6_iptable1" ).with(
       'target'  => '/etc/iptables/rules.v6'
       #'content' => '-A INPUT -p tcp --dport 80 -j ACCEPT\\n',
-    ) } 
+    ) }
   end
 end

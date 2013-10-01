@@ -53,7 +53,7 @@ define iptables::concat_emitter(
   if !$is_ipv6 or ( $is_ipv6 and $iptables::configure_ipv6_nat ) {
     # Linux did not use to support NAT on IPv6. You'll have to declare thse
     # items yourself explicitly if your kernel and Netfilter does support this.
-    # Feel free to write (and contribute back!) a mechanism that actually 
+    # Feel free to write (and contribute back!) a mechanism that actually
     # does support this. Thank you! ;-)
 
     iptables::table { "v${ip_version}_nat":
@@ -65,7 +65,7 @@ define iptables::concat_emitter(
     }
 
   }
-  
+
   iptables::table { "v${ip_version}_mangle":
     emitter_target => $emitter_target,
     order          => 65,
@@ -73,5 +73,5 @@ define iptables::concat_emitter(
     ip_version     => $ip_version,
     chains         => [ 'PREROUTING', 'INPUT', 'FORWARD', 'OUTPUT', 'POSTROUTING' ]
   }
-    
+
 }
