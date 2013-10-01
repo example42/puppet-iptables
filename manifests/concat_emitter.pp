@@ -3,10 +3,6 @@
 #
 # This class builds the iptables rule file using RIPienaar's concat module
 # We build it using several fragments.
-# Being the sequence of lines important we define these boundaries:
-# 01 - General header
-# Note that the iptables::rule define
-# inserts (by default) its rules with priority 50.
 #
 define iptables::concat_emitter(
   $emitter_target,
@@ -15,11 +11,6 @@ define iptables::concat_emitter(
 
   include iptables
   include concat::setup
-
-  $real_icmp_port = $is_ipv6 ? {
-    true    => '-p icmpv6',
-    default => '-p icmp',
-  }
 
   $ip_version = $is_ipv6 ? {
     true  => 6,
@@ -72,6 +63,14 @@ define iptables::concat_emitter(
     table_name     => 'mangle',
     ip_version     => $ip_version,
     chains         => [ 'PREROUTING', 'INPUT', 'FORWARD', 'OUTPUT', 'POSTROUTING' ]
+  }
+
+  iptables::table { "v${ip_version}_raw":
+    emitter_target => $emitter_target,
+    order          => 65,
+    table_name     => 'raw',
+    ip_version     => $ip_version,
+    chains         => [ 'PREROUTING', 'OUTPUT' ]
   }
 
 }

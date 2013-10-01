@@ -30,7 +30,7 @@
 #   The desired default iptables log level. Defaults to 4
 #   numeric or see syslog.conf(5)
 #
-# [*enableICMPHostProhibited*]
+# [*rejectWithICMPProhibited*]
 #   Reject using --reject-with icmp-host-prohibited. Defaults to true
 #
 # [*default_target*]
@@ -144,7 +144,7 @@ class iptables (
   $log_limit_burst          = params_lookup( 'log_limit_burst' ),
   $log_limit                = params_lookup( 'log_limit' ),
   $log_level                = params_lookup( 'log_level' ),
-  $enableICMPHostProhibited = params_lookup( 'enableICMPHostProhibited' ),
+  $rejectWithICMPProhibited = params_lookup( 'rejectWithICMPProhibited' ),
   $default_target           = params_lookup( 'default_target' ),
   $default_order            = params_lookup( 'default_order' ),
   $configure_ipv6_nat       = params_lookup( 'configure_ipv6_nat' ),
@@ -206,8 +206,13 @@ class iptables (
     },
   }
 
-  $reject_string = any2bool($enableICMPHostProhibited) ? {
+  $reject_string_v4 = any2bool($rejectWithICMPProhibited) ? {
     true    => 'REJECT --reject-with icmp-host-prohibited',
+    false   => 'REJECT'
+  }
+  
+  $reject_string_v6 = any2bool($rejectWithICMPProhibited) ? {
+    true    => 'REJECT --reject-with icmp6-adm-prohibited',
     false   => 'REJECT'
   }
 
@@ -246,8 +251,6 @@ class iptables (
     default   => template($iptables::template),
   }
 
-  $real_safe_ssh = any2bool($safe_ssh)
-
   case $::operatingsystem {
     debian: { require iptables::debian }
     ubuntu: { require iptables::debian }
@@ -275,18 +278,16 @@ class iptables (
    }
  } else {
 
-#    $cmd_restart_v4 = inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>')
-#    $cmd_restart_v6 = inline_template('ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>')
-#
-#    if $bool_enable_v4 and $bool_enable_v6 {
-#      $cmd_restart = "${cmd_restart_v4} && ${cmd_restart_v6}"
-#    } elsif $bool_enable_v4 {
-#      $cmd_restart = $cmd_restart_v4
-#    } else {
-#      $cmd_restart = $cmd_restart_v6
-#    }
+    $cmd_restart_v4 = inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>')
+    $cmd_restart_v6 = inline_template('ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>')
 
-    $cmd_restart = '/bin/true'
+    if $bool_enable_v4 and $bool_enable_v6 {
+      $cmd_restart = "${cmd_restart_v4} && ${cmd_restart_v6}"
+    } elsif $bool_enable_v4 {
+      $cmd_restart = $cmd_restart_v4
+    } else {
+      $cmd_restart = $cmd_restart_v6
+    }
 
     service { 'iptables':
       ensure     => $iptables::manage_service_ensure,
@@ -303,8 +304,12 @@ class iptables (
 
   file { [ '/var/lib/puppet/iptables',
            '/var/lib/puppet/iptables/tables/' ]:
-    ensure => $iptables::manage_directory,
-    audit  => $iptables::manage_audit,
+    ensure  => $iptables::manage_directory,
+    audit   => $iptables::manage_audit,
+    mode    => $iptables::config_file_mode,
+    owner   => $iptables::config_file_owner,
+    group   => $iptables::config_file_group,
+    recurse => true
   }
 
   # How to manage iptables configuration

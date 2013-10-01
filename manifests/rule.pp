@@ -131,8 +131,14 @@ define iptables::rule (
   }
 
   if $bool_enable_v4 {
-    $source_x_destination_v4 = iptables_cartesian_product($source, $destination)
 
+    if $target == $iptables::reject_string_v6 {
+      $target_v4 = $iptables::reject_string_v4
+    } else {
+      $target_v4 = $target
+    }
+
+    $source_x_destination_v4 = iptables_cartesian_product($source, $destination)
     $source_x_destination_v4.each |$src_dst| {
 
       $implicit_matches_rule = $implicit_matches
@@ -161,8 +167,14 @@ define iptables::rule (
   }
 
   if $bool_enable_v6 {
-    $source_x_destination_v6 = iptables_cartesian_product($source_v6, $destination_v6)
 
+    if $target == $iptables::reject_string_v4 {
+      $target_v6 = $iptables::reject_string_v6
+    } else {
+      $target_v6 = $target
+    }
+
+    $source_x_destination_v6 = iptables_cartesian_product($source_v6, $destination_v6)
     $source_x_destination_v6.each |$src_dst| {
 
       $implicit_matches_rule = $implicit_matches

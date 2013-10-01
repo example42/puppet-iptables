@@ -13,8 +13,10 @@ class iptables::rules::ping (
     iptables::rule { "example42-ping-filter-${chain}":
       table            => 'filter',
       chain            => $chain,
-      implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'ICMPv6' },
-      explicit_matches => { 'icmp' => { 'icmp-type' => 8 } },
+      implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
+      explicit_matches => { 'icmpv6_v6' => { 'icmpv6-type' => 8 },
+                            'icmp_v4'   => { 'icmp-type' => 8 }
+                          },
       target           => $target,
       order            => $order,
       log              => $log,

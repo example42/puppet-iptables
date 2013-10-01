@@ -21,7 +21,7 @@ class iptables::params  {
   $log_limit       = '30/m'
   $log_level       = '4'
 
-  $enableICMPHostProhibited = true
+  $rejectWithICMPProhibited = true
   $default_target = 'ACCEPT'
   $default_order = '5000'
   $configure_ipv6_nat = false

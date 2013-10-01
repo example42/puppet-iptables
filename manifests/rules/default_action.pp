@@ -18,8 +18,8 @@ class iptables::rules::default_action (
     'DROP'    => 'DROP',
     'accept'  => 'ACCEPT',
     'ACCEPT'  => 'ACCEPT',
-    'reject'  => $iptables::reject_string,
-    'REJECT'  => $iptables::reject_string,
+    'reject'  => $iptables::reject_string_v4,
+    'REJECT'  => $iptables::reject_string_v4,
     default   => fail("Improper 'output_policy' value given to iptables: ${output_policy}")
   }
 
@@ -28,8 +28,8 @@ class iptables::rules::default_action (
     'DROP'    => 'DROP',
     'accept'  => 'ACCEPT',
     'ACCEPT'  => 'ACCEPT',
-    'reject'  => $iptables::reject_string,
-    'REJECT'  => $iptables::reject_string,
+    'reject'  => $iptables::reject_string_v4,
+    'REJECT'  => $iptables::reject_string_v4,
     default   => fail("Improper 'input_policy' value given to iptables: ${input_policy}")
   }
 
@@ -38,8 +38,8 @@ class iptables::rules::default_action (
     'DROP'    => 'DROP',
     'accept'  => 'ACCEPT',
     'ACCEPT'  => 'ACCEPT',
-    'reject'  => $iptables::reject_string,
-    'REJECT'  => $iptables::reject_string,
+    'reject'  => $iptables::reject_string_v4,
+    'REJECT'  => $iptables::reject_string_v4,
     default   => fail("Improper 'forward_policy' value given to iptables: ${forward_policy}")
   }
 

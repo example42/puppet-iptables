@@ -22,7 +22,7 @@ class iptables::rules::icmp (
     iptables::rule { "example42-icmp-filter-${chain}":
       table            => 'filter',
       chain            => $chain,
-      implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'ICMPv6' },
+      implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
       target           => $target,
       order            => $order,
       log              => $log,

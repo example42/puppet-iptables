@@ -17,17 +17,24 @@ Construct the Explicit Matches hash map for the Iptables module
     explicit_matches_str = ""
 
     explicit_matches.each do |m, params|
+    
+      if m[-3, 3] == "_v#{unactive_version}" or ! explicit_matches["#{m}_v#{active_version}"].nil? or m[-3, 3] == "_v#{unactive_version}"
+        next
+      elsif m[-3, 3] == "_v#{active_version}"
+        m = m[0..-4]
+      end
+
       explicit_matches_str << "-m #{m} "
       params.each do |k, v|
 
-        if k == 'invert' or k[-3, 3] == "_v#{unactive_version}" or ! explicit_matches[m]["#{k}_v#{active_version}"].nil? or k[-3, 3] == '_v#{unactive_version}'
+        if k == 'invert' or k[-3, 3] == "_v#{unactive_version}" or ! params["#{k}_v#{active_version}"].nil? or k[-3, 3] == "_v#{unactive_version}"
           next
         elsif k[-3, 3] == "_v#{active_version}"
           k = k[0..-4]
         end
 
         invert = ''
-        if ! explicit_matches[m]['invert'].nil? and implicit_matches[m]['invert'].include?(k)
+        if ! params['invert'].nil? and params['invert'].include?(k)
           invert = '!'
         end
 

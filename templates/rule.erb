@@ -9,7 +9,7 @@ target_options_str   = @target_options.map{|k, v| "--#{k} \"#{v}\""}.join(' ')
 
 -%>
 <%= [   @command, @chain, implicit_matches_str, explicit_matches_str,
-        '-j', @target, target_options_str
+        '-j', (@is_ipv6 ? @target_v6 : @target_v4), target_options_str
     ].join(" ").gsub(/\s+/, ' ')
 %>
 <% end -%>
