@@ -267,7 +267,7 @@ class iptables (
   include iptables::ruleset::loopback
 
   # Todo: For now this always evaluates to false, no service is getting restarted
-  if false and ! $bool_service_override_restart {
+  if ! $bool_service_override_restart {
     service { 'iptables':
       ensure     => $iptables::manage_service_ensure,
       name       => $iptables::service,
