@@ -27,7 +27,7 @@ class iptables::params  {
   $configure_ipv6_nat = false
 
   $enable_v4 = true
-  $enable_v6 = false
+  $enable_v6 = true
 
   $template = ''
   $mode = 'concat'
