@@ -11,16 +11,17 @@ class iptables::rules::ping (
 
   each($chains) |$chain| {
     iptables::rule { "example42-ping-filter-${chain}":
-      table           => 'filter',
-      chain           => $chain,
-      rule            => '-p icmp -m icmp --icmp-type 8',
-      target          => $target,
-      order           => $order,
-      log             => $log,
-      log_prefix      => $log_prefix,
-      log_limit_burst => $log_limit_burst,
-      log_limit       => $log_limit,
-      log_level       => $log_level      
+      table            => 'filter',
+      chain            => $chain,
+      implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'ICMPv6' },
+      explicit_matches => { 'icmp' => { 'icmp-type' => 8 } },
+      target           => $target,
+      order            => $order,
+      log              => $log,
+      log_prefix       => $log_prefix,
+      log_limit_burst  => $log_limit_burst,
+      log_limit        => $log_limit,
+      log_level        => $log_level      
     }
   }
 

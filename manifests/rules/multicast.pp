@@ -11,16 +11,16 @@ class iptables::rules::multicast (
 
   each($chains) |$chain| {
     iptables::rule { "example42-multicast-filter-${chain}":
-      table           => 'filter',
-      chain           => $chain,
-      rule            => '-m pkttype --pkt-type multicast',
-      target          => $target,
-      order           => $order,
-      log             => $log,
-      log_prefix      => $log_prefix,
-      log_limit_burst => $log_limit_burst,
-      log_limit       => $log_limit,
-      log_level       => $log_level
+      table            => 'filter',
+      chain            => $chain,
+      explicit_matches => { 'pkttype' => {'pkt-type' => 'multicast'}},
+      target           => $target,
+      order            => $order,
+      log              => $log,
+      log_prefix       => $log_prefix,
+      log_limit_burst  => $log_limit_burst,
+      log_limit        => $log_limit,
+      log_level        => $log_level
     }
   }
 

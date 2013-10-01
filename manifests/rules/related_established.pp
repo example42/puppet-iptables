@@ -1,7 +1,7 @@
 class iptables::rules::related_established (
   $chains          = [ 'INPUT', 'OUTPUT', 'FORWARD' ],
   $target          = $iptables::default_target,
-  $protocol        = 'ALL',
+  $protocol        = '',
   $order           = 9000,
   $log             = false,
   $log_prefix      = $iptables::log_prefix,
@@ -15,7 +15,7 @@ class iptables::rules::related_established (
       table           => 'filter',
       chain           => $chain,
       protocol        => $protocol,
-      rule            => '-m state --state RELATED,ESTABLISHED',
+      explicit_matches => { 'state' => { 'state' => 'RELATED,ESTABLISHED'} },
       target          => $target,
       order           => $order,
       log             => $log,

@@ -13,7 +13,7 @@ class iptables::rules::broadcast (
     iptables::rule { "example42-broadcast-filter-${chain}":
       table           => 'filter',
       chain           => $chain,
-      rule            => '-m pkttype --pkt-type broadcast',
+      explicit_matches => { 'pkttype' => {'pkt-type' => 'broadcast'}},
       target          => $target,
       order           => $order,
       log             => $log,

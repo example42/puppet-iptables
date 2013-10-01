@@ -47,16 +47,16 @@ So a simple:
 * Sane defaults:
   The situation where only the iptables class is defined provides a minimal
   skeleton. When using the Iptables class, consider using the following classes:
-
+        
         class { 'iptables':
         }
-
+        
         include iptables::rules::related_established
         include iptables::rules::ping
         include iptables::rules::broadcast
         include iptables::rules::multicast
         include iptables::rules::invalid
-
+        
   In the subsections below you can find what these do and
   how to modify their behavior.
 
@@ -104,11 +104,11 @@ Options are:
   Default: false
 * $log_prefix: A prefix for each log line.
   Default: $iptables::log_prefix
-* log_limit_burst: The log limit-burst iptables directive.
+* $log_limit_burst: The log limit-burst iptables directive.
   Default: $iptables::log_limit_burst
-* log_limit: The log limit iptables directive.
+* $log_limit: The log limit iptables directive.
   Default: $iptables::log_limit
-* log_limit_level: The log limit-level iptables directive.
+* $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
 #### Default Action
@@ -170,11 +170,11 @@ Options:
   Default: false
 * $log_prefix: A prefix for each log line.
   Default: $iptables::log_prefix
-* log_limit_burst: The log limit-burst iptables directive.
+* $log_limit_burst: The log limit-burst iptables directive.
   Default: $iptables::log_limit_burst
-* log_limit: The log limit iptables directive.
+* $log_limit: The log limit iptables directive.
   Default: $iptables::log_limit
-* log_limit_level: The log limit-level iptables directive.
+* $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
 
@@ -202,11 +202,11 @@ When explicitly defining this class, you can use the following options:
   Default: false
 * $log_prefix: A prefix for each log line.
   Default: $iptables::log_prefix
-* log_limit_burst: The log limit-burst iptables directive.
+* $log_limit_burst: The log limit-burst iptables directive.
   Default: $iptables::log_limit_burst
-* log_limit: The log limit iptables directive.
+* $log_limit: The log limit iptables directive.
   Default: $iptables::log_limit
-* log_limit_level: The log limit-level iptables directive.
+* $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
   
 #### Invalid
@@ -232,11 +232,11 @@ Options are:
   Default: true
 * $log_prefix: A prefix for each log line.
   Default: $iptables::log_prefix
-* log_limit_burst: The log limit-burst iptables directive.
+* $log_limit_burst: The log limit-burst iptables directive.
   Default: $iptables::log_limit_burst
-* log_limit: The log limit iptables directive.
+* $log_limit: The log limit iptables directive.
   Default: $iptables::log_limit
-* log_limit_level: The log limit-level iptables directive.
+* $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
   
@@ -264,11 +264,11 @@ When explicitly defining this class, you can use the following options:
   Default: false
 * $log_prefix: A prefix for each log line.
   Default: $iptables::log_prefix
-* log_limit_burst: The log limit-burst iptables directive.
+* $log_limit_burst: The log limit-burst iptables directive.
   Default: $iptables::log_limit_burst
-* log_limit: The log limit iptables directive.
+* $log_limit: The log limit iptables directive.
   Default: $iptables::log_limit
-* log_limit_level: The log limit-level iptables directive.
+* $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
   
@@ -304,11 +304,11 @@ Options are:
   Default: false
 * $log_prefix: A prefix for each log line.
   Default: $iptables::log_prefix
-* log_limit_burst: The log limit-burst iptables directive.
+* $log_limit_burst: The log limit-burst iptables directive.
   Default: $iptables::log_limit_burst
-* log_limit: The log limit iptables directive.
+* $log_limit: The log limit iptables directive.
   Default: $iptables::log_limit
-* log_limit_level: The log limit-level iptables directive.
+* $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
 
   

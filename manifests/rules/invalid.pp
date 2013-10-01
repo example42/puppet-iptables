@@ -11,16 +11,16 @@ class iptables::rules::invalid (
 
   each($chains) |$chain| {
     iptables::rule { "example42-invalid-filter-${chain}":
-      table           => 'filter',
-      chain           => $chain,
-      rule            => '-m state --state INVALID',
-      target          => $target,
-      order           => $order,
-      log             => $log,
-      log_prefix      => $log_prefix,
-      log_limit_burst => $log_limit_burst,
-      log_limit       => $log_limit,
-      log_level       => $log_level
+      table            => 'filter',
+      chain            => $chain,
+      explicit_matches => { 'state' => { 'state' => 'INVALID' }},
+      target           => $target,
+      order            => $order,
+      log              => $log,
+      log_prefix       => $log_prefix,
+      log_limit_burst  => $log_limit_burst,
+      log_limit        => $log_limit,
+      log_level        => $log_level
     }
   }
 
