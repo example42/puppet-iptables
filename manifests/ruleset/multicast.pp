@@ -1,8 +1,8 @@
-class iptables::rules::invalid (
-  $chains          = [ 'INPUT', 'FORWARD', 'OUTPUT' ],
-  $target          = 'DROP',
-  $order           = 100,
-  $log             = true,
+class iptables::ruleset::multicast (
+  $chains          = [ 'INPUT' ],
+  $target          = $iptables::default_target,
+  $order           = 7500,
+  $log             = false,
   $log_prefix      = $iptables::log_prefix,
   $log_limit_burst = $iptables::log_limit_burst,
   $log_limit       = $iptables::log_limit,
@@ -10,10 +10,10 @@ class iptables::rules::invalid (
 ) {
 
   each($chains) |$chain| {
-    iptables::rule { "example42-invalid-filter-${chain}":
+    iptables::rule { "example42-multicast-filter-${chain}":
       table            => 'filter',
       chain            => $chain,
-      explicit_matches => { 'state' => { 'state' => 'INVALID' }},
+      explicit_matches => { 'pkttype' => {'pkt-type' => 'multicast'}},
       target           => $target,
       order            => $order,
       log              => $log,

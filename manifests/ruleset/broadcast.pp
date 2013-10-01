@@ -1,8 +1,7 @@
-class iptables::rules::related_established (
-  $chains          = [ 'INPUT', 'OUTPUT', 'FORWARD' ],
+class iptables::ruleset::broadcast (
+  $chains          = [ 'INPUT' ],
   $target          = $iptables::default_target,
-  $protocol        = '',
-  $order           = 9000,
+  $order           = 7500,
   $log             = false,
   $log_prefix      = $iptables::log_prefix,
   $log_limit_burst = $iptables::log_limit_burst,
@@ -11,11 +10,10 @@ class iptables::rules::related_established (
 ) {
 
   each($chains) |$chain| {
-    iptables::rule { "example42-established-filter-${chain}":
+    iptables::rule { "example42-broadcast-filter-${chain}":
       table           => 'filter',
       chain           => $chain,
-      protocol        => $protocol,
-      explicit_matches => { 'state' => { 'state' => 'RELATED,ESTABLISHED'} },
+      explicit_matches => { 'pkttype' => {'pkt-type' => 'broadcast'}},
       target          => $target,
       order           => $order,
       log             => $log,

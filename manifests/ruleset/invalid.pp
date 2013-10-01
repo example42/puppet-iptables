@@ -1,8 +1,8 @@
-class iptables::rules::multicast (
-  $chains          = [ 'INPUT' ],
-  $target          = $iptables::default_target,
-  $order           = 7500,
-  $log             = false,
+class iptables::ruleset::invalid (
+  $chains          = [ 'INPUT', 'FORWARD', 'OUTPUT' ],
+  $target          = 'DROP',
+  $order           = 100,
+  $log             = true,
   $log_prefix      = $iptables::log_prefix,
   $log_limit_burst = $iptables::log_limit_burst,
   $log_limit       = $iptables::log_limit,
@@ -10,10 +10,10 @@ class iptables::rules::multicast (
 ) {
 
   each($chains) |$chain| {
-    iptables::rule { "example42-multicast-filter-${chain}":
+    iptables::rule { "example42-invalid-filter-${chain}":
       table            => 'filter',
       chain            => $chain,
-      explicit_matches => { 'pkttype' => {'pkt-type' => 'multicast'}},
+      explicit_matches => { 'state' => { 'state' => 'INVALID' }},
       target           => $target,
       order            => $order,
       log              => $log,

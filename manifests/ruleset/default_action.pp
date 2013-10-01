@@ -1,5 +1,5 @@
 
-class iptables::rules::default_action (
+class iptables::ruleset::default_action (
   $output_policy  = 'accept',
   $input_policy   = 'reject',
   $forward_policy = 'reject',
@@ -49,7 +49,7 @@ class iptables::rules::default_action (
     'none'    => 'no',
     'no'      => 'no',
     'all'     => 'no',
-    default   => fail("Improper 'log_type' value given to iptables::rules::log: ${log_type}")
+    default   => fail("Improper 'log_type' value given to iptables::ruleset::log: ${log_type}")
   }
 
   $real_log_output = $log_output ? {
@@ -59,7 +59,7 @@ class iptables::rules::default_action (
     'no'      => 'no',
     'all'     => 'no',
     ''        => $real_log_type,
-    default   => fail("Improper 'log_output' value given to iptables::rules::log: ${log_output}")
+    default   => fail("Improper 'log_output' value given to iptables::ruleset::log: ${log_output}")
   }
   $real_log_input = $log_input ? {
     'dropped' => 'drop',
@@ -68,7 +68,7 @@ class iptables::rules::default_action (
     'no'      => 'no',
     'all'     => 'no',
     ''        => $real_log_type,
-    default   => fail("Improper 'log_input' value given to iptables::rules::log: ${log_input}")
+    default   => fail("Improper 'log_input' value given to iptables::ruleset::log: ${log_input}")
   }
   $real_log_forward = $log_forward ? {
     'dropped' => 'drop',
@@ -77,7 +77,7 @@ class iptables::rules::default_action (
     'no'      => 'no',
     'all'     => 'no',
     ''        => $real_log_type,
-    default   => fail("Improper 'log_forward' value given to iptables::rules::log: ${log_forward}")
+    default   => fail("Improper 'log_forward' value given to iptables::ruleset::log: ${log_forward}")
   }
 
   #          'drop'    'no'    $real_log_output

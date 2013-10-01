@@ -51,11 +51,11 @@ So a simple:
         class { 'iptables':
         }
 
-        include iptables::rules::related_established
-        include iptables::rules::ping
-        include iptables::rules::broadcast
-        include iptables::rules::multicast
-        include iptables::rules::invalid
+        include iptables::ruleset::related_established
+        include iptables::ruleset::ping
+        include iptables::ruleset::broadcast
+        include iptables::ruleset::multicast
+        include iptables::ruleset::invalid
 
   In the subsections below you can find what these do and
   how to modify their behavior.
@@ -78,7 +78,7 @@ used. They can be found in ./manifests/rules.
         class { 'iptables':
         }
 
-        include iptables::rules::broadcast
+        include iptables::ruleset::broadcast
 
 Beyond all actions described above, this will also allow all incoming broadcast
 traffic (assuming $default_target = 'ACCEPT').
@@ -88,7 +88,7 @@ You can also allow it for multiple chains, by providing explicit parameters:
         class { 'iptables':
         }
 
-        class { 'iptables::rules::broadcast':
+        class { 'iptables::ruleset::broadcast':
           chains => [ 'INPUT', 'FORWARD' ]
         }
 
@@ -122,7 +122,7 @@ want to drop all outgoing traffic by default you could do:
         class { 'iptables':
         }
 
-        class { 'iptables::rules::default_action':
+        class { 'iptables::ruleset::default_action':
           output_policy => 'drop'
         }
 
@@ -185,7 +185,7 @@ This ruleset allows you to accept or deny ICMP packets.
         class { 'iptables':
         }
 
-        include iptables::rules::icmp
+        include iptables::ruleset::icmp
 
 Beyond all default actions described above, this will also allow all ICMP
 traffic.
@@ -215,7 +215,7 @@ When explicitly defining this class, you can use the following options:
         class { 'iptables':
         }
 
-        include iptables::rules::invalid
+        include iptables::ruleset::invalid
 
 Beyond all actions described above, this will also drop all packets
 that iptables has classified as INVALID
@@ -247,7 +247,7 @@ This ruleset allows you to accept or deny ICMP packets.
         class { 'iptables':
         }
 
-        include iptables::rules::ping
+        include iptables::ruleset::ping
 
 Beyond all default actions described above, this will also allow all Ping
 (icmp type 8) traffic.
@@ -278,7 +278,7 @@ When explicitly defining this class, you can use the following options:
         class { 'iptables':
         }
 
-        include iptables::rules::multicast
+        include iptables::ruleset::multicast
 
 Beyond all actions described above, this will also allow all incoming multicast
 traffic (assuming $default_target = 'ACCEPT').
@@ -288,7 +288,7 @@ You can also allow it for multiple chains, by providing explicit parameters:
         class { 'iptables':
         }
 
-        class { 'iptables::rules::multicast':
+        class { 'iptables::ruleset::multicast':
           chains => [ 'INPUT', 'FORWARD' ]
         }
 
@@ -318,7 +318,7 @@ Options are:
         class { 'iptables':
         }
 
-        include iptables::rules::related_established
+        include iptables::ruleset::related_established
 
 Beyond all actions described above, this will also allow all traffic
 that is RELATED or has been ESTABLISHED (basically all sessions that

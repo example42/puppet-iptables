@@ -1,7 +1,16 @@
-class iptables::rules::ping (
+#
+# [*chains*]
+#
+# [*target*]
+#
+# [*order*]
+#  The order 8500 was chosen as default because the more specific ping
+#  rule (iptables::ruleset::ping uses a lower order index
+#
+class iptables::ruleset::icmp (
   $chains          = [ 'INPUT', 'OUTPUT', 'FORWARD' ],
   $target          = $iptables::default_target,
-  $order           = 8250,
+  $order           = 8500,
   $log             = false,
   $log_prefix      = $iptables::log_prefix,
   $log_limit_burst = $iptables::log_limit_burst,
@@ -10,13 +19,10 @@ class iptables::rules::ping (
 ) {
 
   each($chains) |$chain| {
-    iptables::rule { "example42-ping-filter-${chain}":
+    iptables::rule { "example42-icmp-filter-${chain}":
       table            => 'filter',
       chain            => $chain,
       implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
-      explicit_matches => { 'icmpv6_v6' => { 'icmpv6-type' => 8 },
-                            'icmp_v4'   => { 'icmp-type' => 8 }
-                          },
       target           => $target,
       order            => $order,
       log              => $log,

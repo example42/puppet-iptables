@@ -1,4 +1,4 @@
-class iptables::rules::loopback(
+class iptables::ruleset::loopback(
   $log             = false,
   $log_prefix      = $iptables::log_prefix,
   $log_limit_burst = $iptables::log_limit_burst,
