@@ -1,7 +1,7 @@
 class iptables::ruleset::invalid (
   $chains          = [ 'INPUT', 'FORWARD', 'OUTPUT' ],
   $target          = 'DROP',
-  $order           = 100,
+  $order           = 250,
   $log             = true,
   $log_prefix      = $iptables::log_prefix,
   $log_limit_burst = $iptables::log_limit_burst,

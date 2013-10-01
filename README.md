@@ -55,7 +55,7 @@ So a simple:
         include iptables::ruleset::ping
         include iptables::ruleset::broadcast
         include iptables::ruleset::multicast
-        include iptables::ruleset::invalid
+        include iptables::ruleset::security
 
   In the subsections below you can find what these do and
   how to modify their behavior.
@@ -335,6 +335,52 @@ Options are:
 * order: The order used to sort rules within the same table/chain with.
   Default: 7500
 
+#### Security
+
+This ruleset includes several security-related rule sets.
+
+        class { 'iptables':
+        }
+
+        include iptables::ruleset::security
+
+Beyond all actions described above, this will:
+* Block all invalid packets
+* Block a smurf attack on IPv4
+
+The number of rulesets included by this module may be changed without notice
+
+#### Smurf_Attack
+
+Prevents against SMURF attacks.
+
+        class { 'iptables':
+        }
+
+        include iptables::ruleset::smurf_attack
+
+Beyond all actions described above, this will:
+* Block a smurf attack on IPv4
+
+Options are:
+* $chains The chains to configure this rule in the filter table.
+  Default: [ 'INPUT', 'FORWARD' ]
+* $target To accept or deny multicast traffic.
+  Allowed: DROP or BLOCK
+  Default: $iptables::default_target (default: DROP)
+* order: The order used to sort rules within the same table/chain with.
+  Default: 600
+* $log: To log packets that match this ruleset.
+  Default: false
+* $log_prefix: A prefix for each log line.
+  Default: $iptables::log_prefix
+* $log_limit_burst: The log limit-burst iptables directive.
+  Default: $iptables::log_limit_burst
+* $log_limit: The log limit iptables directive.
+  Default: $iptables::log_limit
+* $log_level: The log limit-level iptables directive.
+  Default: $iptables::log_level
+
 
 ### FILE BASED CONFIG:
 
@@ -486,9 +532,10 @@ All rules created by the Iptables module have a default order index that can
 often be overriden if desired. The following scheme has been adhered and
 suggested:
 
-1 - 500 Used for 'initialization' of chains and logging
+1 - 150 Used for 'initialization' of chains and logging
           1.  Table definition
           10. Chain definition
+250  - 750  Fraud prevention
 1000 - 6000 Specific rules
 7000 - 9500 Generic rules
 9500 - 9999 Related to closing the Chain, like default action and COMMIT.
