@@ -8,6 +8,6 @@ class iptables::ruleset::security (
 ) {
   
   include iptables::ruleset::invalid
-  include iptables::ruleset::smurf_attack
+  include iptables::ruleset::icmp
   
 }
