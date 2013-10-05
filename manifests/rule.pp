@@ -169,10 +169,15 @@ define iptables::rule (
 
   if $log {
 
-    $log_explicit_matches = $explicit_matches + 
-                            {'limit' => {'limit-burst' => $log_limit_burst,
-                                         'limit' => $log_limit }
-                            }
+    $log_explicit_matches = {}
+    $discard_7 = inline_template("<%
+      @explicit_matches.each do |k, v|
+        @log_explicit_matches[k] = v
+      end
+
+      @log_explicit_matches['limit'] = {'limit-burst' => @log_limit_burst,
+                                        'limit' => @log_limit }
+    %>")
 
     iptables::rule { "${name}-10":
       command          => $command,

@@ -57,7 +57,6 @@ Add rules from a cartesian product
       
     end
     
-    puts rules.inspect
     function_create_resources([ 'concat::fragment', rules ])
     
   end
