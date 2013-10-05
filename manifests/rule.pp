@@ -205,31 +205,10 @@ define iptables::rule (
     }
 
     $source_x_destination_v4 = iptables_cartesian_product($source, $destination)
-    $source_x_destination_v4.each |$src_dst| {
-
-      $implicit_matches_rule = $implicit_matches
-
-      if $src_dst[0] != '' {
-        $discard_6 = inline_template('<% @implicit_matches_rule["source_v4"] = @src_dst[0] %>')
-      }
-
-      if $src_dst[1] != '' {
-        $discard_7 = inline_template('<% @implicit_matches_rule["destination_v4"] = @src_dst[1] %>')
-      }
-
-      # We use the hash of $content to ensure the rules will always be ordered the same
-      $is_ipv6 = false
-      $content = template('iptables/rule.erb')
-      $hash = inline_template('<%= Digest::SHA1.hexdigest(@content) %>')
-      concat::fragment{ "iptables_rule_v4_${name}-20-${hash}":
-        target  => "/var/lib/puppet/iptables/tables/v4_${table}",
-        content => $content,
-        order   => $true_order,
-        ensure  => $ensure,
-        notify  => Service['iptables'],
-      }
-    }
-
+    $discard_5 = iptables_add_cartesian_rules(
+      $name, $source_x_destination_v4, $implicit_matches, $explicit_matches, 4, $true_order, 
+      $ensure, $table, $command, $chain, $target_v4, $target_options, $rule
+    )
   }
 
   if $bool_enable_v6 {
@@ -241,30 +220,10 @@ define iptables::rule (
     }
 
     $source_x_destination_v6 = iptables_cartesian_product($source_v6, $destination_v6)
-    $source_x_destination_v6.each |$src_dst| {
-
-      $implicit_matches_rule = $implicit_matches
-
-      if $src_dst[0] != '' {
-        $discard_8 = inline_template('<% @implicit_matches_rule["source_v6"] = @src_dst[0] %>')
-      }
-
-      if $src_dst[1] != '' {
-        $discard_9 = inline_template('<% @implicit_matches_rule["destination_v6"] = @src_dst[1] %>')
-      }
-
-      # We use the hash of $content to ensure the rules will always be ordered the same
-      $is_ipv6 = true
-      $content = template('iptables/rule.erb')
-      $hash = inline_template('<%= Digest::SHA1.hexdigest(@content) %>')
-      concat::fragment{ "iptables_rule_v6_${name}-20-${hash}":
-        target  => "/var/lib/puppet/iptables/tables/v6_${table}",
-        content => $content,
-        order   => $true_order,
-        ensure  => $ensure,
-        notify  => Service['iptables'],
-      }
-    }
+    $discard_6 = iptables_add_cartesian_rules(
+      $name, $source_x_destination_v6, $implicit_matches, $explicit_matches, 6, $true_order, 
+      $ensure, $table, $command, $chain, $target_v6, $target_options, $rule
+    )
 
   }
 
