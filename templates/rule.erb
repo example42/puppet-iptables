@@ -1,0 +1,15 @@
+<% if scope.lookupvar('rule') != '' -%>
+<%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %> -j <%= scope.lookupvar('target') %>
+<% else -%>
+<%
+
+implicit_matches_str = scope.function_iptables_construct_implicit_matches([@implicit_matches_rule, @is_ipv6])
+explicit_matches_str = scope.function_iptables_construct_explicit_matches([@explicit_matches, @is_ipv6])
+target_options_str   = @target_options.map{|k, v| "--#{k} \"#{v}\""}.join(' ')
+
+-%>
+<%= [   @command, @chain, implicit_matches_str, explicit_matches_str,
+        '-j', (@is_ipv6 ? @target_v6 : @target_v4), target_options_str
+    ].join(" ").gsub(/\s+/, ' ')
+%>
+<% end -%>

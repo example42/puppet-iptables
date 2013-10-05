@@ -9,46 +9,8 @@ class iptables::params  {
   $osver = split($::operatingsystemrelease, '[.]')
   $osver_maj = $osver[0]
 
-  $enable_v6 = false
-
-## DEFAULTS FOR VARIABLES USERS CAN SET
-
-# Define how you want to manage iptables configuration:
-# "file" - To provide iptables rules as a normal file
-# "concat" - To build them up using different fragments
-#      - This option, set as default, permits the use of the iptables::rule define
-#      - and many other funny things
-  $config = 'concat'
-
-# Define what to do with unknown packets
-  $block_policy = 'DROP'
-
-# Define what to do with icmp packets (quick'n'dirty approach)
-  $icmp_policy = 'ACCEPT'
-
-# Define what to do with output packets
-  $output_policy = 'ACCEPT'
-
-## Define what packets to log
-  $log = 'drop'
-  $log_input = ''
-  $log_output = ''
-  $log_forward = ''
-
-# Define the Level of logging (numeric or see syslog.conf(5))
-  $log_level = '4'
-
-# Define if you want to open SSH port by default
-  $safe_ssh = true
-
-# Define what to do with INPUT broadcast packets
-  $broadcast_policy = 'accept'
-
-# Define what to do with INPUT multicast packets
-  $multicast_policy = 'accept'
-
-## MODULE INTERNAL VARIABLES
-# (Modify to adapt to unsupported OSes)
+  # This should be dependent on the kernel, netfilter version and capabilities
+  $configure_ipv6_nat = false
 
   $package = $::operatingsystem ? {
     default => 'iptables',
@@ -57,6 +19,12 @@ class iptables::params  {
   $service = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'iptables-persistent',
     default                   => 'iptables',
+  }
+
+  # use "$service restart" to load new firewall rules?
+  $service_override_restart = $::operatingsystem ? {
+    /(?i:Ubuntu)/ => 'false', # Don't know about other distro's. Who does?
+    default       => 'true',
   }
 
   $service_status = $::operatingsystem ? {
@@ -108,17 +76,6 @@ class iptables::params  {
   $config_file_group = $::operatingsystem ? {
     default => 'root',
   }
-
-  $my_class = ''
-  $source = ''
-  $template = ''
-  $service_autorestart = true
-  $version = 'present'
-  $absent = false
-  $disable = false
-  $disableboot = false
-  $debug = false
-  $audit_only = false
 
   ## FILE SERVING SOURCE
   case $::base_source {

@@ -1,5 +1,5 @@
 name 'example42-iptables'
-version '2.1.1'
+version '3.0.0-beta'
 
 author 'Alessandro Franceschi'
 license 'Apache2'
@@ -9,4 +9,3 @@ summary 'Puppet module for foo'
 description 'This module installs and manages iptables. Check README.rdoc for details. Puppi is required for some common functions: you can install them without using the whole module. '
 dependency 'example42/puppi', '>=2.0.0'
 dependency 'ripienaar/concat', '>=0.0.1'
-
