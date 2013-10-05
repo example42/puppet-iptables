@@ -196,8 +196,24 @@ When explicitly defining this class, you can use the following options:
 * $target To accept or deny ICMP traffic.
   Allowed: ACCEPT, DROP or BLOCK
   Default: $iptables::default_target (default: ACCEPT)
-* order: The order used to sort rules within the same table/chain with.
+* $order: The order used to sort rules within the same table/chain with.
   Default: 8500
+* $limit
+  Limit the number of ICMP packets that are matched, allows to prevent SMURF
+  attacks. You should consider using this directive to prevent a SMURF-attack
+  (hence the default of '1/s')
+
+* $limit_burst
+  Limit the number of ICMP packets that are matched only once $limit_burst
+  was reached.
+* $icmp_type_v4
+ Only match against a specific ICMP type (IPv4). E.g. 'ping'
+* $icmp_type_v6
+ Only match against a specific ICMP type (IPv6). E.g. 'ping'
+* $drop_addr_mask_request_v4
+  Bool. To drop all ICMPv4 Address Mask Requests
+* $drop_addr_mask_request_v6
+  Bool. To drop all ICMPv6 Address Mask Requests
 * $log: To log packets that match this ruleset.
   Default: false
 * $log_prefix: A prefix for each log line.
@@ -238,39 +254,6 @@ Options are:
   Default: $iptables::log_limit
 * $log_limit_level: The log limit-level iptables directive.
   Default: $iptables::log_limit_level
-
-
-#### PING
-
-This ruleset allows you to accept or deny ICMP packets.
-
-        class { 'iptables':
-        }
-
-        include iptables::ruleset::ping
-
-Beyond all default actions described above, this will also allow all Ping
-(icmp type 8) traffic.
-
-When explicitly defining this class, you can use the following options:
-* $chains The chains to configure this rule in the filter table.
-  Default: [ 'INPUT', 'OUTPUT', 'FORWARD' ]
-* $target To accept or deny ping traffic.
-  Allowed: ACCEPT, DROP or BLOCK
-  Default: $iptables::default_target (default: ACCEPT)
-* order: The order used to sort rules within the same table/chain with.
-  Default: 8250
-* $log: To log packets that match this ruleset.
-  Default: false
-* $log_prefix: A prefix for each log line.
-  Default: $iptables::log_prefix
-* $log_limit_burst: The log limit-burst iptables directive.
-  Default: $iptables::log_limit_burst
-* $log_limit: The log limit iptables directive.
-  Default: $iptables::log_limit
-* $log_limit_level: The log limit-level iptables directive.
-  Default: $iptables::log_limit_level
-
 
 #### Multicast
 
@@ -346,40 +329,9 @@ This ruleset includes several security-related rule sets.
 
 Beyond all actions described above, this will:
 * Block all invalid packets
-* Block a smurf attack on IPv4
+* Limit the number of allowed ICMP requests (prevents SMURF attacks)
 
 The number of rulesets included by this module may be changed without notice
-
-#### Smurf_Attack
-
-Prevents against SMURF attacks.
-
-        class { 'iptables':
-        }
-
-        include iptables::ruleset::smurf_attack
-
-Beyond all actions described above, this will:
-* Block a smurf attack on IPv4
-
-Options are:
-* $chains The chains to configure this rule in the filter table.
-  Default: [ 'INPUT', 'FORWARD' ]
-* $target To accept or deny multicast traffic.
-  Allowed: DROP or BLOCK
-  Default: $iptables::default_target (default: DROP)
-* order: The order used to sort rules within the same table/chain with.
-  Default: 600
-* $log: To log packets that match this ruleset.
-  Default: false
-* $log_prefix: A prefix for each log line.
-  Default: $iptables::log_prefix
-* $log_limit_burst: The log limit-burst iptables directive.
-  Default: $iptables::log_limit_burst
-* $log_limit: The log limit iptables directive.
-  Default: $iptables::log_limit
-* $log_level: The log limit-level iptables directive.
-  Default: $iptables::log_level
 
 
 ### FILE BASED CONFIG:
