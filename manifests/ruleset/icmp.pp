@@ -79,54 +79,55 @@ class iptables::ruleset::icmp (
     $discard_3 = inline_template('<% @explicit_matches["icmpv6_v6"] = @explicit_matches_type_v6 %>')
   }
 
-  each($chains) |$chain| {
-    iptables::rule { "example42-icmp-filter-${chain}":
+  $discard = iptables_declare_multiple('iptables::rule', $chains, 'example42-icmp-filter-###name###', {
+    table            => 'filter',
+    chain            => '###name###',
+    explicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
+    explicit_matches => $explicit_matches,
+    target           => $target,
+    order            => $order,
+    log              => $log,
+    log_prefix       => $log_prefix,
+    log_limit_burst  => $log_limit_burst,
+    log_limit        => $log_limit,
+    log_level        => $log_level
+  })
+
+
+  if $drop_addr_mask_request_v4 {
+    $discard_2 = iptables_declare_multiple('iptables::rule', $chains,
+                                           'example42-icmp-filter-###name###-addr-mask-req', {
       table            => 'filter',
-      chain            => $chain,
-      implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
-      explicit_matches => $explicit_matches,
-      target           => $target,
-      order            => $order,
+      chain            => '###name###',
+      implicit_matches => { 'protocol_v4' => 'ICMP' },
+      explicit_matches => {'icmp_v4'   => { 'icmp-type'   => 'address-mask-request' } },
+      target           => 'DROP',
+      order            => $order - 1,
       log              => $log,
       log_prefix       => $log_prefix,
       log_limit_burst  => $log_limit_burst,
       log_limit        => $log_limit,
-      log_level        => $log_level
-    }
+      log_level        => $log_level,
+      enable_v6        => false,
+    })
+  }
 
-    if $drop_addr_mask_request_v4 {
-      iptables::rule { "example42-icmp-filter-${chain}-addr-mask-req":
-        table            => 'filter',
-        chain            => $chain,
-        implicit_matches => { 'protocol_v4' => 'ICMP' },
-        explicit_matches => {'icmp_v4'   => { 'icmp-type'   => 'address-mask-request' } },
-        target           => 'DROP',
-        order            => $order - 1,
-        log              => $log,
-        log_prefix       => $log_prefix,
-        log_limit_burst  => $log_limit_burst,
-        log_limit        => $log_limit,
-        log_level        => $log_level,
-        enable_v6        => false,
-      }
-    }
-
-    if $drop_timestamp_request_v4 {
-      iptables::rule { "example42-icmp-filter-${chain}-timestamp-req":
-        table            => 'filter',
-        chain            => $chain,
-        implicit_matches => { 'protocol_v4' => 'ICMP', },
-        explicit_matches => { 'icmp_v4' => { 'icmp-type'   => 'timestamp-request' } },
-        target           => 'DROP',
-        order            => $order - 1,
-        log              => $log,
-        log_prefix       => $log_prefix,
-        log_limit_burst  => $log_limit_burst,
-        log_limit        => $log_limit,
-        log_level        => $log_level,
-        enable_v6        => false,
-      }
-    }
+  if $drop_timestamp_request_v4 {
+    $discard_3 = iptables_declare_multiple('iptables::rule', $chains,
+                                           'example42-icmp-filter-###name###-timestamp-req', {
+      table            => 'filter',
+      chain            => '###name###',
+      implicit_matches => { 'protocol_v4' => 'ICMP', },
+      explicit_matches => { 'icmp_v4' => { 'icmp-type'   => 'timestamp-request' } },
+      target           => 'DROP',
+      order            => $order - 1,
+      log              => $log,
+      log_prefix       => $log_prefix,
+      log_limit_burst  => $log_limit_burst,
+      log_limit        => $log_limit,
+      log_level        => $log_level,
+      enable_v6        => false,
+    })
   }
 
 }
