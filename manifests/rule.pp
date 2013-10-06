@@ -125,7 +125,7 @@ define iptables::rule (
   $enable_v6        = $iptables::bool_enable_v6,
   $debug            = false
 ) {
-
+  
   include iptables
   include concat::setup
 

@@ -82,7 +82,7 @@ class iptables::ruleset::icmp (
   $discard = iptables_declare_multiple('iptables::rule', $chains, 'example42-icmp-filter-###name###', {
     table            => 'filter',
     chain            => '###name###',
-    explicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
+    implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
     explicit_matches => $explicit_matches,
     target           => $target,
     order            => $order,
