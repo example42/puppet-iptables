@@ -19,7 +19,7 @@
 #
 # [*icmp_type_v4*]
 #   Only match against a specific ICMP type (IPv4). E.g. 'ping'
-#   
+#
 # [*icmp_type_v6*]
 #   Only match against a specific ICMP type (IPv6). E.g. 'ping'
 #
@@ -63,7 +63,7 @@ class iptables::ruleset::icmp (
 
   $explicit_matches_limit = { 'limit'      => $limit,
                               'limit-burst' => $limit_burst }
-  $explicit_matches_type_v4 = { 'icmp-type' => $icmp_type_v4 } 
+  $explicit_matches_type_v4 = { 'icmp-type' => $icmp_type_v4 }
   $explicit_matches_type_v6 = { 'icmpv6-type' => $icmp_type_v6 }
 
   $explicit_matches = {}

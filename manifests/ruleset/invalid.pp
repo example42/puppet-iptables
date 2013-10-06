@@ -23,4 +23,3 @@ class iptables::ruleset::invalid (
   })
 
 }
-      

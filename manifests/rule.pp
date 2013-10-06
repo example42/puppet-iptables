@@ -211,7 +211,7 @@ define iptables::rule (
 
     $source_x_destination_v4 = iptables_cartesian_product($source, $destination)
     $discard_5 = iptables_add_cartesian_rules(
-      $name, $source_x_destination_v4, $implicit_matches, $explicit_matches, 4, $true_order, 
+      $name, $source_x_destination_v4, $implicit_matches, $explicit_matches, 4, $true_order,
       $ensure, $table, $command, $chain, $target_v4, $target_options, $rule
     )
   }
@@ -226,7 +226,7 @@ define iptables::rule (
 
     $source_x_destination_v6 = iptables_cartesian_product($source_v6, $destination_v6)
     $discard_6 = iptables_add_cartesian_rules(
-      $name, $source_x_destination_v6, $implicit_matches, $explicit_matches, 6, $true_order, 
+      $name, $source_x_destination_v6, $implicit_matches, $explicit_matches, 6, $true_order,
       $ensure, $table, $command, $chain, $target_v6, $target_options, $rule
     )
 
