@@ -30,7 +30,7 @@ Construct the Implicit Matches hash map for the Iptables module
 
       # Ensure protocol is always first.
       # See https://github.com/example42/puppet-iptables/issues/35
-      prepend_items = [ 'protocol', 'protocol_v4', 'protocol_v6', 'p', 'p_v4', 'p_v6' ]
+      prepend_items = [ 'protocol', 'p' ]
       if prepend_items.include?(k)
         if k.length == 1
           implicit_matches_str = "-#{k} #{invert} #{v} " + implicit_matches_str
