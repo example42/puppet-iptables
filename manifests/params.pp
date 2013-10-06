@@ -11,6 +11,10 @@ class iptables::params  {
 
   # This should be dependent on the kernel, netfilter version and capabilities
   $configure_ipv6_nat = false
+  
+  # See: https://github.com/example42/puppet-iptables/commit/2f1a23d426a0b8a4ebf7a61b338fdc0d151509f8
+  $enable_v4 = $::ipaddress != ''
+  $enable_v6 = $::ipaddress6 != ''
 
   $package = $::operatingsystem ? {
     default => 'iptables',
@@ -50,7 +54,6 @@ class iptables::params  {
         $config_file = '/etc/iptables/rules'
       } else {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
-        $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
       }
     }
     /(?i:Mint)/: {
@@ -63,6 +66,12 @@ class iptables::params  {
     default: {
       $config_file = '/etc/sysconfig/iptables'
     }
+  }
+
+  $config_file_v6 = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/                           => '/etc/iptables/rules.v6',
+    /(?i:RedHat|CentOS|Scientific|Amazon|Linux|Fedora)/ => '/etc/sysconfig/ip6tables',
+    default                                             => '/etc/iptables/rules.v6',
   }
 
   $config_file_mode = $::operatingsystem ? {
