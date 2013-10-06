@@ -15,10 +15,10 @@ Loop over a hash and define multiple resources based on it.
 
       use_name = name_tpl.gsub(/\#\#\#name\#\#\#/, name_inner)
 
-      # Creating a new hash in place, using this syntax we can support ruby 1.8
-      params_inner = Hash[ *params.map{ |key,value|
-        value.is_a?(String) ? [key, value.gsub(/\#\#\#name\#\#\#/, name_inner) ] : [ key, value ]
-      }.flatten ]
+      params_inner = {}
+      params.each { |k, v|
+        params_inner[k] = v.is_a?(String) ? v.gsub(/\#\#\#name\#\#\#/, name_inner) : v
+      }
 
       function_create_resources(
         [type.capitalize, { name_tpl.gsub(/\#\#\#name\#\#\#/, name_inner).capitalize => params_inner }]
