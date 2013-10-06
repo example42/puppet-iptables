@@ -19,7 +19,7 @@
 #
 # [*icmp_type_v4*]
 #   Only match against a specific ICMP type (IPv4). E.g. 'ping'
-#   
+#
 # [*icmp_type_v6*]
 #   Only match against a specific ICMP type (IPv6). E.g. 'ping'
 #
@@ -63,7 +63,7 @@ class iptables::ruleset::icmp (
 
   $explicit_matches_limit = { 'limit'      => $limit,
                               'limit-burst' => $limit_burst }
-  $explicit_matches_type_v4 = { 'icmp-type' => $icmp_type_v4 } 
+  $explicit_matches_type_v4 = { 'icmp-type' => $icmp_type_v4 }
   $explicit_matches_type_v6 = { 'icmpv6-type' => $icmp_type_v6 }
 
   $explicit_matches = {}
@@ -82,7 +82,7 @@ class iptables::ruleset::icmp (
   $discard = iptables_declare_multiple('iptables::rule', $chains, 'example42-icmp-filter-###name###', {
     table            => 'filter',
     chain            => '###name###',
-    explicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
+    implicit_matches => { 'protocol_v4' => 'ICMP', 'protocol_v6' => 'IPv6-ICMP' },
     explicit_matches => $explicit_matches,
     target           => $target,
     order            => $order,

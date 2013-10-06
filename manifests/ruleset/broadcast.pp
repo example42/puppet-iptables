@@ -10,7 +10,7 @@ class iptables::ruleset::broadcast (
 ) {
 
   $discard = iptables_declare_multiple('iptables::rule',
-    $chains, 'example42-broadcast-filter-###name###', 
+    $chains, 'example42-broadcast-filter-###name###',
   {
     table           => 'filter',
     chain           => '###name###',

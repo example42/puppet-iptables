@@ -125,7 +125,7 @@ define iptables::rule (
   $enable_v6        = $iptables::bool_enable_v6,
   $debug            = false
 ) {
-
+  
   include iptables
   include concat::setup
 
@@ -169,10 +169,15 @@ define iptables::rule (
 
   if $log {
 
-    $log_explicit_matches = $explicit_matches + 
-                            {'limit' => {'limit-burst' => $log_limit_burst,
-                                         'limit' => $log_limit }
-                            }
+    $log_explicit_matches = {}
+    $discard_7 = inline_template("<%
+      @explicit_matches.each do |k, v|
+        @log_explicit_matches[k] = v
+      end
+
+      @log_explicit_matches['limit'] = {'limit-burst' => @log_limit_burst,
+                                        'limit' => @log_limit }
+    %>")
 
     iptables::rule { "${name}-10":
       command          => $command,
@@ -206,7 +211,7 @@ define iptables::rule (
 
     $source_x_destination_v4 = iptables_cartesian_product($source, $destination)
     $discard_5 = iptables_add_cartesian_rules(
-      $name, $source_x_destination_v4, $implicit_matches, $explicit_matches, 4, $true_order, 
+      $name, $source_x_destination_v4, $implicit_matches, $explicit_matches, 4, $true_order,
       $ensure, $table, $command, $chain, $target_v4, $target_options, $rule
     )
   }
@@ -221,7 +226,7 @@ define iptables::rule (
 
     $source_x_destination_v6 = iptables_cartesian_product($source_v6, $destination_v6)
     $discard_6 = iptables_add_cartesian_rules(
-      $name, $source_x_destination_v6, $implicit_matches, $explicit_matches, 6, $true_order, 
+      $name, $source_x_destination_v6, $implicit_matches, $explicit_matches, 6, $true_order,
       $ensure, $table, $command, $chain, $target_v6, $target_options, $rule
     )
 

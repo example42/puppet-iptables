@@ -16,19 +16,19 @@ Add rules from a cartesian product
 
     Puppet::Parser::Functions.function(:create_resources)
     rules = {}
-      
+
     cartesian_product.each do |src_dst|
-      
+
       implicit_matches_rule = implicit_matches
-      
+
       if src_dst[0] != ''
-        implicit_matches_rule["source_v#{ip_version}"] = src_dst[0] 
+        implicit_matches_rule["source_v#{ip_version}"] = src_dst[0]
       end
-      
+
       if src_dst[1] != ''
-        implicit_matches_rule["destination_v#{ip_version}"] = src_dst[1] 
+        implicit_matches_rule["destination_v#{ip_version}"] = src_dst[1]
       end
-      
+
       implicit_matches_str = function_iptables_construct_implicit_matches([
         implicit_matches_rule, ip_version == 6
       ])
@@ -36,7 +36,7 @@ Add rules from a cartesian product
       explicit_matches_str = function_iptables_construct_explicit_matches([
         explicit_matches, ip_version == 6
       ])
-      
+
       target_options_str   = target_options.map{|k, v| "--#{k} \"#{v}\""}.join(' ')
 
       if rule != ''
@@ -54,11 +54,10 @@ Add rules from a cartesian product
         'order'  => order,
         'ensure' => var_ensure
       }
-      
+
     end
-    
-    puts rules.inspect
+
     function_create_resources([ 'concat::fragment', rules ])
-    
+
   end
 end

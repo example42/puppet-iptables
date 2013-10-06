@@ -9,7 +9,7 @@ class iptables::ruleset::related_established (
   $log_limit       = $iptables::log_limit,
   $log_level       = $iptables::log_level,
 ) {
-  
+
   $discard = iptables_declare_multiple('iptables::rule', $chains,
                                        'example42-established-filter-###name###', {
     table           => 'filter',
