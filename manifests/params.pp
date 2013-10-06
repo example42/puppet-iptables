@@ -11,7 +11,7 @@ class iptables::params  {
 
   # This should be dependent on the kernel, netfilter version and capabilities
   $configure_ipv6_nat = false
-  
+
   # See: https://github.com/example42/puppet-iptables/commit/2f1a23d426a0b8a4ebf7a61b338fdc0d151509f8
   $enable_v4 = $::ipaddress != ''
   $enable_v6 = $::ipaddress6 != ''
