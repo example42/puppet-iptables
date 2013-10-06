@@ -148,7 +148,7 @@ class iptables (
   $default_target           = 'ACCEPT',
   $default_order            = 5000,
   $enable_v4                = true,
-  $enable_v6                = true,
+  $enable_v6                = false,
   $template                 = '',
   $mode                     = 'concat',
   $version                  = 'present',
