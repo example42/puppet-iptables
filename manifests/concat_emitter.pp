@@ -46,14 +46,15 @@ define iptables::concat_emitter(
     # Feel free to write (and contribute back!) a mechanism that actually
     # does support this. Thank you! ;-)
 
+    # See https://github.com/example42/puppet-iptables/issues/35
+    # for why there's currently no INPUT chain in the nat table
     iptables::table { "v${ip_version}_nat":
       emitter_target => $emitter_target,
       order          => 45,
       table_name     => 'nat',
       ip_version     => $ip_version,
-      chains         => [ 'PREROUTING', 'INPUT', 'OUTPUT', 'POSTROUTING' ]
+      chains         => [ 'PREROUTING', 'OUTPUT', 'POSTROUTING' ]
     }
-
   }
 
   iptables::table { "v${ip_version}_mangle":
