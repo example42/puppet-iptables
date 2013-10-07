@@ -6,7 +6,7 @@ Add rules from a cartesian product
   ) do |vals|
     name, cartesian_product, implicit_matches, explicit_matches, \
        ip_version, order, var_ensure, table, command, chain, target, \
-       target_options, rule = vals
+       target_options, rule = vals.clone
     raise(ArgumentError, 'Must specify a cartesian product') unless cartesian_product
     raise(ArgumentError, 'Must specify a implicit_matches') unless implicit_matches
     raise(ArgumentError, 'Must specify a ip_version') unless ip_version
@@ -19,7 +19,7 @@ Add rules from a cartesian product
 
     cartesian_product.each do |src_dst|
 
-      implicit_matches_rule = implicit_matches
+      implicit_matches_rule = implicit_matches.clone
 
       if src_dst[0] != ''
         implicit_matches_rule["source_v#{ip_version}"] = src_dst[0]
@@ -30,11 +30,11 @@ Add rules from a cartesian product
       end
 
       implicit_matches_str = function_iptables_construct_implicit_matches([
-        implicit_matches_rule, ip_version == 6
+        implicit_matches_rule, ip_version == "6"
       ])
 
       explicit_matches_str = function_iptables_construct_explicit_matches([
-        explicit_matches, ip_version == 6
+        explicit_matches, ip_version == "6"
       ])
 
       target_options_str   = target_options.map{|k, v| "--#{k} \"#{v}\""}.join(' ')
