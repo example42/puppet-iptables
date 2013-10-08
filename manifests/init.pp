@@ -51,6 +51,12 @@
 # [*enable_v6*]
 #   Use this module with IPv6. Defaults to false.
 #
+# [*failsafe_ssh*]
+#   Bool. Insert a rule allowing iptables at all cost. This is to prevent accidental
+#   lockouts when implementing this module. You may want to disable this, and add
+#   the desired rules yourself (allowing to implement specific white- and blacklists,
+#   as well as blocking bruteforce attacks).
+#
 # [*template*]
 #   The template file to use when config=file
 #
@@ -149,6 +155,7 @@ class iptables (
   $default_order            = 5000,
   $enable_v4                = $iptables::params::enable_v4,
   $enable_v6                = $iptables::params::enable_v6,
+  $failsafe_ssh             = true,
   $template                 = '',
   $mode                     = 'concat',
   $version                  = 'present',
@@ -266,8 +273,11 @@ class iptables (
 
   include iptables::ruleset::default_action
   include iptables::ruleset::loopback
+  
+  if any2bool($failsafe_ssh) {
+    include iptables::ruleset::failsafe_ssh
+  }
 
-  # Todo: For now this always evaluates to false, no service is getting restarted
   if ! $bool_service_override_restart {
     service { 'iptables':
       ensure     => $iptables::manage_service_ensure,
