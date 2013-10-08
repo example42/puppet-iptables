@@ -33,7 +33,7 @@ class iptables::ruleset::failsafe_ssh (
   # We could combine the two rule statements into one by using a
   # multiport match, but not all kernels support this, so for a
   # failsafe we're not taking any chances.
-  if $lookup_alternative_port and defined(Class['openssh']) and $openssh::port != $port {
+  if any2bool($lookup_alternative_port) and defined(Class['openssh']) and $openssh::port != $port {
       $discard_1 = iptables_declare_multiple('iptables::rule',
         $chains, 'example42-failsafe-ssh-###name###-otherPort',
     {
