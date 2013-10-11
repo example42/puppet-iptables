@@ -5,11 +5,10 @@ Lookup a hostname and return its ip addresses
     EOS
   ) do |vals|
     hostname, type = vals
-    
-    require 'ipaddr'
-
     raise(ArgumentError, 'Must specify a hostname') unless hostname
     type = 'AAAA' unless type
+    
+    require 'ipaddr'
 
     typeConst = Resolv::DNS::Resource::IN.const_get "#{type.upcase}"
     out = []
