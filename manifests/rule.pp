@@ -201,7 +201,7 @@ define iptables::rule (
     }
   }
 
-  if $bool_enable_v4 {
+  if $bool_enable_v4 and any2bool($iptables::enable_v4) {
 
     if $target == $iptables::reject_string_v6 {
       $target_v4 = $iptables::reject_string_v4
@@ -216,7 +216,7 @@ define iptables::rule (
     )
   }
 
-  if $bool_enable_v6 {
+  if $bool_enable_v6 and any2bool($iptables::enable_v6) {
 
     if $target == $iptables::reject_string_v4 {
       $target_v6 = $iptables::reject_string_v6

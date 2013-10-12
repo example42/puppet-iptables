@@ -184,7 +184,6 @@ class iptables (
   $bool_disableboot = any2bool($disableboot)
   $bool_debug = any2bool($debug)
   $bool_audit_only = any2bool($audit_only)
-  $bool_manage_icmp = any2bool($manage_icmp)
   $bool_enable_v4 = any2bool($enable_v4)
   $bool_enable_v6 = any2bool($enable_v6)
   $bool_service_override_restart = any2bool($service_override_restart)
