@@ -121,8 +121,8 @@ define iptables::rule (
   $log_limit        = $iptables::log_limit,
   $log_level        = $iptables::log_level,
   $enable           = true,
-  $enable_v4        = $iptables::bool_enable_v4,
-  $enable_v6        = $iptables::bool_enable_v6,
+  $enable_v4        = true,
+  $enable_v6        = false,
   $debug            = false
 ) {
   
@@ -201,7 +201,7 @@ define iptables::rule (
     }
   }
 
-  if $bool_enable_v4 and any2bool($iptables::enable_v4) {
+  if $bool_enable_v4 and any2bool($iptables::bool_enable_v4) {
 
     if $target == $iptables::reject_string_v6 {
       $target_v4 = $iptables::reject_string_v4
@@ -216,7 +216,7 @@ define iptables::rule (
     )
   }
 
-  if $bool_enable_v6 and any2bool($iptables::enable_v6) {
+  if $bool_enable_v6 and any2bool($iptables::bool_enable_v6) {
 
     if $target == $iptables::reject_string_v4 {
       $target_v6 = $iptables::reject_string_v6
