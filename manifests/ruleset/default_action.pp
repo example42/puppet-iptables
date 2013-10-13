@@ -2,7 +2,7 @@
 class iptables::ruleset::default_action (
   $output_policy  = 'accept',
   $input_policy   = 'reject',
-  $forward_policy = 'reject',
+  $forward_policy = 'drop',
   $log_type       = 'drop',
   $log_input      = '',
   $log_output     = '',
