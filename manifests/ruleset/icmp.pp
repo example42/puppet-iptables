@@ -48,7 +48,7 @@ class iptables::ruleset::icmp (
   $chains                    = [ 'INPUT', 'OUTPUT', 'FORWARD' ],
   $target                    = $iptables::default_target,
   $order                     = 8500,
-  $limit                     = '1/s',
+  $limit                     = '5/s',
   $limit_burst               = 5,
   $icmp_type_v4              = '',
   $icmp_type_v6              = '',
