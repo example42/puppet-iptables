@@ -38,7 +38,7 @@ Construct the Explicit Matches hash map for the Iptables module
           invert = '!'
         end
 
-        explicit_matches_str << "--#{k} #{invert} #{v} "
+        explicit_matches_str << "#{invert} --#{k} #{v} "
       end
     end
 
