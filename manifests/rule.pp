@@ -54,7 +54,6 @@ define iptables::rule (
   $debug          = false ) {
 
   include iptables
-  include concat::setup
 
   # IPv6 enabled rules prerequisites IPv6 enabled iptables also
   # TODO: To enable this feature, we first have to unchain the circular dependency firewall -> iptables

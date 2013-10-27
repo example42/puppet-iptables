@@ -14,7 +14,6 @@ define iptables::concat_emitter(
 ) {
 
   include iptables
-  include concat::setup
   
   $real_icmp_port = $is_ipv6 ? {
     true    => '-p icmpv6',
