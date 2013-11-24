@@ -65,9 +65,11 @@ define iptables::rule (
   $true_order = $order ? {
     ''    => $table ? {
       'filter' => $chain ? {
-         'INPUT'   => '15',
-         'OUTPUT'  => '25',
-         'FORWARD' => '35',
+         'INPUT'        => '15',
+         'OUTPUT'       => '25',
+         'FORWARD'      => '35',
+         'PREROUTING'   => '45',
+         'POSTROUTING'  => '55',
       },
       'nat'    => '50',
       'mangle' => '70',
