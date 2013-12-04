@@ -112,6 +112,7 @@ class iptables::params  {
   $my_class = ''
   $source = ''
   $template = ''
+  $content = ''
   $service_autorestart = true
   $version = 'present'
   $absent = false
