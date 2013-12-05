@@ -3,7 +3,7 @@ require "#{File.join(File.dirname(__FILE__),'..','spec_helper.rb')}"
 describe 'iptables::rule' do
   let(:title) { 'iptable1' }
   let(:node) { 'iptable.example42.com' }
-  let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12 } }
+  let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12, :concat_basedir => '/tmp' } }
 
   describe 'Test iptables::rule with ip as string' do
     let(:params) {
