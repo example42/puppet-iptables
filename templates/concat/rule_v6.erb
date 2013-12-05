@@ -1,17 +1,18 @@
+<% if scope.lookupvar('iptables::comment') then comment = ' -m comment --comment "' + @title + '"' else comment = '' end -%>
 <% if scope.lookupvar('rule') != '' -%>
-<%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %> -j <%= scope.lookupvar('target') %> 
+<%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %> -j <%= scope.lookupvar('target') %><%= comment %>
 <% else -%>
 <% if scope.lookupvar('array_source_v6').length > 0 -%>
 <% scope.lookupvar('array_source_v6').each do |s| -%>
 <% if scope.lookupvar('array_destination_v6').length > 0 -%>
 <% scope.lookupvar('array_destination_v6').each do |d| -%>
-<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -d <%= d %> -j <%= scope.lookupvar('target') %>
+<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -d <%= d %> -j <%= scope.lookupvar('target') %><%= comment %>
 <% end -%>
 <% else -%>
-<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -j <%= scope.lookupvar('target') %>
+<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -j <%= scope.lookupvar('target') %><%= comment %>
 <% end -%>
 <% end -%>
 <% else -%>
-<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -j <%= scope.lookupvar('target') %>
+<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -j <%= scope.lookupvar('target') %><%= comment %>
 <% end -%>
 <% end -%>

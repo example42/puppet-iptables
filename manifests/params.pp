@@ -47,6 +47,9 @@ class iptables::params  {
 # Define what to do with INPUT multicast packets
   $multicast_policy = 'accept'
 
+# Define use comment module
+  $comment = false
+
 ## MODULE INTERNAL VARIABLES
 # (Modify to adapt to unsupported OSes)
 
