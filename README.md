@@ -198,4 +198,5 @@ If you have a single node from where you want to ensure access you can also do s
 
         firewall { 'alfa': source => '42.42.42.42', }
 
+[![Build Status](https://travis-ci.org/example42/puppet-iptables.png?branch=master)](https://travis-ci.org/example42/puppet-iptables)
 

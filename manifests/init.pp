@@ -11,12 +11,14 @@ class iptables (
   $config              = params_lookup( 'config' ),
   $source              = params_lookup( 'source' ),
   $template            = params_lookup( 'template' ),
+  $content             = params_lookup( 'content' ),
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
   $block_policy        = params_lookup( 'block_policy' ),
   $icmp_policy         = params_lookup( 'icmp_policy' ),
   $output_policy       = params_lookup( 'output_policy' ),
   $broadcast_policy    = params_lookup( 'broadcast_policy' ),
   $multicast_policy    = params_lookup( 'multicast_policy' ),
+  $comment             = params_lookup( 'comment' ),
   $log                 = params_lookup( 'log' ),
   $log_input           = params_lookup( 'log_input' ),
   $log_output          = params_lookup( 'log_output' ),
@@ -171,11 +173,13 @@ class iptables (
     default   => $iptables::source,
   }
 
-  $manage_file_content = $iptables::template ? {
-    ''        => undef,
-    default   => template($iptables::template),
+  $manage_file_content = $iptables::content ? {
+    ''        => $iptables::template ? {
+      ''        => undef,
+      default   => template($iptables::template),
+    },
+    default   => $iptables::content,
   }
-
 
   case $::operatingsystem {
     debian: { require iptables::debian }
