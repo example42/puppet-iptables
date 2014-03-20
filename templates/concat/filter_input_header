@@ -2,7 +2,7 @@
 -A INPUT -j LOG --log-level <%= scope.lookupvar('iptables::log_level') %> --log-prefix "INPUT PACKETS: "
 <% end -%>
 <% if scope.lookupvar('iptables::real_safe_ssh') == true -%>
--A INPUT -p tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp --dport <%= scope.lookupvar('iptables::ssh_port') %> -j ACCEPT
 <% end -%>
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
 -A INPUT -i lo -j ACCEPT 

@@ -25,6 +25,7 @@ class iptables (
   $log_forward         = params_lookup( 'log_forward' ),
   $log_level           = params_lookup( 'log_level' ),
   $safe_ssh            = params_lookup( 'safe_ssh' ),
+  $ssh_port            = params_lookup( 'ssh_port', '22' ),
   $package             = params_lookup( 'package' ),
   $version             = params_lookup( 'version' ),
   $service             = params_lookup( 'service' ),
