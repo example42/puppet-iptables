@@ -25,6 +25,7 @@ define iptables::concat_emitter(
     owner   => $iptables::config_file_owner,
     group   => $iptables::config_file_group,
     notify  => Service['iptables'],
+    force   => true,
   }
 
 
