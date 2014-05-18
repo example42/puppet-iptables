@@ -58,7 +58,7 @@ class iptables::params  {
   }
 
   $service = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => 'iptables-persistent',
+    /(?i:Debian|Ubuntu|Mint)/ => 'netfilters-persistent',
     default                   => 'iptables',
   }
 
