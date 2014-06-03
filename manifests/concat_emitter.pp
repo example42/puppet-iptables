@@ -14,7 +14,7 @@ define iptables::concat_emitter(
 ) {
 
   include iptables
-  
+
   $real_icmp_port = $is_ipv6 ? {
     true    => '-p icmpv6',
     default => '-p icmp',
@@ -40,7 +40,7 @@ define iptables::concat_emitter(
   # The FILTER table header with the default policies
   concat::fragment{ "iptables_filter_header_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_header'),
+    content => template($iptables::filter_header_template),
     order   => 05,
     notify  => Service['iptables'],
   }
@@ -48,7 +48,7 @@ define iptables::concat_emitter(
   # The input chain header with sane defaults
   concat::fragment{ "iptables_filter_input_header_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_input_header'),
+    content => template($iptables::filter_input_header_template),
     order   => 10,
     notify  => Service['iptables'],
   }
@@ -56,7 +56,7 @@ define iptables::concat_emitter(
   # The input chain footer with logging and block_policy
   concat::fragment{ "iptables_filter_input_footer_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_input_footer'),
+    content => template($iptables::filter_input_footer_template),
     order   => 19,
     notify  => Service['iptables'],
   }
@@ -64,7 +64,7 @@ define iptables::concat_emitter(
   # The output chain header with sane defaults
   concat::fragment{ "iptables_filter_output_header_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_output_header'),
+    content => template($iptables::filter_output_header_template),
     order   => 20,
     notify  => Service['iptables'],
   }
@@ -72,7 +72,7 @@ define iptables::concat_emitter(
   # The output chain footer with logging and block_policy
   concat::fragment{ "iptables_filter_output_footer_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_output_footer'),
+    content => template($iptables::filter_output_footer_template),
     order   => 29,
     notify  => Service['iptables'],
   }
@@ -80,7 +80,7 @@ define iptables::concat_emitter(
   # The forward chain header with sane defaults
   concat::fragment{ "iptables_filter_forward_header_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_forward_header'),
+    content => template($iptables::filter_forward_header_template),
     order   => 30,
     notify  => Service['iptables'],
   }
@@ -88,7 +88,7 @@ define iptables::concat_emitter(
   # The forward chain footer with logging and block_policy
   concat::fragment{ "iptables_filter_forward_footer_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_forward_footer'),
+    content => template($iptables::filter_forward_footer_template),
     order   => 39,
     notify  => Service['iptables'],
   }
@@ -96,7 +96,7 @@ define iptables::concat_emitter(
   # The FILTER table footer (COMMIT)
   concat::fragment{ "iptables_filter_footer_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/filter_footer'),
+    content => template($iptables::filter_footer_template),
     order   => 40,
     notify  => Service['iptables'],
   }
@@ -105,15 +105,15 @@ define iptables::concat_emitter(
     # The NAT table header with the default policies
     concat::fragment{ "iptables_nat_header_$name":
       target  => $emitter_target,
-      content => template('iptables/concat/nat_header'),
+      content => template($iptables::nat_header_template),
       order   => 45,
       notify  => Service['iptables'],
     }
-  
+
     # The NAT table footer (COMMIT)
     concat::fragment{ "iptables_nat_footer_$name":
       target  => $emitter_target,
-      content => template('iptables/concat/nat_footer'),
+      content => template($iptables::nat_footer_template),
       order   => 60,
       notify  => Service['iptables'],
     }
@@ -124,7 +124,7 @@ define iptables::concat_emitter(
   # The MANGLE table header with the default policies
   concat::fragment{ "iptables_mangle_header_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/mangle_header'),
+    content => template($iptables::mangle_header_template),
     order   => 65,
     notify  => Service['iptables'],
   }
@@ -132,7 +132,7 @@ define iptables::concat_emitter(
   # The MANGLE table footer (COMMIT)
   concat::fragment{ "iptables_mangle_footer_$name":
     target  => $emitter_target,
-    content => template('iptables/concat/mangle_footer'),
+    content => template($iptables::mangle_footer_template),
     order   => 80,
     notify  => Service['iptables'],
   }
