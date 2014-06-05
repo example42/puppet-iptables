@@ -51,7 +51,8 @@ define iptables::rule (
   $rule           = '',
   $enable         = true,
   $enable_v6      = false,
-  $debug          = false ) {
+  $debug          = false,
+  $to_destination = '' ) {
 
   include iptables
 
@@ -151,6 +152,10 @@ define iptables::rule (
       array_source         => $array_source,
       array_destination    => $array_destination,
     }
+  }
+
+  if $target == 'DNAT' and $to_destination == '' { 
+    fail('DNAT: option "to_destination" must be specified')
   }
 
   concat::fragment{ "iptables_rule_$name":
