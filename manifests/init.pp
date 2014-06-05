@@ -40,7 +40,8 @@ class iptables (
   $disableboot         = params_lookup( 'disableboot' ),
   $debug               = params_lookup( 'debug' , 'global' ),
   $enable_v6           = params_lookup( 'enable_v6', 'global' ),
-  $audit_only          = params_lookup( 'audit_only' , 'global' )
+  $audit_only          = params_lookup( 'audit_only' , 'global' ),
+  $rules	       = {}
   ) inherits iptables::params {
 
   $bool_service_autorestart = any2bool($service_autorestart)
@@ -238,4 +239,9 @@ class iptables (
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
     }
   }
+
+  ### Creating rules for integration with Hiera
+  validate_hash($rules)
+  create_resources(iptables::rule, $rules)
+
 }
