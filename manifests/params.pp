@@ -123,6 +123,20 @@ class iptables::params  {
   $disableboot = false
   $debug = false
   $audit_only = false
+  $options = {}
+
+  $filter_header_template         = 'iptables/concat/filter_header'
+  $filter_input_header_template   = 'iptables/concat/filter_input_header'
+  $filter_input_footer_template   = 'iptables/concat/filter_input_footer'
+  $filter_output_header_template  = 'iptables/concat/filter_output_header'
+  $filter_output_footer_template  = 'iptables/concat/filter_output_footer'
+  $filter_forward_header_template = 'iptables/concat/filter_forward_header'
+  $filter_forward_footer_template = 'iptables/concat/filter_forward_footer'
+  $filter_footer_template         = 'iptables/concat/filter_footer'
+  $nat_header_template            = 'iptables/concat/nat_header'
+  $nat_footer_template            = 'iptables/concat/nat_footer'
+  $mangle_header_template         = 'iptables/concat/mangle_header'
+  $mangle_footer_template         = 'iptables/concat/mangle_footer'
 
   ## FILE SERVING SOURCE
   case $::base_source {
