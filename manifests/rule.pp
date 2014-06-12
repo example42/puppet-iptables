@@ -158,7 +158,7 @@ define iptables::rule (
     content => template('iptables/concat/rule.erb'),
     order   => $true_order,
     ensure  => $ensure,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   if $enable_v6 {
@@ -167,7 +167,7 @@ define iptables::rule (
       content => template('iptables/concat/rule_v6.erb'),
       order   => $true_order,
       ensure  => $ensure,
-      notify  => Service['iptables'],
+      notify  => $iptables::manage_service_autorestart,
     }
   }
 }
