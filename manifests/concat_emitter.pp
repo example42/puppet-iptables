@@ -24,7 +24,7 @@ define iptables::concat_emitter(
     mode    => $iptables::config_file_mode,
     owner   => $iptables::config_file_owner,
     group   => $iptables::config_file_group,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
     force   => true,
   }
 
@@ -34,7 +34,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => "# File Managed by Puppet\n",
     order   => 01,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The FILTER table header with the default policies
@@ -42,7 +42,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_header_template),
     order   => 05,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The input chain header with sane defaults
@@ -50,7 +50,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_input_header_template),
     order   => 10,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The input chain footer with logging and block_policy
@@ -58,7 +58,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_input_footer_template),
     order   => 19,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The output chain header with sane defaults
@@ -66,7 +66,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_output_header_template),
     order   => 20,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The output chain footer with logging and block_policy
@@ -74,7 +74,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_output_footer_template),
     order   => 29,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The forward chain header with sane defaults
@@ -82,7 +82,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_forward_header_template),
     order   => 30,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The forward chain footer with logging and block_policy
@@ -90,7 +90,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_forward_footer_template),
     order   => 39,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The FILTER table footer (COMMIT)
@@ -98,7 +98,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::filter_footer_template),
     order   => 40,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   if !$is_ipv6 {
@@ -107,7 +107,7 @@ define iptables::concat_emitter(
       target  => $emitter_target,
       content => template($iptables::nat_header_template),
       order   => 45,
-      notify  => Service['iptables'],
+      notify  => $iptables::manage_service_autorestart,
     }
 
     # The NAT table footer (COMMIT)
@@ -115,7 +115,7 @@ define iptables::concat_emitter(
       target  => $emitter_target,
       content => template($iptables::nat_footer_template),
       order   => 60,
-      notify  => Service['iptables'],
+      notify  => $iptables::manage_service_autorestart,
     }
   }
 
@@ -126,7 +126,7 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::mangle_header_template),
     order   => 65,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 
   # The MANGLE table footer (COMMIT)
@@ -134,6 +134,6 @@ define iptables::concat_emitter(
     target  => $emitter_target,
     content => template($iptables::mangle_footer_template),
     order   => 80,
-    notify  => Service['iptables'],
+    notify  => $iptables::manage_service_autorestart,
   }
 }
