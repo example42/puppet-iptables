@@ -208,26 +208,38 @@ class iptables (
     name   => $iptables::package,
   }
 
-  service { 'iptables':
-    ensure     => $iptables::manage_service_ensure,
-    name       => $iptables::service,
-    enable     => $iptables::manage_service_enable,
-    hasstatus  => $iptables::service_status,
-    status     => $iptables::service_status_cmd,
-    require    => Package['iptables'],
-    hasrestart => false,
-    restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
+  if (($osver_maj =~ /^\d+$/) and ($osver_maj < 12)) {
+    service { 'iptables':
+      ensure     => $iptables::manage_service_ensure,
+      name       => $iptables::service,
+      enable     => $iptables::manage_service_enable,
+      hasstatus  => $iptables::service_status,
+      status     => $iptables::service_status_cmd,
+      require    => Package['iptables'],
+      hasrestart => false,
+      restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>; [ -f <%= scope.lookupvar("iptables::config_file_v6") %> ] && ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>'),
+    }
+  } else {
+
+    service { 'iptables':
+      ensure     => $iptables::manage_service_ensure,
+      name       => $iptables::service,
+      enable     => $iptables::manage_service_enable,
+      hasstatus  => $iptables::service_status,
+      status     => $iptables::service_status_cmd,
+      require    => Package['iptables'],
+    }
   }
 
   # How to manage iptables configuration
   case $iptables::config {
     'file': { include iptables::file }
-    'concat': { 
+    'concat': {
       iptables::concat_emitter { 'v4':
         emitter_target  => $iptables::config_file,
         is_ipv6         => false,
       }
-      if $enable_v6 { 
+      if $enable_v6 {
         iptables::concat_emitter { 'v6':
           emitter_target  => $iptables::config_file_v6,
           is_ipv6         => true,
