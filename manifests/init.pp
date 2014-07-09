@@ -30,6 +30,7 @@ class iptables (
   $service                        = params_lookup( 'service' ),
   $service_status                 = params_lookup( 'service_status' ),
   $service_status_cmd             = params_lookup( 'service_status_cmd' ),
+  $service_hasrestart             = params_lookup( 'service_hasrestart'),
   $config_file                    = params_lookup( 'config_file' ),
   $config_file_v6                 = params_lookup( 'config_file_v6' ),
   $config_file_mode               = params_lookup( 'config_file_mode' ),
@@ -208,6 +209,11 @@ class iptables (
     name   => $iptables::package,
   }
 
+  $restart_cmd = $service_hasrestart?{
+    true  => undef,
+    false => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>; [ -f <%= scope.lookupvar("iptables::config_file_v6") %> ] && ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>'),
+  }
+
   service { 'iptables':
     ensure     => $iptables::manage_service_ensure,
     name       => $iptables::service,
@@ -215,19 +221,19 @@ class iptables (
     hasstatus  => $iptables::service_status,
     status     => $iptables::service_status_cmd,
     require    => Package['iptables'],
-    hasrestart => false,
-    restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>'),
+    hasrestart => $iptables::service_hasrestart,
+    restart    => $restart_cmd,
   }
 
   # How to manage iptables configuration
   case $iptables::config {
     'file': { include iptables::file }
-    'concat': { 
+    'concat': {
       iptables::concat_emitter { 'v4':
         emitter_target  => $iptables::config_file,
         is_ipv6         => false,
       }
-      if $enable_v6 { 
+      if $enable_v6 {
         iptables::concat_emitter { 'v6':
           emitter_target  => $iptables::config_file_v6,
           is_ipv6         => true,
