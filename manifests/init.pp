@@ -30,6 +30,7 @@ class iptables (
   $service                        = params_lookup( 'service' ),
   $service_status                 = params_lookup( 'service_status' ),
   $service_status_cmd             = params_lookup( 'service_status_cmd' ),
+  $service_hasrestart             = params_lookup( 'service_hasrestart'),
   $config_file                    = params_lookup( 'config_file' ),
   $config_file_v6                 = params_lookup( 'config_file_v6' ),
   $config_file_mode               = params_lookup( 'config_file_mode' ),
@@ -208,27 +209,20 @@ class iptables (
     name   => $iptables::package,
   }
 
-  if (($osver_maj =~ /^\d+$/) and ($osver_maj < 12)) {
-    service { 'iptables':
-      ensure     => $iptables::manage_service_ensure,
-      name       => $iptables::service,
-      enable     => $iptables::manage_service_enable,
-      hasstatus  => $iptables::service_status,
-      status     => $iptables::service_status_cmd,
-      require    => Package['iptables'],
-      hasrestart => false,
-      restart    => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>; [ -f <%= scope.lookupvar("iptables::config_file_v6") %> ] && ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>'),
-    }
-  } else {
+  $restart_cmd = $service_hasrestart?{
+    true  => undef,
+    false => inline_template('iptables-restore < <%= scope.lookupvar("iptables::config_file") %>; [ -f <%= scope.lookupvar("iptables::config_file_v6") %> ] && ip6tables-restore < <%= scope.lookupvar("iptables::config_file_v6") %>'),
+  }
 
-    service { 'iptables':
-      ensure     => $iptables::manage_service_ensure,
-      name       => $iptables::service,
-      enable     => $iptables::manage_service_enable,
-      hasstatus  => $iptables::service_status,
-      status     => $iptables::service_status_cmd,
-      require    => Package['iptables'],
-    }
+  service { 'iptables':
+    ensure     => $iptables::manage_service_ensure,
+    name       => $iptables::service,
+    enable     => $iptables::manage_service_enable,
+    hasstatus  => $iptables::service_status,
+    status     => $iptables::service_status_cmd,
+    require    => Package['iptables'],
+    hasrestart => $iptables::service_hasrestart,
+    restart    => $restart_cmd,
   }
 
   # How to manage iptables configuration
