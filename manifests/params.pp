@@ -103,6 +103,7 @@ class iptables::params  {
     }
     default: {
       $config_file = '/etc/sysconfig/iptables'
+      $service_hasrestart = true
     }
   }
 
