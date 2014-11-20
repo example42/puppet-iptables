@@ -69,6 +69,21 @@ So a simple:
           my_class => 'iptables::example42',
         }
 
+###usage with Hiera
+Make sure you include the iptables class.  Than you can rules as a hash with the rules you want, for example:
+```
+classes:
+  - iptables
+
+iptables::rules:
+  ACCEPT80:
+     source: '192.168.0.0/24'
+     port:   '80'
+  CUSTOM1234:
+     rule:   '-m tcp -p tcp --dport 1234 -m comment --comment "This is a custom rule to do ..."' 
+```
+This examples expect you to load the classes that are mentioned in the classes array [(This is well explained in puppetlabs doc)](https://docs.puppetlabs.com/hiera/1/puppet.html#assigning-classes-to-nodes-with-hiera-hierainclude).
+
 
 ### CONCAT MODE SPECIFIC USER VARIABLES:
 

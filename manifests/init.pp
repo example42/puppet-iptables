@@ -55,6 +55,7 @@ class iptables (
   $nat_footer_template            = params_lookup( 'nat_footer_template' ),
   $mangle_header_template         = params_lookup( 'mangle_header_template' ),
   $mangle_footer_template         = params_lookup( 'mangle_footer_template' ),
+  $rules                          = params_lookup( 'rules' ),
   ) inherits iptables::params {
 
   $bool_service_autorestart = any2bool($service_autorestart)
@@ -258,5 +259,11 @@ class iptables (
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
     }
+  }
+  
+  ### Creating rules for integration with Hiera
+  if $rules != {} {
+    validate_hash($rules)
+    create_resources(iptables::rule, $rules)
   }
 }
