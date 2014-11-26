@@ -144,6 +144,7 @@ class iptables::params  {
   $nat_footer_template            = 'iptables/concat/nat_footer'
   $mangle_header_template         = 'iptables/concat/mangle_header'
   $mangle_footer_template         = 'iptables/concat/mangle_footer'
+  $rules                          = {}
 
   ## FILE SERVING SOURCE
   case $::base_source {
