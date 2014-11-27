@@ -106,6 +106,7 @@ class iptables::params  {
     default: {
       $config_file = '/etc/sysconfig/iptables'
       $service_hasrestart = true
+      $config_file_v6 = '/etc/sysconfig/ip6tables'
     }
   }
 
