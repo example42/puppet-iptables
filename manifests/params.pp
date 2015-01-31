@@ -81,6 +81,7 @@ class iptables::params  {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
         $service_hasrestart = true
       }
+      $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/wheezy, noop before
     }
     /(?i:Ubuntu)/: {
       if (($osver_maj =~ /^\d+$/) and ($osver_maj < 12)) {
@@ -90,7 +91,7 @@ class iptables::params  {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
         $service_hasrestart = true
       }
-      $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
+      $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04, noop before
     }
     /(?i:Mint)/: {
       if (($osver_maj =~ /^\d+$/) and ($osver_maj < 13)) {
@@ -100,10 +101,12 @@ class iptables::params  {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Mint 13
         $service_hasrestart = true
       }
+      $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Mint 13, noop before
     }
     default: {
       $config_file = '/etc/sysconfig/iptables'
       $service_hasrestart = true
+      $config_file_v6 = '/etc/sysconfig/ip6tables'
     }
   }
 
