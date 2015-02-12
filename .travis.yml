@@ -9,6 +9,7 @@ env:
   matrix:
   - PUPPET_VERSION="~> 2.7.0"
   - PUPPET_VERSION="~> 3.3.0"
+  - PUPPET_VERSION="~> 3.7.3"
 gemfile: .gemfile.travis
 notifications:
   email:
