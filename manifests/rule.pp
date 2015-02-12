@@ -126,21 +126,8 @@ define iptables::rule (
     default   => $destination,
   }
 
-  $array_source_v6 = is_array($source_v6) ? {
-    false     => $source_v6 ? {
-      ''      => [],
-      default => [$source_v6],
-    },
-    default   => $source_v6,
-  }
-
-  $array_destination_v6 = is_array($destination_v6) ? {
-    false     => $destination_v6 ? {
-      ''      => '',
-      default => [$destination_v6],
-    },
-    default   => $destination_v6,
-  }
+  $array_source_v6 = any2array($source_v6)
+  $array_destination_v6 = any2array($destination_v6)
 
   if $debug {
     iptables::debug{ "debug params ${name}":
