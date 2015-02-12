@@ -231,13 +231,13 @@ class iptables (
     'file': { include iptables::file }
     'concat': {
       iptables::concat_emitter { 'v4':
-        emitter_target  => $iptables::config_file,
-        is_ipv6         => false,
+        emitter_target => $iptables::config_file,
+        is_ipv6        => false,
       }
       if $enable_v6 {
         iptables::concat_emitter { 'v6':
-          emitter_target  => $iptables::config_file_v6,
-          is_ipv6         => true,
+          emitter_target => $iptables::config_file_v6,
+          is_ipv6        => true,
         }
       }
     }
