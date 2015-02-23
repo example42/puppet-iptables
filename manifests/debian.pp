@@ -1,3 +1,5 @@
+# Class iptables::debian
+#
 class iptables::debian {
 
   # Load the variables used in this module. Check the params.pp file

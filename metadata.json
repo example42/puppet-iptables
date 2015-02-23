@@ -17,10 +17,16 @@
   "summary": "This module installs and manages iptables. Check README.rdoc for details. Puppi is required for some common functions: you can install them without using the whole module. ",
   "license": "Apache2",
   "name": "example42-iptables",
-  "operatingsystem_support": [],
+  "operatingsystem_support": [
+
+  ],
   "project_page": "",
-  "requirements": [],
+  "requirements": [
+
+  ],
   "source": "https://github.com/example42/puppet-iptables",
-  "tags": [],
-  "version": "2.1.4"
+  "tags": [
+
+  ],
+  "version": "2.1.9"
 }

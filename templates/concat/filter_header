@@ -2,7 +2,7 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-<% if @icmp_policy.downcase == 'limit' -%>
+<% if scope.lookupvar('::iptables::icmp_policy').downcase == 'limit' -%>
 :ICMP_LIMITS - [0:0]
 :RELATED_ICMP - [0:0]
 -A ICMP_LIMITS -p icmp -f -j DROP

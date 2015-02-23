@@ -1,3 +1,5 @@
+# Define iptables::debug
+# ?
 define iptables::debug (
   $true_port,
   $true_protocol,
