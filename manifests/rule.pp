@@ -84,9 +84,9 @@ define iptables::rule (
   }
 
   $true_port = $port ? {
-    ''              => '',
-    (?i:\w*[,:]\w*) => "--match multiport --dports ${port}",
-    default         => "--dport ${port}",
+    ''                => '',
+    /(?i:\w*[,:]\w*)/ => "--match multiport --dports ${port}",
+    default           => "--dport ${port}",
   }
 
   $true_in_interface = $in_interface ? {
