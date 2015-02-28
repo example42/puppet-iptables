@@ -96,7 +96,6 @@ describe 'iptables::rule' do
     
     it { should contain_iptables__debug( "debug params iptable1" ).with(
       'true_protocol'   => '-p tcp',
-      'true_source'     => '',
       'array_source_v6' => [],
       'array_source'    => []
     ) }

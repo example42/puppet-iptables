@@ -110,11 +110,6 @@ define iptables::rule (
     default => "-o ${out_interface}",
   }
 
-  $true_source = $source ? {
-    ''    => '',
-    default => "-s ${source}",
-  }
-
   $true_destination = $destination ? {
     ''    => '',
     default => "-d ${destination}",
