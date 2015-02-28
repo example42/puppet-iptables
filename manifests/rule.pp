@@ -6,6 +6,8 @@
 # $table          - The iptables table to work on (default filter)
 # $chain          - The iptables chain to work on (default INPUT).
 #                   Write it UPPERCASE coherently with iptables syntax
+# $syn            - Add tcp/syn match mark
+#                   Defaults to true if rule matches TCP
 # $in_interface   - The inbound interface for the rule
 # $out_interface  - The outbound interface for the rule
 # $target         - The iptables target for the rule (default ACCEPT)
@@ -49,6 +51,7 @@ define iptables::rule (
   $port           = '',
   $order          = '',
   $rule           = '',
+  $syn            = true,
   $enable         = true,
   $enable_v6      = false,
   $debug          = false ) {
@@ -83,9 +86,18 @@ define iptables::rule (
     default => "-p ${protocol}",
   }
 
+  if $protocol == 'tcp' {
+    $bool_syn = any2bool($syn)
+    $match_syn = $bool_syn? {
+      true    => '--syn',
+      default => '',
+    }
+  }
+
   $true_port = $port ? {
-    ''    => '',
-    default => "--dport ${port}",
+    ''                => '',
+    /(?i:\w*[,:]\w*)/ => "--match multiport --dports ${port}",
+    default           => "--dport ${port}",
   }
 
   $true_in_interface = $in_interface ? {
@@ -96,11 +108,6 @@ define iptables::rule (
   $true_out_interface = $out_interface ? {
     ''    => '',
     default => "-o ${out_interface}",
-  }
-
-  $true_source = $source ? {
-    ''    => '',
-    default => "-s ${source}",
   }
 
   $true_destination = $destination ? {
@@ -126,8 +133,21 @@ define iptables::rule (
     default   => $destination,
   }
 
-  $array_source_v6 = any2array($source_v6)
-  $array_destination_v6 = any2array($destination_v6)
+  $array_source_v6 = is_array($source_v6) ? {
+    false     => $source_v6 ? {
+      ''      => [],
+      default => [$source_v6],
+    },
+    default   => $source_v6,
+  }
+
+  $array_destination_v6 = is_array($destination_v6) ? {
+    false     => $destination_v6 ? {
+      ''      => [],
+      default => [$destination_v6],
+    },
+    default   => $destination_v6,
+  }
 
   if $debug {
     iptables::debug{ "debug params ${name}":
