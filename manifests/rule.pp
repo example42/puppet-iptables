@@ -6,6 +6,8 @@
 # $table          - The iptables table to work on (default filter)
 # $chain          - The iptables chain to work on (default INPUT).
 #                   Write it UPPERCASE coherently with iptables syntax
+# $syn            - Add tcp/syn match mark
+#                   Defaults to true if rule matches TCP
 # $in_interface   - The inbound interface for the rule
 # $out_interface  - The outbound interface for the rule
 # $target         - The iptables target for the rule (default ACCEPT)
@@ -49,6 +51,7 @@ define iptables::rule (
   $port           = '',
   $order          = '',
   $rule           = '',
+  $syn            = true,
   $enable         = true,
   $enable_v6      = false,
   $debug          = false ) {
@@ -81,6 +84,14 @@ define iptables::rule (
   $true_protocol = $protocol ? {
     ''    => '',
     default => "-p ${protocol}",
+  }
+
+  if $protocol == 'tcp' {
+    $bool_syn = any2bool($syn)
+    $match_syn = $bool_syn? {
+      true    => '--syn',
+      default => '',
+    }
   }
 
   $true_port = $port ? {
