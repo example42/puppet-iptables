@@ -7,7 +7,7 @@ class iptables::params  {
 
   ### Definition of some variables used in the module
   $osver = split($::operatingsystemrelease, '[.]')
-  $osver_maj = $osver[0]
+  $osver_maj = 0 + $osver[0]
 
   $enable_v6 = false
 
@@ -74,7 +74,7 @@ class iptables::params  {
 
   case $::operatingsystem {
     /(?i:Debian)/: {
-      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 7)) {
+      if ($osver_maj < 7) {
         $config_file = '/etc/iptables/rules'
         $service_hasrestart = false
       } else {
@@ -84,7 +84,7 @@ class iptables::params  {
       $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/wheezy, noop before
     }
     /(?i:Ubuntu)/: {
-      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 12)) {
+      if ($osver_maj < 12) {
         $config_file = '/etc/iptables/rules'
         $service_hasrestart = false
       } else {
@@ -94,7 +94,7 @@ class iptables::params  {
       $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04, noop before
     }
     /(?i:Mint)/: {
-      if (($osver_maj =~ /^\d+$/) and ($osver_maj < 13)) {
+      if ($osver_maj < 13) {
         $config_file = '/etc/iptables/rules'
         $service_hasrestart = false
       } else {
