@@ -110,22 +110,8 @@ define iptables::rule (
 
   $ensure = bool2ensure($enable)
 
-  $array_source = is_array($source) ? {
-    false     => $source ? {
-      ''      => [],
-      default => [$source],
-    },
-    default   => $source,
-  }
-
-  $array_destination = is_array($destination) ? {
-    false     => $destination ? {
-      ''      => [],
-      default => [$destination],
-    },
-    default   => $destination,
-  }
-
+  $array_source = any2array($source)
+  $array_destination = any2array($destination)
   $array_source_v6 = any2array($source_v6)
   $array_destination_v6 = any2array($destination_v6)
 
