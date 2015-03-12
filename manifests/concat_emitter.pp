@@ -33,7 +33,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_header_${name}":
     target  => $emitter_target,
     content => "# File Managed by Puppet\n",
-    order   => 01,
+    order   => '01',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -41,7 +41,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_header_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_header_template),
-    order   => 05,
+    order   => '05',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -49,7 +49,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_input_header_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_input_header_template),
-    order   => 10,
+    order   => '10',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -57,7 +57,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_input_footer_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_input_footer_template),
-    order   => 19,
+    order   => '19',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -65,7 +65,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_output_header_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_output_header_template),
-    order   => 20,
+    order   => '20',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -73,7 +73,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_output_footer_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_output_footer_template),
-    order   => 29,
+    order   => '29',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -81,7 +81,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_forward_header_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_forward_header_template),
-    order   => 30,
+    order   => '30',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -89,7 +89,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_forward_footer_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_forward_footer_template),
-    order   => 39,
+    order   => '39',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -97,7 +97,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_filter_footer_${name}":
     target  => $emitter_target,
     content => template($::iptables::filter_footer_template),
-    order   => 40,
+    order   => '40',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -106,7 +106,7 @@ define iptables::concat_emitter(
     concat::fragment{ "iptables_nat_header_${name}":
       target  => $emitter_target,
       content => template($::iptables::nat_header_template),
-      order   => 45,
+      order   => '45',
       notify  => $::iptables::manage_service_autorestart,
     }
 
@@ -114,7 +114,7 @@ define iptables::concat_emitter(
     concat::fragment{ "iptables_nat_footer_${name}":
       target  => $emitter_target,
       content => template($::iptables::nat_footer_template),
-      order   => 60,
+      order   => '60',
       notify  => $::iptables::manage_service_autorestart,
     }
   }
@@ -125,7 +125,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_mangle_header_${name}":
     target  => $emitter_target,
     content => template($::iptables::mangle_header_template),
-    order   => 65,
+    order   => '65',
     notify  => $::iptables::manage_service_autorestart,
   }
 
@@ -133,7 +133,7 @@ define iptables::concat_emitter(
   concat::fragment{ "iptables_mangle_footer_${name}":
     target  => $emitter_target,
     content => template($::iptables::mangle_footer_template),
-    order   => 80,
+    order   => '80',
     notify  => $::iptables::manage_service_autorestart,
   }
 }
