@@ -260,18 +260,10 @@ class iptables (
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
     }
   }
-<<<<<<< HEAD
   
   ### Creating rules for integration with Hiera
   if $rules != {} {
     validate_hash($rules)
     create_resources(iptables::rule, $rules)
   }
-=======
-
-  ### Creating rules for integration with Hiera
-  validate_hash($rules)
-  create_resources(iptables::rule, $rules)
-
->>>>>>> interlegis/DNATdestination
 }
