@@ -1,7 +1,7 @@
 <% if scope.lookupvar('iptables::comment') then comment = ' -m comment --comment "' + @title + '"' else comment = '' end -%>
 <% if scope.lookupvar('rule') != '' -%>
 <% if scope.lookupvar('target') != '' -%>
-<%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %> -j <%= scope.lookupvar('target') %><%= comment %>
+<%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %> -j <%= scope.lookupvar('target') %><% if @target == 'DNAT' %> --to-destination <%= @to_destination %> <%end%><%= comment %>
 <% else -%>
 <%= @command %> <%= @chain %> <%= scope.lookupvar('rule') %><%= comment %>
 <% end -%>
@@ -10,13 +10,13 @@
 <% scope.lookupvar('array_source').each do |s| -%>
 <% if scope.lookupvar('array_destination').length > 0 -%>
 <% scope.lookupvar('array_destination').each do |d| -%>
-<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -d <%= d %> -j <%= scope.lookupvar('target') %><%= comment %>
+<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -d <%= d %> -j <%= scope.lookupvar('target') %><% if @target == 'DNAT' %> --to-destination <%= @to_destination %> <%end%><%= comment %>
 <% end -%>
 <% else -%>
-<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -j <%= scope.lookupvar('target') %><%= comment %>
+<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -s <%= s %> -j <%= scope.lookupvar('target') %><% if @target == 'DNAT' %> --to-destination <%= @to_destination %> <%end%><%= comment %>
 <% end -%>
 <% end -%>
 <% else -%>
-<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -j <%= scope.lookupvar('target') %><%= comment %>
+<%= @command %> <%= @chain %> <%= @true_in_interface %> <%= @true_out_interface %> <%= scope.lookupvar('true_protocol') %> <%= scope.lookupvar('true_port') %> -j <%= scope.lookupvar('target') %><% if @target == 'DNAT' %> --to-destination <%= @to_destination %> <%end%><%= comment %>
 <% end -%>
 <% end -%>
