@@ -79,32 +79,32 @@ define iptables::rule (
 
   # We build the rule if not explicitely set
   $true_protocol = $protocol ? {
-    ''    => '',
+    ''      => '',
     default => "-p ${protocol}",
   }
 
   $true_port = $port ? {
-    ''    => '',
+    ''      => '',
     default => "--dport ${port}",
   }
 
   $true_in_interface = $in_interface ? {
-    ''    => '',
+    ''      => '',
     default => "-i ${in_interface}",
   }
 
   $true_out_interface = $out_interface ? {
-    ''    => '',
+    ''      => '',
     default => "-o ${out_interface}",
   }
 
   $true_source = $source ? {
-    ''    => '',
+    ''      => '',
     default => "-s ${source}",
   }
 
   $true_destination = $destination ? {
-    ''    => '',
+    ''      => '',
     default => "-d ${destination}",
   }
 
