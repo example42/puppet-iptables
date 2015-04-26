@@ -127,7 +127,7 @@ define iptables::rule (
     }
   }
 
-  if $target == 'DNAT' and $to_destination == '' { 
+  if $target == 'DNAT' and $to_destination == '' {
     fail('DNAT: option "to_destination" must be specified')
   }
 
