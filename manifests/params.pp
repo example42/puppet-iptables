@@ -57,11 +57,6 @@ class iptables::params  {
     default => 'iptables',
   }
 
-  $service = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => 'iptables-persistent',
-    default                   => 'iptables',
-  }
-
   $service_status = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => false,
     default                   => true,
@@ -75,11 +70,20 @@ class iptables::params  {
   case $::operatingsystem {
     /(?i:Debian)/: {
       if ($osver_maj < 7) {
+        # Squeeze or earlier
         $config_file = '/etc/iptables/rules'
         $service_hasrestart = false
-      } else {
+        $service = 'iptables-persistent'
+      } elsif ($osver_maj < 8) {
+        # Wheezy
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
         $service_hasrestart = true
+        $service = 'iptables-persistent'
+      } else {
+        # Jessie (and later)
+        $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/wheezy
+        $service_hasrestart = true
+        $service = 'netfilter-persistent'        # Changed in iptables-persistent 1.0/jessie
       }
       $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/wheezy, noop before
     }
@@ -92,6 +96,7 @@ class iptables::params  {
         $service_hasrestart = true
       }
       $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04, noop before
+      $service = 'iptables-persistent'
     }
     /(?i:Mint)/: {
       if ($osver_maj < 13) {
@@ -102,11 +107,13 @@ class iptables::params  {
         $service_hasrestart = true
       }
       $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Mint 13, noop before
+      $service = 'iptables-persistent'
     }
     default: {
       $config_file = '/etc/sysconfig/iptables'
       $service_hasrestart = true
       $config_file_v6 = '/etc/sysconfig/ip6tables'
+      $service = 'iptables'
     }
   }
 
