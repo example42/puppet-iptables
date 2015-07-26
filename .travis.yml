@@ -1,16 +1,18 @@
 language: ruby
 before_install: rm Gemfile.lock || true
-rvm:
-  - 1.8.7
-  - 1.9.3
 script:
   - "bundle exec rake spec"
-env:
-  matrix:
-  - PUPPET_VERSION="~> 2.7.0"
-  - PUPPET_VERSION="~> 3.3.0"
-  - PUPPET_VERSION="~> 3.7.3"
-gemfile: .gemfile.travis
+gemfile: .gemfile
+matrix:
+  include:
+  - rvm: 1.8.7
+    env: PUPPET_VERSION="~> 3.3.0"
+  - rvm: 1.9.3
+    env: PUPPET_VERSION="~> 3.3.0"
+  - rvm: 1.9.3
+    env: PUPPET_VERSION="~> 3.7.3"
+  - rvm: 2.1.1
+    env: PUPPET_VERSION="~> 3.7.3"
 notifications:
   email:
     - al@lab42.it
