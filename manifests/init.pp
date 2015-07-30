@@ -55,7 +55,7 @@ class iptables (
   $nat_footer_template            = params_lookup( 'nat_footer_template' ),
   $mangle_header_template         = params_lookup( 'mangle_header_template' ),
   $mangle_footer_template         = params_lookup( 'mangle_footer_template' ),
-  $rules                          = params_lookup( 'rules' ),
+  $rules                          = params_lookup( 'rules' )
   ) inherits iptables::params {
 
   $bool_service_autorestart = any2bool($service_autorestart)
