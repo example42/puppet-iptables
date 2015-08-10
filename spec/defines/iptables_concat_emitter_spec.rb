@@ -2,7 +2,7 @@ require "#{File.join(File.dirname(__FILE__),'..','spec_helper.rb')}"
 
 describe 'iptables::concat_emitter' do
   let(:node) { 'iptables_concat.example42.com' }
-  let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12, :concat_basedir => '/tmp'  } }
+  let(:facts) { { :operatingsystem => 'ubuntu', :osver_maj => 12, :concat_basedir => '/tmp', :operatingsystemrelease => '12.10'  } }
   let(:title) { 'v6' }
   let(:params) {
       { 'emitter_target'  => '/anfile',

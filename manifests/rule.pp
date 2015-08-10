@@ -113,19 +113,19 @@ define iptables::rule (
 
   $array_source = is_array($source) ? {
     false     => $source ? {
-      ''      => [],   
-      default => [$source],    
-    },   
-    default   => $source,    
-  }    
-   
-  $array_destination = is_array($destination) ? {    
-    false     => $destination ? {    
-      ''      => [],   
-      default => [$destination],   
-    },   
-    default   => $destination,   
-  }    
+      ''      => [],
+      default => [$source],
+    },
+    default   => $source,
+  }
+
+  $array_destination = is_array($destination) ? {
+    false     => $destination ? {
+      ''      => [],
+      default => [$destination],
+    },
+    default   => $destination,
+  }
 
   #$array_source_v6 = any2array($source_v6)
   $array_source_v6 = is_array($source_v6) ? {
