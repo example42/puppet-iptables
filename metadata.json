@@ -7,11 +7,11 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.1.0"
+      "version_requirement": ">= 3.2.0 < 5.0.0"
     },
     {
       "name": "puppetlabs/concat",
-      "version_requirement": ">=1.0.0"
+      "version_requiremens": ">=1.0.0 < 5.0.0"
     }
   ],
   "summary": "This module installs and manages iptables. Check README.rdoc for details. Puppi is required for some common functions: you can install them without using the whole module. ",
