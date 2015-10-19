@@ -1,0 +1,3 @@
+[submodule "tinydata"]
+	path = tinydata
+	url = git@github.com:example42/tinydata.git
