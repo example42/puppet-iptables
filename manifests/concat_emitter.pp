@@ -101,7 +101,9 @@ define iptables::concat_emitter(
     notify  => $::iptables::manage_service_autorestart,
   }
 
-  if !$is_ipv6 {
+  # The NAT table is not supported for IPv6 until kernel 3.8
+  # Only load the header when running at least that kernel
+  if !$is_ipv6 or (versioncmp($kernelmajversion, 3.8) >= 0) {
     # The NAT table header with the default policies
     concat::fragment{ "iptables_nat_header_${name}":
       target  => $emitter_target,
@@ -118,8 +120,6 @@ define iptables::concat_emitter(
       notify  => $::iptables::manage_service_autorestart,
     }
   }
-
-
 
   # The MANGLE table header with the default policies
   concat::fragment{ "iptables_mangle_header_${name}":
