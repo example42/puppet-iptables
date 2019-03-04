@@ -91,12 +91,17 @@ class iptables::params  {
       if ($osver_maj < 12) {
         $config_file = '/etc/iptables/rules'
         $service_hasrestart = false
+        $service = 'iptables-persistent'
+      } elsif ($osver_maj >= 16) {
+        $config_file = '/etc/iptables/rules.v4'
+        $service_hasrestart = true
+        $service = 'netfilter-persistent'       # Name has changed since Ubuntu 16
       } else {
         $config_file = '/etc/iptables/rules.v4' # Introduced in iptables-persistent 0.5/Ubuntu 12.04
         $service_hasrestart = true
+        $service = 'iptables-persistent'
       }
       $config_file_v6 = '/etc/iptables/rules.v6' # Introduced in iptables-persistent 0.5/Ubuntu 12.04, noop before
-      $service = 'iptables-persistent'
     }
     /(?i:Mint)/: {
       if ($osver_maj < 13) {
